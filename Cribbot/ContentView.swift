@@ -14,8 +14,6 @@ struct ContentView: View {
                 .fill(.green)
             VStack {
                 CardView()
-                Circle()
-                    .blur(radius: 10)
             }
             .padding()
         }
