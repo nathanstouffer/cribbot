@@ -12,10 +12,7 @@ struct ContentView: View {
         ZStack {
             Rectangle()
                 .fill(.green)
-            VStack {
-                CardView()
-            }
-            .padding()
+            CardView()
         }
     }
 }
