@@ -9,12 +9,16 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            CardView()
-            Circle()
-                .blur(radius: 10)
+        ZStack {
+            Rectangle()
+                .fill(.green)
+            VStack {
+                CardView()
+                Circle()
+                    .blur(radius: 10)
+            }
+            .padding()
         }
-        .padding()
     }
 }
 
