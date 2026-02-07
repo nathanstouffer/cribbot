@@ -15,6 +15,7 @@ struct CardView: View {
                 .frame(width: 100, height: 150)
                 .shadow(color: Color.black.opacity(0.5), radius: 10, x: 0, y: 10)
             Text("K❤️")
+                .bold()
                 .font(.title)
                 .foregroundStyle(.red)
         }    }
