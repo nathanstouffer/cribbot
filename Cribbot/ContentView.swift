@@ -12,7 +12,8 @@ struct ContentView: View {
         ZStack {
             Rectangle()
                 .fill(.green)
-            CardView()
+                .ignoresSafeArea()
+            DeckView()
         }
     }
 }
