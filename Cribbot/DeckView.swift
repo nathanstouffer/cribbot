@@ -47,7 +47,8 @@ struct DeckView: View {
 
     // Deck model
     @State private var deckModel: Deck = Deck(shuffled: false)
-    @State private var dealtHand: [Card] = []
+    @State private var playerHands: [[Card]] = Array(repeating: [], count: 2)
+    @State private var playersCount: Int = 2
 
     @StateObject private var selectionManager = SelectionManager()
 
@@ -57,58 +58,82 @@ struct DeckView: View {
         }
     }
 
+    private var deckBack: some View {
+        ZStack {
+            RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
+                .fill(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .frame(width: 80, height: 120)
+                .shadow(radius: 4)
+            Text("🂠")
+                .font(.largeTitle)
+        }
+    }
+
     var body: some View {
         VStack(spacing: 12) {
             HStack(spacing: 12) {
-                Button("Deal Hand") {
+                Button("Deal") {
+                    // Shuffle whole deck and deal 6 to each player in round-robin
                     deckModel.shuffle()
-                    if let hand = deckModel.deal(6) {
-                        dealtHand = hand
-                        selectionManager.clear()
-                        selectionManager.select(hand)
+                    // clear previous hands and selection
+                    for i in 0..<playersCount { playerHands[i].removeAll() }
+                    selectionManager.clear()
+
+                    for _ in 0..<6 {
+                        for playerIdx in 0..<playersCount {
+                            if let card = deckModel.deal(1)?.first {
+                                playerHands[playerIdx].append(card)
+                            }
+                        }
                     }
+
+                    // Optionally select the current player's hand (player 0)
+                    selectionManager.select(playerHands.first ?? [])
                 }
                 .buttonStyle(.borderedProminent)
 
-                Button("Reset Deck") {
+                Button("Reset") {
                     deckModel = Deck(shuffled: false)
-                    dealtHand = []
+                    for i in 0..<playersCount { playerHands[i].removeAll() }
                     selectionManager.clear()
                 }
 
                 Spacer()
 
-                Text("Remaining: \(deckModel.count)")
-                    .foregroundStyle(.secondary)
+                HStack(spacing: 8) {
+                    deckBack
+                        .overlay(Text("\(deckModel.count)").foregroundStyle(.white).bold().offset(x: 0, y: 40))
+                    Text("Remaining: \(deckModel.count)")
+                        .foregroundStyle(.secondary)
+                }
             }
             .padding(.horizontal)
 
-            // Show dealt hand
-            if !dealtHand.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 12) {
-                        ForEach(dealtHand.indices, id: \.self) { idx in
-                            let card = dealtHand[idx]
-                            CardView(card: card,
-                                     isSelected: selectionManager.isSelected(card),
-                                     onToggle: { selectionManager.toggle(card) })
+            // Player hands
+            ForEach(0..<playersCount, id: \.self) { idx in
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Player \(idx + 1)")
+                        .font(.headline)
+                        .padding(.leading)
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            ForEach(playerHands[idx].indices, id: \.self) { cardIdx in
+                                let card = playerHands[idx][cardIdx]
+                                CardView(card: card,
+                                         isSelected: selectionManager.isSelected(card),
+                                         onToggle: { selectionManager.toggle(card) })
+                            }
                         }
+                        .padding(.horizontal)
                     }
-                    .padding(.horizontal)
                 }
             }
 
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(deckModel.cards.indices, id: \.self) { index in
-                        let card = deckModel.cards[index]
-                        CardView(card: card,
-                                 isSelected: selectionManager.isSelected(card),
-                                 onToggle: { selectionManager.toggle(card) })
-                    }
-                }
-                .padding()
-            }
+            Spacer()
+        }
+        .onAppear {
+            // initialize player hands storage
+            playerHands = Array(repeating: [], count: playersCount)
         }
     }
 }
