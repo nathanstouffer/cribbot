@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import SwiftUICore
+import SwiftUI
 
-struct Card {
+struct Card: Hashable {
     
     enum Value {
         case ace, two, three, four, five, six, seven, eight, nine, ten
