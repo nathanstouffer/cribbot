@@ -20,9 +20,43 @@ struct CardView: View {
                     .fill(Color.white)
                     .frame(width: 80, height: 120)
                     .shadow(color: Color.black.opacity(0.5), radius: 10, x: 0, y: 10)
+
+                // Corner indicators and center label
+                VStack {
+                    HStack {
+                        // Top-left indicator
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text(" \(card.value.display)")
+                                .font(.caption)
+                                .bold()
+                                .foregroundColor(card.suit.color)
+                            Text(card.suit.symbol)
+                                .font(.caption2)
+                        }
+                        .padding(6)
+                        Spacer()
+                    }
+
+                    Spacer()
+
+                    HStack {
+                        Spacer()
+                        // Bottom-right indicator (rotated for realism)
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text(" \(card.value.display)")
+                                .font(.caption)
+                                .bold()
+                                .foregroundColor(card.suit.color)
+                            Text(card.suit.symbol)
+                                .font(.caption2)
+                        }
+                        .padding(6)
+                    }
+                }
+
                 Text("\(card.value.display)\(card.suit.symbol)")
                     .bold()
-                    .font(.title)
+                    .font(.title2)
                     .foregroundStyle(card.suit.color)
             }
             .overlay(
