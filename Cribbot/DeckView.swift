@@ -14,7 +14,6 @@ final class SelectionManager: ObservableObject {
         if isSelected(card) {
             selected.remove(card)
         } else {
-            // ask validator whether the new selection is allowed
             if validate(selected, card) {
                 selected.insert(card)
             }
@@ -30,6 +29,10 @@ final class SelectionManager: ObservableObject {
     func deselect(_ card: Card) {
         selected.remove(card)
     }
+
+    func clear() {
+        selected.removeAll()
+    }
 }
 
 struct DeckView: View {
@@ -42,29 +45,70 @@ struct DeckView: View {
         GridItem(.flexible())
     ]
 
-    // Full deck
-    private let deck: [Card] = Card.fullDeckByValue
+    // Deck model
+    @State private var deckModel: Deck = Deck(shuffled: false)
+    @State private var dealtHand: [Card] = []
 
     @StateObject private var selectionManager = SelectionManager()
 
     init() {
-        // Example validator: allow up to 6 cards selected (common hand size in some flows)
         selectionManager.validate = { current, card in
             current.contains(card) || current.count < 6
         }
     }
 
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 16) {
-                ForEach(deck.indices, id: \.self) { index in
-                    let card = deck[index]
-                    CardView(card: card,
-                             isSelected: selectionManager.isSelected(card),
-                             onToggle: { selectionManager.toggle(card) })
+        VStack(spacing: 12) {
+            HStack(spacing: 12) {
+                Button("Deal Hand") {
+                    deckModel.shuffle()
+                    if let hand = deckModel.deal(6) {
+                        dealtHand = hand
+                        selectionManager.clear()
+                        selectionManager.select(hand)
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+
+                Button("Reset Deck") {
+                    deckModel = Deck(shuffled: false)
+                    dealtHand = []
+                    selectionManager.clear()
+                }
+
+                Spacer()
+
+                Text("Remaining: \(deckModel.count)")
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal)
+
+            // Show dealt hand
+            if !dealtHand.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(dealtHand.indices, id: \.self) { idx in
+                            let card = dealtHand[idx]
+                            CardView(card: card,
+                                     isSelected: selectionManager.isSelected(card),
+                                     onToggle: { selectionManager.toggle(card) })
+                        }
+                    }
+                    .padding(.horizontal)
                 }
             }
-            .padding()
+
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 16) {
+                    ForEach(deckModel.cards.indices, id: \.self) { index in
+                        let card = deckModel.cards[index]
+                        CardView(card: card,
+                                 isSelected: selectionManager.isSelected(card),
+                                 onToggle: { selectionManager.toggle(card) })
+                    }
+                }
+                .padding()
+            }
         }
     }
 }
