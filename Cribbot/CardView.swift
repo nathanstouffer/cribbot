@@ -50,6 +50,7 @@ struct CardView: View {
                             Text(card.suit.symbol)
                                 .font(.caption2)
                         }
+                        .rotationEffect(Angle(degrees: 180))
                         .padding(6)
                     }
                 }
