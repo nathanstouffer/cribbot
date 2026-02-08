@@ -11,23 +11,7 @@ struct DeckView: View {
     ]
 
     // Full deck
-    private let deck: [Card] = {
-        let values: [Card.Value] = [
-            .ace, .two, .three, .four, .five, .six,
-            .seven, .eight, .nine, .ten,
-            .jack, .queen, .king
-        ]
-
-        let suits: [Card.Suit] = [
-            .spades, .hearts, .clubs, .diamonds
-        ]
-
-        return suits.flatMap { suit in
-            values.map { value in
-                Card(value: value, suit: suit)
-            }
-        }
-    }()
+    private let deck: [Card] = Card.fullDeckByValue
 
     var body: some View {
         ScrollView {
