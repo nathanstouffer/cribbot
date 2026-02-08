@@ -37,26 +37,12 @@ final class SelectionManager: ObservableObject {
 
 struct DeckView: View {
 
-    // 4 columns works nicely for cards this size
-    private let columns = [
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-        GridItem(.flexible())
-    ]
-
     // Deck model
     @State private var deckModel: Deck = Deck(shuffled: false)
     @State private var playerHands: [[Card]] = Array(repeating: [], count: 2)
-    @State private var playersCount: Int = 2
+    private let playersCount: Int = 2
 
     @StateObject private var selectionManager = SelectionManager()
-
-    init() {
-        selectionManager.validate = { current, card in
-            current.contains(card) || current.count < 6
-        }
-    }
 
     private var deckBack: some View {
         ZStack {
@@ -70,62 +56,82 @@ struct DeckView: View {
     }
 
     var body: some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 12) {
-                Button("Deal") {
-                    // Shuffle whole deck and deal 6 to each player in round-robin
-                    deckModel.shuffle()
-                    // clear previous hands and selection
-                    for i in 0..<playersCount { playerHands[i].removeAll() }
-                    selectionManager.clear()
-
-                    for _ in 0..<6 {
-                        for playerIdx in 0..<playersCount {
-                            if let card = deckModel.deal(1)?.first {
-                                playerHands[playerIdx].append(card)
-                            }
+        VStack(alignment: .center, spacing: 16) {
+            // Opponent (facedown)
+            VStack(alignment: .center, spacing: 6) {
+                Text("Opponent")
+                    .font(.headline)
+                    .padding(.leading)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(playerHands.indices.contains(0) ? playerHands[0].indices : [].indices, id: \.self) { _ in
+                            deckBack
                         }
                     }
-
-                    // Optionally select the current player's hand (player 0)
-                    selectionManager.select(playerHands.first ?? [])
+                    .padding(.horizontal)
                 }
-                .buttonStyle(.borderedProminent)
+            }
+            
+            Spacer()
 
-                Button("Reset") {
-                    deckModel = Deck(shuffled: false)
-                    for i in 0..<playersCount { playerHands[i].removeAll() }
-                    selectionManager.clear()
-                }
-
-                Spacer()
-
-                HStack(spacing: 8) {
+            // Deck and controls
+            HStack(spacing: 12) {
+                VStack(spacing: 8) {
                     deckBack
                         .overlay(Text("\(deckModel.count)").foregroundStyle(.white).bold().offset(x: 0, y: 40))
                     Text("Remaining: \(deckModel.count)")
                         .foregroundStyle(.secondary)
                 }
+
+                VStack(spacing: 8) {
+                    Button("Deal") {
+                        // Shuffle whole deck and deal 6 to each player in round-robin
+                        deckModel.shuffle()
+                        // clear previous hands and selection
+                        for i in 0..<playersCount { playerHands[i].removeAll() }
+                        selectionManager.clear()
+
+                        for _ in 0..<6 {
+                            for playerIdx in 0..<playersCount {
+                                if let card = deckModel.deal(1)?.first {
+                                    playerHands[playerIdx].append(card)
+                                }
+                            }
+                        }
+
+                        // Select the user's hand (player 1)
+                        if playerHands.indices.contains(1) {
+                            selectionManager.select(playerHands[1])
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+
+                    Button("Reset") {
+                        deckModel = Deck(shuffled: false)
+                        for i in 0..<playersCount { playerHands[i].removeAll() }
+                        selectionManager.clear()
+                    }
+                }
+                Spacer()
             }
             .padding(.horizontal)
 
-            // Player hands
-            ForEach(0..<playersCount, id: \.self) { idx in
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Player \(idx + 1)")
-                        .font(.headline)
-                        .padding(.leading)
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 12) {
-                            ForEach(playerHands[idx].indices, id: \.self) { cardIdx in
-                                let card = playerHands[idx][cardIdx]
-                                CardView(card: card,
-                                         isSelected: selectionManager.isSelected(card),
-                                         onToggle: { selectionManager.toggle(card) })
-                            }
+            Spacer()
+            // User hand (selectable)
+            VStack(alignment: .center, spacing: 6) {
+                Text("You")
+                    .font(.headline)
+                    .padding(.leading)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(playerHands.indices.contains(1) ? playerHands[1].indices : [].indices, id: \.self) { cardIdx in
+                            let card = playerHands[1][cardIdx]
+                            CardView(card: card,
+                                     isSelected: selectionManager.isSelected(card),
+                                     onToggle: { selectionManager.toggle(card) })
                         }
-                        .padding(.horizontal)
                     }
+                    .padding(.horizontal)
                 }
             }
 
@@ -134,6 +140,10 @@ struct DeckView: View {
         .onAppear {
             // initialize player hands storage
             playerHands = Array(repeating: [], count: playersCount)
+            // default validator: allow selecting up to 6 cards
+            selectionManager.validate = { current, card in
+                current.contains(card) || current.count < 6
+            }
         }
     }
 }
@@ -141,3 +151,4 @@ struct DeckView: View {
 #Preview {
     DeckView()
 }
+
