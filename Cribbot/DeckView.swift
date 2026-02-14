@@ -169,18 +169,43 @@ struct DeckView: View {
                 Text("You")
                     .font(.headline)
                     .padding(.leading)
-                // confirm crib selection button
-                    // show crib contents
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 12) {
-                        ForEach(playerHands.indices.contains(1) ? playerHands[1].indices : [].indices, id: \.self) { cardIdx in
-                            let card = playerHands[1][cardIdx]
+
+                // layout: grid when 6 cards, single row when 4 (otherwise horizontal scroll)
+                let userCards = playerHands.indices.contains(1) ? playerHands[1] : []
+
+                if userCards.count == 6 {
+                    // 2 rows x 3 columns grid
+                    LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 12), count: 3), spacing: 12) {
+                        ForEach(userCards.indices, id: \.self) { idx in
+                            let card = userCards[idx]
                             CardView(card: card,
                                      isSelected: selectionManager.isSelected(card),
                                      onToggle: { if !cribLocked { selectionManager.toggle(card) } })
                         }
                     }
                     .padding(.horizontal)
+                } else if userCards.count == 4 {
+                    HStack(spacing: 12) {
+                        ForEach(userCards.indices, id: \.self) { idx in
+                            let card = userCards[idx]
+                            CardView(card: card,
+                                     isSelected: selectionManager.isSelected(card),
+                                     onToggle: { if !cribLocked { selectionManager.toggle(card) } })
+                        }
+                    }
+                    .padding(.horizontal)
+                } else {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            ForEach(userCards.indices, id: \.self) { idx in
+                                let card = userCards[idx]
+                                CardView(card: card,
+                                         isSelected: selectionManager.isSelected(card),
+                                         onToggle: { if !cribLocked { selectionManager.toggle(card) } })
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
                 }
             }
 
