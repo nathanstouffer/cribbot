@@ -47,11 +47,10 @@ struct DeckView: View {
     private var deckBack: some View {
         ZStack {
             RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
-                .fill(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .fill(LinearGradient(colors: [.red, .red], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .opacity(0.75)
                 .frame(width: 80, height: 120)
                 .shadow(radius: 4)
-            Text("🂠")
-                .font(.largeTitle)
         }
     }
 
