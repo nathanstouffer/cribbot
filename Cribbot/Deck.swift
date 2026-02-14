@@ -13,7 +13,7 @@ struct Deck {
 
     /// Create a new deck in standard order or optionally shuffled
     init(shuffled: Bool = false) {
-        self.cards = Card.fullDeckByValue
+        self.cards = Card.fullDeckByRank
         if shuffled { self.shuffle() }
     }
 

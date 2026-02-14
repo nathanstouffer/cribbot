@@ -18,7 +18,7 @@ struct CardView: View {
             ZStack {
                 RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
                     .fill(Color.white)
-                    .shadow(color: Color.black.opacity(0.5), radius: 10, x: 0, y: 0)
+                    //.shadow(color: Color.black.opacity(0.5), radius: 10, x: 0, y: 0)
                 indexes
                 pips
             }
@@ -32,7 +32,7 @@ struct CardView: View {
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(card.value.display) of \(String(describing: card.suit))")
+        .accessibilityLabel("\(card.rank.display) of \(String(describing: card.suit))")
     }
     
     private var indexes: some View {
@@ -52,7 +52,7 @@ struct CardView: View {
     
     private var index: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("\(card.value == Card.Value.ten ? "" : " ")\(card.value.display)")
+            Text("\(card.rank == Card.Rank.ten ? "" : " ")\(card.rank.display)")
                 .font(.caption)
                 .bold()
                 .foregroundColor(card.suit.color)
@@ -63,7 +63,7 @@ struct CardView: View {
     }
     
     private var pips: some View {
-        Text("\(card.value.display)\(card.suit.symbol)")
+        Text("\(card.rank.display)\(card.suit.symbol)")
             .bold()
             .font(.title2)
             .foregroundStyle(card.suit.color)
@@ -73,8 +73,8 @@ struct CardView: View {
 #Preview("Grid of cards") {
     ScrollView {
         LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 4)) {
-            ForEach(Card.fullDeckByValue.indices, id: \.self) { idx in
-                CardView(card: Card.fullDeckByValue[idx], isSelected: false, onToggle: {})
+            ForEach(Card.fullDeckByRank.indices, id: \.self) { idx in
+                CardView(card: Card.fullDeckByRank[idx], isSelected: false, onToggle: {})
             }
         }
         .padding()

@@ -10,7 +10,7 @@ import SwiftUI
 
 struct Card: Hashable {
     
-    enum Value {
+    enum Rank {
         case ace, two, three, four, five, six, seven, eight, nine, ten
         case jack, queen, king
         
@@ -56,13 +56,13 @@ struct Card: Hashable {
         }
     }
     
-    var value: Value
+    var rank: Rank
     var suit: Suit
 }
 
 
 // MARK: - Preview helpers
-extension Card.Value {
+extension Card.Rank {
     static let all: [Self] = [
         .ace, .two, .three, .four, .five, .six,
         .seven, .eight, .nine, .ten,
@@ -77,20 +77,20 @@ extension Card.Suit {
 }
 
 extension Card {
-    static let preview = Card(value: .king, suit: .hearts)
+    static let preview = Card(rank: .king, suit: .hearts)
 
     static let fullDeckBySuit: [Card] = {
         return Card.Suit.all.flatMap { suit in
-            Card.Value.all.map { value in
-                Card(value: value, suit: suit)
+            Card.Rank.all.map { rank in
+                Card(rank: rank, suit: suit)
             }
         }
     }()
     
-    static let fullDeckByValue: [Card] = {
-        return Card.Value.all.flatMap { value in
+    static let fullDeckByRank: [Card] = {
+        return Card.Rank.all.flatMap { rank in
             Card.Suit.all.map { suit in
-                Card(value: value, suit: suit)
+                Card(rank: rank, suit: suit)
             }
         }
     }()
