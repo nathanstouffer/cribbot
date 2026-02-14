@@ -19,29 +19,8 @@ struct CardView: View {
                 RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
                     .fill(Color.white)
                     .shadow(color: Color.black.opacity(0.5), radius: 10, x: 0, y: 0)
-
-                // Corner indicators and center label
-                VStack {
-                    HStack {
-                        // Top-left indicator
-                        indicator
-                        Spacer()
-                    }
-
-                    Spacer()
-
-                    HStack {
-                        Spacer()
-                        // Bottom-right indicator (rotated for realism)
-                        indicator
-                        .rotationEffect(Angle(degrees: 180))
-                    }
-                }
-
-                Text("\(card.value.display)\(card.suit.symbol)")
-                    .bold()
-                    .font(.title2)
-                    .foregroundStyle(card.suit.color)
+                indexes
+                pips
             }
             .overlay(
                 RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
@@ -56,7 +35,22 @@ struct CardView: View {
         .accessibilityLabel("\(card.value.display) of \(String(describing: card.suit))")
     }
     
-    private var indicator: some View {
+    private var indexes: some View {
+        VStack {
+            HStack {    // top left
+                index
+                Spacer()
+            }
+            Spacer()
+            HStack {    // bottom right
+                Spacer()
+                index
+                .rotationEffect(Angle(degrees: 180))
+            }
+        }
+    }
+    
+    private var index: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("\(card.value == Card.Value.ten ? "" : " ")\(card.value.display)")
                 .font(.caption)
@@ -66,6 +60,13 @@ struct CardView: View {
                 .font(.caption2)
         }
         .padding(6)
+    }
+    
+    private var pips: some View {
+        Text("\(card.value.display)\(card.suit.symbol)")
+            .bold()
+            .font(.title2)
+            .foregroundStyle(card.suit.color)
     }
 }
 
