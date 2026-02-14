@@ -57,7 +57,7 @@ struct DeckView: View {
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
             // Opponent (facedown)
-            VStack(alignment: .center, spacing: 6) {
+            VStack(alignment: .center, spacing: 10) {
                 Text("Opponent")
                     .font(.headline)
                     .padding(.leading)
@@ -117,7 +117,7 @@ struct DeckView: View {
 
             Spacer()
             // User hand (selectable)
-            VStack(alignment: .center, spacing: 6) {
+            VStack(alignment: .center, spacing: 10) {
                 Text("You")
                     .font(.headline)
                     .padding(.leading)
