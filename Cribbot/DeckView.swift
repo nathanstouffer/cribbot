@@ -85,12 +85,13 @@ struct DeckView: View {
 
                 if oppCards.count == 6 {
                     let totalWidth = cardWidth + overlap * CGFloat(max(0, oppCards.count - 1))
+                    let mid = CGFloat(oppCards.count - 1) / 2.0
                     HStack {
                         Spacer()
-                        ZStack(alignment: .leading) {
+                        ZStack { // centered
                             ForEach(oppCards.indices, id: \.self) { idx in
                                 deckBack
-                                    .offset(x: CGFloat(idx) * overlap)
+                                    .offset(x: (CGFloat(idx) - mid) * overlap)
                                     .zIndex(Double(idx))
                             }
                         }
@@ -227,13 +228,14 @@ struct DeckView: View {
 
                         HStack {
                             Spacer()
-                            ZStack(alignment: .leading) {
+                            let mid = CGFloat(userCards.count - 1) / 2.0
+                            ZStack { // centered
                                 ForEach(userCards.indices, id: \.self) { idx in
                                     let card = userCards[idx]
                                     CardView(card: card,
                                              isSelected: selectionManager.isSelected(card),
                                              onToggle: { if !cribLocked { selectionManager.toggle(card) } })
-                                    .offset(x: CGFloat(idx) * overlap, y: selectionManager.isSelected(card) ? -12 : 0)
+                                    .offset(x: (CGFloat(idx) - mid) * overlap, y: selectionManager.isSelected(card) ? -12 : 0)
                                     .zIndex(Double(idx))
                                 }
                             }
