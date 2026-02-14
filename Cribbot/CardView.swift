@@ -12,27 +12,19 @@ struct CardView: View {
     var card: Card
     var isSelected: Bool = false
     var onToggle: (() -> Void)? = nil
-
+    
     var body: some View {
         Button(action: { onToggle?() }) {
             ZStack {
                 RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
                     .fill(Color.white)
-                    .shadow(color: Color.black.opacity(0.5), radius: 10, x: 0, y: 10)
+                    .shadow(color: Color.black.opacity(0.5), radius: 10, x: 0, y: 0)
 
                 // Corner indicators and center label
                 VStack {
                     HStack {
                         // Top-left indicator
-                        VStack(alignment: .leading, spacing: 0) {
-                            Text(" \(card.value.display)")
-                                .font(.caption)
-                                .bold()
-                                .foregroundColor(card.suit.color)
-                            Text(card.suit.symbol)
-                                .font(.caption2)
-                        }
-                        .padding(6)
+                        indicator
                         Spacer()
                     }
 
@@ -41,16 +33,8 @@ struct CardView: View {
                     HStack {
                         Spacer()
                         // Bottom-right indicator (rotated for realism)
-                        VStack(alignment: .leading, spacing: 0) {
-                            Text(" \(card.value.display)")
-                                .font(.caption)
-                                .bold()
-                                .foregroundColor(card.suit.color)
-                            Text(card.suit.symbol)
-                                .font(.caption2)
-                        }
+                        indicator
                         .rotationEffect(Angle(degrees: 180))
-                        .padding(6)
                     }
                 }
 
@@ -70,6 +54,18 @@ struct CardView: View {
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(card.value.display) of \(String(describing: card.suit))")
+    }
+    
+    private var indicator: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("\(card.value == Card.Value.ten ? "" : " ")\(card.value.display)")
+                .font(.caption)
+                .bold()
+                .foregroundColor(card.suit.color)
+            Text(card.suit.symbol)
+                .font(.caption2)
+        }
+        .padding(6)
     }
 }
 
