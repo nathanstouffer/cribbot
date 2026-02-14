@@ -41,6 +41,8 @@ struct DeckView: View {
     @State private var deckModel: Deck = Deck(shuffled: false)
     @State private var playerHands: [[Card]] = Array(repeating: [], count: 2)
     private let playersCount: Int = 2
+    @State private var crib: [Card] = []
+    @State private var cribLocked: Bool = false
 
     @StateObject private var selectionManager = SelectionManager()
 
@@ -98,10 +100,9 @@ struct DeckView: View {
                             }
                         }
 
-                        // Select the user's hand (player 1)
-                        if playerHands.indices.contains(1) {
-                            selectionManager.select(playerHands[1])
-                        }
+                        // reset crib and selection state
+                        crib.removeAll()
+                        cribLocked = false
                     }
                     .buttonStyle(.borderedProminent)
 
@@ -109,6 +110,8 @@ struct DeckView: View {
                         deckModel = Deck(shuffled: false)
                         for i in 0..<playersCount { playerHands[i].removeAll() }
                         selectionManager.clear()
+                        crib.removeAll()
+                        cribLocked = false
                     }
                 }
                 Spacer()
@@ -121,13 +124,61 @@ struct DeckView: View {
                 Text("You")
                     .font(.headline)
                     .padding(.leading)
+                // confirm crib selection button
+                HStack {
+                    Button("Confirm Crib") {
+                        // only proceed if exactly two selected
+                        let selected = Array(selectionManager.selected)
+                        guard selected.count == 2 else { return }
+
+                        // remove selected from user's hand
+                        for card in selected {
+                            if let idx = playerHands[1].firstIndex(of: card) {
+                                playerHands[1].remove(at: idx)
+                            }
+                        }
+
+                        // add to crib
+                        crib.append(contentsOf: selected)
+
+                        // lock further selection from user
+                        cribLocked = true
+
+                        // opponent (player 0) randomly selects two cards to throw to crib
+                        if playerHands.indices.contains(0) {
+                            let opponentPool = playerHands[0]
+                            let toThrow = Array(opponentPool.shuffled().prefix(2))
+                            for card in toThrow {
+                                if let idx = playerHands[0].firstIndex(of: card) {
+                                    playerHands[0].remove(at: idx)
+                                    crib.append(card)
+                                }
+                            }
+                        }
+
+                        // clear selection manager (user selections removed)
+                        selectionManager.clear()
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(selectionManager.selected.count != 2 || cribLocked)
+
+                    Spacer()
+
+                    // show crib contents
+                    HStack(spacing: 8) {
+                        Text("Crib:")
+                        ForEach(crib.indices, id: \.self) { i in
+                            CardView(card: crib[i], isSelected: false, onToggle: nil)
+                        }
+                    }
+                }
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 12) {
                         ForEach(playerHands.indices.contains(1) ? playerHands[1].indices : [].indices, id: \.self) { cardIdx in
                             let card = playerHands[1][cardIdx]
                             CardView(card: card,
                                      isSelected: selectionManager.isSelected(card),
-                                     onToggle: { selectionManager.toggle(card) })
+                                     onToggle: { if !cribLocked { selectionManager.toggle(card) } })
                         }
                     }
                     .padding(.horizontal)
@@ -139,9 +190,9 @@ struct DeckView: View {
         .onAppear {
             // initialize player hands storage
             playerHands = Array(repeating: [], count: playersCount)
-            // default validator: allow selecting up to 6 cards
+            // default validator: allow selecting up to 2 cards for crib
             selectionManager.validate = { current, card in
-                current.contains(card) || current.count < 6
+                current.contains(card) || current.count < 2
             }
         }
     }
