@@ -119,59 +119,58 @@ struct DeckView: View {
             .padding(.horizontal)
 
             Spacer()
+            
+            HStack(spacing: 8) {
+                ForEach(crib.indices, id: \.self) { i in
+                    CardView(card: crib[i], isSelected: false, onToggle: nil)
+                }
+            }
+            
+            Spacer()
+            
             // User hand (selectable)
             VStack(alignment: .center, spacing: 10) {
+                Button("Confirm Crib") {
+                    // only proceed if exactly two selected
+                    let selected = Array(selectionManager.selected)
+                    guard selected.count == 2 else { return }
+
+                    // remove selected from user's hand
+                    for card in selected {
+                        if let idx = playerHands[1].firstIndex(of: card) {
+                            playerHands[1].remove(at: idx)
+                        }
+                    }
+
+                    // add to crib
+                    crib.append(contentsOf: selected)
+
+                    // lock further selection from user
+                    cribLocked = true
+
+                    // opponent (player 0) randomly selects two cards to throw to crib
+                    if playerHands.indices.contains(0) {
+                        let opponentPool = playerHands[0]
+                        let toThrow = Array(opponentPool.shuffled().prefix(2))
+                        for card in toThrow {
+                            if let idx = playerHands[0].firstIndex(of: card) {
+                                playerHands[0].remove(at: idx)
+                                crib.append(card)
+                            }
+                        }
+                    }
+
+                    // clear selection manager (user selections removed)
+                    selectionManager.clear()
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(selectionManager.selected.count != 2 || cribLocked)
+                
                 Text("You")
                     .font(.headline)
                     .padding(.leading)
                 // confirm crib selection button
-                HStack {
-                    Button("Confirm Crib") {
-                        // only proceed if exactly two selected
-                        let selected = Array(selectionManager.selected)
-                        guard selected.count == 2 else { return }
-
-                        // remove selected from user's hand
-                        for card in selected {
-                            if let idx = playerHands[1].firstIndex(of: card) {
-                                playerHands[1].remove(at: idx)
-                            }
-                        }
-
-                        // add to crib
-                        crib.append(contentsOf: selected)
-
-                        // lock further selection from user
-                        cribLocked = true
-
-                        // opponent (player 0) randomly selects two cards to throw to crib
-                        if playerHands.indices.contains(0) {
-                            let opponentPool = playerHands[0]
-                            let toThrow = Array(opponentPool.shuffled().prefix(2))
-                            for card in toThrow {
-                                if let idx = playerHands[0].firstIndex(of: card) {
-                                    playerHands[0].remove(at: idx)
-                                    crib.append(card)
-                                }
-                            }
-                        }
-
-                        // clear selection manager (user selections removed)
-                        selectionManager.clear()
-                    }
-                    .buttonStyle(.bordered)
-                    .disabled(selectionManager.selected.count != 2 || cribLocked)
-
-                    Spacer()
-
                     // show crib contents
-                    HStack(spacing: 8) {
-                        Text("Crib:")
-                        ForEach(crib.indices, id: \.self) { i in
-                            CardView(card: crib[i], isSelected: false, onToggle: nil)
-                        }
-                    }
-                }
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 12) {
                         ForEach(playerHands.indices.contains(1) ? playerHands[1].indices : [].indices, id: \.self) { cardIdx in
