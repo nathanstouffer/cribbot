@@ -18,7 +18,6 @@ struct CardView: View {
             ZStack {
                 RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
                     .fill(Color.white)
-                    .frame(width: 80, height: 120)
                     .shadow(color: Color.black.opacity(0.5), radius: 10, x: 0, y: 10)
 
                 // Corner indicators and center label
@@ -64,6 +63,7 @@ struct CardView: View {
                 RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
                     .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 4)
             )
+            .frame(width: 80, height: 120)
             .scaleEffect(isSelected ? 1.06 : 1.0)
             .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
         }
