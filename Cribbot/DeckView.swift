@@ -75,9 +75,6 @@ struct DeckView: View {
         VStack(alignment: .center, spacing: 16) {
             // Opponent (facedown)
             VStack(alignment: .center, spacing: 10) {
-                Text("Opponent")
-                    .font(.headline)
-                    .padding(.leading)
                 // opponent layout matches player: overlapping when 6, row when 4, otherwise horizontal scroll
                 let oppCards = playerHands.indices.contains(0) ? playerHands[0] : []
                 let cardWidth: CGFloat = 80
@@ -176,8 +173,8 @@ struct DeckView: View {
             Spacer()
             
             // User hand (selectable)
-            VStack(alignment: .center, spacing: 10) {
-                Button("Confirm Crib") {
+            VStack(alignment: .center, spacing: 30) {
+                Button("Throw") {
                     // only proceed if exactly two selected
                     let selected = Array(selectionManager.selected)
                     guard selected.count == 2 else { return }
@@ -212,10 +209,6 @@ struct DeckView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(selectionManager.selected.count != 2 || cribLocked)
-                
-                Text("You")
-                    .font(.headline)
-                    .padding(.leading)
 
                 // layout: grid when 6 cards, single row when 4 (otherwise horizontal scroll)
                 let userCards = playerHands.indices.contains(1) ? playerHands[1] : []

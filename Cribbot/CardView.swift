@@ -14,7 +14,6 @@ struct CardView: View {
     var onToggle: (() -> Void)? = nil
     
     var body: some View {
-        Button(action: { onToggle?() }) {
             ZStack {
                 RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
                     .fill(Color.white)
@@ -25,10 +24,10 @@ struct CardView: View {
             .frame(width: 80, height: 120)
             .offset(y: isSelected ? -12 : 0)
             .animation(.spring(response: 0.28, dampingFraction: 0.7), value: isSelected)
-        }
-        .buttonStyle(.plain)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(card.rank.display) of \(String(describing: card.suit))")
+            .onTapGesture { onToggle?() }
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel("\(card.rank.display) of \(String(describing: card.suit))")
     }
     
     private var indexes: some View {
