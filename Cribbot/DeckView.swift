@@ -1,33 +1,46 @@
 import SwiftUI
 
 final class SelectionManager: ObservableObject {
-    @Published private(set) var selected: Set<Card> = []
+    @Published private(set) var selected: [Card] = []
 
     /// Optional validator: return true to allow toggling/selecting the card
-    var validate: (Set<Card>, Card) -> Bool = { _, _ in true }
+    var validate: ([Card], Card) -> Bool = { _, _ in true }
+
+    /// Maximum number of selected cards to keep; when exceeded, oldest is evicted.
+    var maxSelected: Int = 2
 
     func isSelected(_ card: Card) -> Bool {
         selected.contains(card)
     }
 
     func toggle(_ card: Card) {
-        if isSelected(card) {
-            selected.remove(card)
+        if let idx = selected.firstIndex(of: card) {
+            selected.remove(at: idx)
         } else {
             if validate(selected, card) {
-                selected.insert(card)
+                if selected.count >= maxSelected {
+                    selected.removeFirst()
+                }
+                selected.append(card)
             }
         }
     }
 
     func select(_ cards: [Card]) {
         for card in cards where validate(selected, card) {
-            selected.insert(card)
+            if !selected.contains(card) {
+                if selected.count >= maxSelected {
+                    selected.removeFirst()
+                }
+                selected.append(card)
+            }
         }
     }
 
     func deselect(_ card: Card) {
-        selected.remove(card)
+        if let idx = selected.firstIndex(of: card) {
+            selected.remove(at: idx)
+        }
     }
 
     func clear() {
@@ -63,13 +76,32 @@ struct DeckView: View {
                 Text("Opponent")
                     .font(.headline)
                     .padding(.leading)
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(playerHands.indices.contains(0) ? playerHands[0].indices : [].indices, id: \.self) { _ in
+                // opponent layout matches player: grid when 6, row when 4, otherwise horizontal scroll
+                let oppCards = playerHands.indices.contains(0) ? playerHands[0] : []
+
+                if oppCards.count == 6 {
+                    LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 6), count: 3), spacing: 6) {
+                        ForEach(oppCards.indices, id: \.self) { _ in
                             deckBack
                         }
                     }
                     .padding(.horizontal)
+                } else if oppCards.count == 4 {
+                    HStack(spacing: 8) {
+                        ForEach(oppCards.indices, id: \.self) { _ in
+                            deckBack
+                        }
+                    }
+                    .padding(.horizontal)
+                } else {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            ForEach(oppCards.indices, id: \.self) { _ in
+                                deckBack
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
                 }
             }
             
@@ -174,8 +206,8 @@ struct DeckView: View {
                 let userCards = playerHands.indices.contains(1) ? playerHands[1] : []
 
                 if userCards.count == 6 {
-                    // 2 rows x 3 columns grid
-                    LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 12), count: 3), spacing: 12) {
+                    // 2 rows x 3 columns grid (tighter spacing)
+                    LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 6), count: 3), spacing: 6) {
                         ForEach(userCards.indices, id: \.self) { idx in
                             let card = userCards[idx]
                             CardView(card: card,
@@ -185,7 +217,7 @@ struct DeckView: View {
                     }
                     .padding(.horizontal)
                 } else if userCards.count == 4 {
-                    HStack(spacing: 12) {
+                    HStack(spacing: 8) {
                         ForEach(userCards.indices, id: \.self) { idx in
                             let card = userCards[idx]
                             CardView(card: card,
@@ -196,7 +228,7 @@ struct DeckView: View {
                     .padding(.horizontal)
                 } else {
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 12) {
+                        HStack(spacing: 8) {
                             ForEach(userCards.indices, id: \.self) { idx in
                                 let card = userCards[idx]
                                 CardView(card: card,
@@ -214,10 +246,8 @@ struct DeckView: View {
         .onAppear {
             // initialize player hands storage
             playerHands = Array(repeating: [], count: playersCount)
-            // default validator: allow selecting up to 2 cards for crib
-            selectionManager.validate = { current, card in
-                current.contains(card) || current.count < 2
-            }
+            // allow any selection; SelectionManager will keep the most-recent two
+            selectionManager.validate = { _, _ in true }
         }
     }
 }
