@@ -159,6 +159,13 @@ struct DeckView: View {
                     }
                 }
                 Spacer()
+                VStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(.white)
+                        .frame(width: 90, height: 130)
+                    Text("Crib")
+                        .foregroundStyle(.secondary)
+                }
             }
             .padding(.horizontal)
 
