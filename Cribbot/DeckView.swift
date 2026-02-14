@@ -61,10 +61,12 @@ struct DeckView: View {
 
     private var deckBack: some View {
         ZStack {
-            RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
-                .fill(LinearGradient(colors: [.red, .red], startPoint: .topLeading, endPoint: .bottomTrailing))
-                .opacity(0.75)
+            RoundedRectangle(cornerRadius: 10)
+                .fill(.white)
                 .frame(width: 80, height: 120)
+            RoundedRectangle(cornerRadius: 5)
+                .fill(LinearGradient(colors: [.orange, .orange], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .frame(width: 72, height: 112)
                 .shadow(radius: 4)
         }
     }
@@ -232,7 +234,7 @@ struct DeckView: View {
                                              isSelected: selectionManager.isSelected(card),
                                              onToggle: { if !cribLocked { selectionManager.toggle(card) } })
                                     .offset(x: CGFloat(idx) * overlap, y: selectionManager.isSelected(card) ? -12 : 0)
-                                    .zIndex(selectionManager.isSelected(card) ? 100 + Double(idx) : Double(idx))
+                                    .zIndex(Double(idx))
                                 }
                             }
                             .frame(width: totalWidth, height: 140)
