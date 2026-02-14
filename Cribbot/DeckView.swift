@@ -76,21 +76,33 @@ struct DeckView: View {
                 Text("Opponent")
                     .font(.headline)
                     .padding(.leading)
-                // opponent layout matches player: grid when 6, row when 4, otherwise horizontal scroll
+                // opponent layout matches player: overlapping when 6, row when 4, otherwise horizontal scroll
                 let oppCards = playerHands.indices.contains(0) ? playerHands[0] : []
+                let cardWidth: CGFloat = 80
+                let overlap: CGFloat = 52
 
                 if oppCards.count == 6 {
-                    LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 6), count: 3), spacing: 6) {
-                        ForEach(oppCards.indices, id: \.self) { _ in
-                            deckBack
+                    let totalWidth = cardWidth + overlap * CGFloat(max(0, oppCards.count - 1))
+                    HStack {
+                        Spacer()
+                        ZStack(alignment: .leading) {
+                            ForEach(oppCards.indices, id: \.self) { idx in
+                                deckBack
+                                    .offset(x: CGFloat(idx) * overlap)
+                                    .zIndex(Double(idx))
+                            }
                         }
+                        .frame(width: totalWidth, height: 140)
+                        Spacer()
                     }
                     .padding(.horizontal)
                 } else if oppCards.count == 4 {
                     HStack(spacing: 8) {
+                        Spacer()
                         ForEach(oppCards.indices, id: \.self) { _ in
                             deckBack
                         }
+                        Spacer()
                     }
                     .padding(.horizontal)
                 } else {
@@ -205,18 +217,29 @@ struct DeckView: View {
                 // layout: grid when 6 cards, single row when 4 (otherwise horizontal scroll)
                 let userCards = playerHands.indices.contains(1) ? playerHands[1] : []
 
-                if userCards.count == 6 {
-                    // 2 rows x 3 columns grid (tighter spacing)
-                    LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 6), count: 3), spacing: 6) {
-                        ForEach(userCards.indices, id: \.self) { idx in
-                            let card = userCards[idx]
-                            CardView(card: card,
-                                     isSelected: selectionManager.isSelected(card),
-                                     onToggle: { if !cribLocked { selectionManager.toggle(card) } })
+                    if userCards.count == 6 {
+                        // overlapping left-to-right layout for experimentation (centered)
+                        let cardWidth: CGFloat = 80
+                        let overlap: CGFloat = 52
+                        let totalWidth = cardWidth + overlap * CGFloat(max(0, userCards.count - 1))
+
+                        HStack {
+                            Spacer()
+                            ZStack(alignment: .leading) {
+                                ForEach(userCards.indices, id: \.self) { idx in
+                                    let card = userCards[idx]
+                                    CardView(card: card,
+                                             isSelected: selectionManager.isSelected(card),
+                                             onToggle: { if !cribLocked { selectionManager.toggle(card) } })
+                                    .offset(x: CGFloat(idx) * overlap, y: selectionManager.isSelected(card) ? -12 : 0)
+                                    .zIndex(selectionManager.isSelected(card) ? 100 + Double(idx) : Double(idx))
+                                }
+                            }
+                            .frame(width: totalWidth, height: 140)
+                            Spacer()
                         }
-                    }
-                    .padding(.horizontal)
-                } else if userCards.count == 4 {
+                        .padding(.horizontal)
+                    } else if userCards.count == 4 {
                     HStack(spacing: 8) {
                         ForEach(userCards.indices, id: \.self) { idx in
                             let card = userCards[idx]

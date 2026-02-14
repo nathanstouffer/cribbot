@@ -22,13 +22,9 @@ struct CardView: View {
                 indexes
                 pips
             }
-            .overlay(
-                RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
-                    .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 4)
-            )
             .frame(width: 80, height: 120)
-            .scaleEffect(isSelected ? 1.06 : 1.0)
-            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
+            .offset(y: isSelected ? -12 : 0)
+            .animation(.spring(response: 0.28, dampingFraction: 0.7), value: isSelected)
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
