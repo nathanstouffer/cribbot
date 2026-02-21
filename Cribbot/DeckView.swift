@@ -121,40 +121,18 @@ struct DeckView: View {
 
             // Deck and controls
             HStack(spacing: 12) {
-                VStack(spacing: 8) {
-                    deckBack
-                        .overlay(Text("\(deckModel.count)").foregroundStyle(.white).bold().offset(x: 0, y: 40))
-                }
-
-                VStack(spacing: 8) {
-                    Button("Deal") {
-                        // Shuffle whole deck and deal 6 to each player in round-robin
-                        deckModel.shuffle()
-                        // clear previous hands and selection
-                        for i in 0..<playersCount { playerHands[i].removeAll() }
-                        selectionManager.clear()
-
-                        for _ in 0..<6 {
-                            for playerIdx in 0..<playersCount {
-                                if let card = deckModel.deal(1)?.first {
-                                    playerHands[playerIdx].append(card)
-                                }
-                            }
+                VStack {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(.white)
+                            .frame(width: 90, height: 130)
+                        VStack(spacing: 8) {
+                            deckBack
+                                .overlay(Text("\(deckModel.count)").foregroundStyle(.white).bold().offset(x: 0, y: 40))
                         }
-
-                        // reset crib and selection state
-                        crib.removeAll()
-                        cribLocked = false
                     }
-                    .buttonStyle(.borderedProminent)
-
-                    Button("Reset") {
-                        deckModel = Deck(shuffled: false)
-                        for i in 0..<playersCount { playerHands[i].removeAll() }
-                        selectionManager.clear()
-                        crib.removeAll()
-                        cribLocked = false
-                    }
+                    Text("Deck")
+                        .foregroundStyle(.secondary)
                 }
                 Spacer()
                 VStack {
@@ -181,6 +159,38 @@ struct DeckView: View {
                 }
             }
             .padding(.horizontal)
+            
+            HStack(spacing: 100) {
+                Button("Deal") {
+                    // Shuffle whole deck and deal 6 to each player in round-robin
+                    deckModel.shuffle()
+                    // clear previous hands and selection
+                    for i in 0..<playersCount { playerHands[i].removeAll() }
+                    selectionManager.clear()
+
+                    for _ in 0..<6 {
+                        for playerIdx in 0..<playersCount {
+                            if let card = deckModel.deal(1)?.first {
+                                playerHands[playerIdx].append(card)
+                            }
+                        }
+                    }
+
+                    // reset crib and selection state
+                    crib.removeAll()
+                    cribLocked = false
+                }
+                .buttonStyle(.borderedProminent)
+                
+                Button("Reset") {
+                    deckModel = Deck(shuffled: false)
+                    for i in 0..<playersCount { playerHands[i].removeAll() }
+                    selectionManager.clear()
+                    crib.removeAll()
+                    cribLocked = false
+                }
+                .buttonStyle(.borderedProminent)
+            }
             
             Spacer()
             
