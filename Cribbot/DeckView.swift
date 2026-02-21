@@ -73,6 +73,7 @@ struct DeckView: View {
     @State private var playerHands: [[Card]] = Array(repeating: [], count: 2)
     private let playersCount: Int = 2
     @State private var crib: [Card] = []
+    @State private var flippedCard: Card? = nil
     @State private var cribLocked: Bool = false
 
     @StateObject private var selectionManager = SelectionManager()
@@ -148,7 +149,11 @@ struct DeckView: View {
                 }
                 Spacer()
                 SlotView(text: "Flip") {
-                    EmptyView()
+                    if let card = flippedCard {
+                        CardView(card: card, isSelected: false, onToggle: nil)
+                    } else {
+                        EmptyView()
+                    }
                 }
                 Spacer()
                 SlotView(text: "Crib") {
@@ -178,6 +183,7 @@ struct DeckView: View {
                     // reset crib and selection state
                     crib.removeAll()
                     cribLocked = false
+                    flippedCard = nil
                 }
                 .buttonStyle(.borderedProminent)
                 
@@ -187,6 +193,7 @@ struct DeckView: View {
                     selectionManager.clear()
                     crib.removeAll()
                     cribLocked = false
+                    flippedCard = nil
                 }
                 .buttonStyle(.borderedProminent)
             }
@@ -227,6 +234,9 @@ struct DeckView: View {
 
                     // clear selection manager (user selections removed)
                     selectionManager.clear()
+
+                    // flip the top card of the deck
+                    flippedCard = deckModel.deal(1)?.first
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(selectionManager.selected.count != 2 || cribLocked)
