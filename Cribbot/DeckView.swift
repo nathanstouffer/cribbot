@@ -48,6 +48,24 @@ final class SelectionManager: ObservableObject {
     }
 }
 
+struct SlotView<Content: View>: View {
+    let text: String
+    @ViewBuilder let content: () -> Content
+    
+    var body: some View {
+        VStack {
+            ZStack {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(.white)
+                    .frame(width: 90, height: 130)
+                content()
+            }
+            Text(text)
+                .foregroundStyle(.secondary)
+        }
+    }
+}
+
 struct DeckView: View {
 
     // Deck model
@@ -59,6 +77,7 @@ struct DeckView: View {
 
     @StateObject private var selectionManager = SelectionManager()
 
+    // TODO (stouff) this should probably be its own file (or maybe part of CardView?)
     private var deckBack: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 10)
@@ -70,7 +89,7 @@ struct DeckView: View {
                 .shadow(radius: 4)
         }
     }
-
+    
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
             // Opponent (facedown)
@@ -121,41 +140,21 @@ struct DeckView: View {
 
             // Deck and controls
             HStack(spacing: 12) {
-                VStack {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(.white)
-                            .frame(width: 90, height: 130)
-                        VStack(spacing: 8) {
-                            deckBack
-                                .overlay(Text("\(deckModel.count)").foregroundStyle(.white).bold().offset(x: 0, y: 40))
-                        }
+                SlotView(text: "Deck") {
+                    VStack(spacing: 8) {
+                        deckBack
+                            .overlay(Text("\(deckModel.count)").foregroundStyle(.white).bold().offset(x: 0, y: 40))
                     }
-                    Text("Deck")
-                        .foregroundStyle(.secondary)
                 }
                 Spacer()
-                VStack {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(.white)
-                            .frame(width: 90, height: 130)
-                    }
-                    Text("Flip")
-                        .foregroundStyle(.secondary)
+                SlotView(text: "Flip") {
+                    EmptyView()
                 }
                 Spacer()
-                VStack {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(.white)
-                            .frame(width: 90, height: 130)
-                        ForEach(crib.indices, id: \.self) { i in
-                            CardView(card: crib[i], isSelected: false, onToggle: nil)
-                        }
+                SlotView(text: "Crib") {
+                    ForEach(crib.indices, id: \.self) { i in
+                        CardView(card: crib[i], isSelected: false, onToggle: nil)
                     }
-                    Text("Crib")
-                        .foregroundStyle(.secondary)
                 }
             }
             .padding(.horizontal)
@@ -297,4 +296,3 @@ struct DeckView: View {
 #Preview {
     DeckView()
 }
-
