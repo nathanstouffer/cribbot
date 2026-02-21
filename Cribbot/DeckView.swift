@@ -158,22 +158,29 @@ struct DeckView: View {
                 }
                 Spacer()
                 VStack {
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(.white)
-                        .frame(width: 90, height: 130)
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(.white)
+                            .frame(width: 90, height: 130)
+                    }
+                    Text("Flip")
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                VStack {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(.white)
+                            .frame(width: 90, height: 130)
+                        ForEach(crib.indices, id: \.self) { i in
+                            CardView(card: crib[i], isSelected: false, onToggle: nil)
+                        }
+                    }
                     Text("Crib")
                         .foregroundStyle(.secondary)
                 }
             }
             .padding(.horizontal)
-
-            Spacer()
-            
-            HStack(spacing: 8) {
-                ForEach(crib.indices, id: \.self) { i in
-                    CardView(card: crib[i], isSelected: false, onToggle: nil)
-                }
-            }
             
             Spacer()
             
