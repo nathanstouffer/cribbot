@@ -124,8 +124,6 @@ struct DeckView: View {
                 VStack(spacing: 8) {
                     deckBack
                         .overlay(Text("\(deckModel.count)").foregroundStyle(.white).bold().offset(x: 0, y: 40))
-                    Text("Remaining: \(deckModel.count)")
-                        .foregroundStyle(.secondary)
                 }
 
                 VStack(spacing: 8) {
