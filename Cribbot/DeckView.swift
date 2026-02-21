@@ -57,7 +57,7 @@ struct SlotView<Content: View>: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(.white)
-                    .frame(width: 90, height: 130)
+                    .frame(width: 93, height: 133)
                 content()
             }
             Text(text)
