@@ -1,10 +1,3 @@
-//
-//  CribbotApp.swift
-//  Cribbot
-//
-//  Created by Nathan Stouffer on 2/6/26.
-//
-
 import SwiftUI
 
 @main

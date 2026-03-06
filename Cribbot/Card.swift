@@ -1,10 +1,3 @@
-//
-//  Card.swift
-//  Cribbot
-//
-//  Created by Nathan Stouffer on 2/8/26.
-//
-
 import Foundation
 import SwiftUI
 

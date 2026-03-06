@@ -1,10 +1,3 @@
-//
-//  Deck.swift
-//  Cribbot
-//
-//  Created by GitHub Copilot on 2/8/26.
-//
-
 import Foundation
 
 /// A simple deck model that owns an ordered array of `Card` values
