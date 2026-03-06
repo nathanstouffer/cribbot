@@ -69,6 +69,7 @@ struct SlotView<Content: View>: View {
 struct DeckView: View {
 
     // Deck model
+    // TODO (stouff) probably put all this state stuff in the model
     @State private var deckModel: Deck = Deck(shuffled: false)
     @State private var playerHands: [[Card]] = Array(repeating: [], count: 2)
     private let playersCount: Int = 2
