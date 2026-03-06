@@ -25,7 +25,7 @@ jobs:
       - name: Run swift-format (may modify files)
         run: |
           set -o pipefail
-          # format files in-place; CI will fail if git diff is non-empty
+          # format files in-place; subsequent step will fail if git diff is non-empty
           swift-format format --in-place .
 
       - name: Fail if formatting changed
