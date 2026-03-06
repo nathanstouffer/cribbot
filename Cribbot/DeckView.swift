@@ -159,7 +159,7 @@ struct DeckView: View {
                 Spacer()
                 SlotView(text: "Crib") {
                     ForEach(crib.indices, id: \.self) { i in
-                        CardView(card: crib[i], isSelected: false, onToggle: nil)
+                        deckBack
                     }
                 }
             }
