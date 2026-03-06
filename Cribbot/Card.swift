@@ -1,5 +1,5 @@
 import Foundation
-import SwiftUI
+import SwiftUI  // only imported to easily assign color to the suit
 
 struct Card: Hashable {
     
