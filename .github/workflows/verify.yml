@@ -26,7 +26,7 @@ jobs:
         run: |
           set -o pipefail
           # format files in-place; subsequent step will fail if git diff is non-empty
-          swift-format format --in-place .
+          swift-format format --in-place --recursive .
 
       - name: Fail if formatting changed
         run: |
