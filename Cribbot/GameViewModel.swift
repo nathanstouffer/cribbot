@@ -1,7 +1,7 @@
 import Foundation
 
 class GameViewModel {
-    
-    var game: GameModel
-    
+
+  //var game: GameModel
+
 }
