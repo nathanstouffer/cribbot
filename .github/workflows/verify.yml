@@ -1,0 +1,34 @@
+name: verify
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  format:
+    name: formatting
+    runs-on: macos-latest
+    env:
+      LANG: en_US.UTF-8
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install swift-format (Apple)
+        run: |
+          brew update
+          brew install swift-format
+
+      - name: Run swift-format (may modify files)
+        run: |
+          set -o pipefail
+          # format files in-place; CI will fail if git diff is non-empty
+          swift-format format --in-place .
+
+      - name: Fail if formatting changed
+        run: |
+          git --no-pager diff --exit-code
+        shell: bash
