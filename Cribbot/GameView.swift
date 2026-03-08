@@ -39,9 +39,35 @@ struct GameView: View {
       }
     }
   }
-  
+
   var tray: some View {
-    CardView.back()
+    // Deck and controls
+    HStack(spacing: 12) {
+      TrayStackView(text: "Deck") {
+        VStack(spacing: 8) {
+          CardView.back()
+            .overlay(
+              Text("\(game.deck.count)").foregroundStyle(.white).bold().offset(x: 0, y: 40))
+        }
+      }
+      Spacer()
+      TrayStackView(text: "Flip") {
+        if let card = game.flippedCard {
+          CardView(card: card, isSelected: false, onToggle: nil)
+        } else {
+          EmptyView()
+        }
+      }
+      Spacer()
+      TrayStackView(text: "Crib") {
+        if game.crib.isEmpty {
+          EmptyView()
+        } else {
+          CardView.back()
+        }
+      }
+    }
+    .padding(.horizontal)
   }
   
   var computerHand: some View {
@@ -56,6 +82,24 @@ struct GameView: View {
     Rectangle()
       .fill(.green)
       .ignoresSafeArea()
+  }
+}
+
+struct TrayStackView<Content: View>: View {
+  let text: String
+  @ViewBuilder let content: () -> Content
+
+  var body: some View {
+    VStack {
+      ZStack {
+        RoundedRectangle(cornerRadius: 10)
+          .stroke(.white)
+          .frame(width: 93, height: 133)
+        content()
+      }
+      Text(text)
+        .foregroundStyle(.secondary)
+    }
   }
 }
 

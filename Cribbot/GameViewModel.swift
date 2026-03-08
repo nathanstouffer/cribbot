@@ -7,5 +7,13 @@ class GameViewModel: ObservableObject {
   var deck: Array<Card> {
     return game.deck
   }
+  
+  var flippedCard: Card? {
+    return game.flippedCard
+  }
+  
+  var crib: Array<Card> {
+    return game.crib
+  }
 
 }

@@ -8,7 +8,7 @@ struct GameModel {
   // TODO (stouff) add some sort of tracking of who is first
 
   private(set) var deck = Card.fullDeckByRank
-  private(set) var flipped: Card? = nil
+  private(set) var flippedCard: Card? = nil
   private(set) var crib: [Card] = []
 
   func shuffleAndDeal() {
