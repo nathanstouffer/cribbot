@@ -51,6 +51,8 @@ struct GameModel {
     if stagedForCrib.count == 2 {
       crib.append(stagedForCrib[0])
       crib.append(stagedForCrib[1])
+      human.hand.cards.removeAll(where: { $0 == stagedForCrib[0] })
+      human.hand.cards.removeAll(where: { $0 == stagedForCrib[1] })
       stagedForCrib = []
       crib.append(computer.hand.cards[0])
       crib.append(computer.hand.cards[1])

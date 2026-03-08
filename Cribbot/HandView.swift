@@ -23,6 +23,9 @@ struct HandView: View {
           CardView(card: cards[i], isFaceUp: isFaceUp)
             .offset(x: (CGFloat(i) - mid) * overlap)
             .zIndex(Double(i))
+            .onTapGesture {
+              game.stageForCrib(cards[i])
+            }
         }
       }
     }
