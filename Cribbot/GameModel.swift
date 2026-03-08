@@ -12,7 +12,7 @@ struct GameModel {
   private(set) var crib: [Card] = []
   private(set) var isCribLocked = false
 
-  private(set) var stagedForCrib: Array<Card> = []
+  private(set) var stagedForCrib: [Card] = []
 
   mutating func resetDeck() {
     deck = Card.fullDeckByRank
@@ -39,7 +39,7 @@ struct GameModel {
     flippedCard = deck[0]
     deck.removeFirst()
   }
-  
+
   mutating func stageForCrib(_ card: Card) {
     if !stagedForCrib.contains(card) {
       stagedForCrib.insert(card, at: 0)
@@ -48,7 +48,7 @@ struct GameModel {
       }
     }
   }
-  
+
   mutating func throwToCrib() {
     if stagedForCrib.count == 2 {
       crib.append(stagedForCrib[0])

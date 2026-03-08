@@ -21,16 +21,16 @@ struct GameView: View {
       }
     }
   }
-  
+
   private var throwButton: some View {
     Button("Throw") {
       if game.stagedForCrib.count == 2 {
         game.throwToCrib()
       }
     }
-      .buttonStyle(.borderedProminent)
-      .disabled(game.stagedForCrib.count != 2 || game.isCribLocked)
-      .padding(20)
+    .buttonStyle(.borderedProminent)
+    .disabled(game.stagedForCrib.count != 2 || game.isCribLocked)
+    .padding(20)
   }
 
   private var background: some View {

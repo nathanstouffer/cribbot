@@ -23,9 +23,9 @@ struct TrayView: View {
       }
 
     }
-    
+
   }
-  
+
   var cardStacks: some View {
     HStack(spacing: 12) {
       deckStack
@@ -36,7 +36,7 @@ struct TrayView: View {
     }
     .padding(.horizontal)
   }
-  
+
   var deckStack: some View {
     StackView(text: "Deck") {
       VStack(spacing: 8) {
@@ -46,7 +46,7 @@ struct TrayView: View {
       }
     }
   }
-  
+
   var flip: some View {
     StackView(text: "Flip") {
       if let card = game.flippedCard {
@@ -56,7 +56,7 @@ struct TrayView: View {
       }
     }
   }
-  
+
   var crib: some View {
     StackView(text: "Crib") {
       if game.crib.isEmpty {
@@ -66,7 +66,7 @@ struct TrayView: View {
       }
     }
   }
-  
+
   struct StackView<Content: View>: View {
     let text: String
     @ViewBuilder let content: () -> Content

@@ -4,7 +4,7 @@ struct CardView: View {
 
   var card: Card
   var isFaceUp = false
-  
+
   var body: some View {
     ZStack {
       front.opacity(isFaceUp ? 1 : 0)
@@ -15,7 +15,7 @@ struct CardView: View {
     .accessibilityAddTraits(.isButton)
     .accessibilityLabel("\(card.rank.display) of \(String(describing: card.suit))")
   }
-  
+
   static func back(shadowRadius: CGFloat = 4) -> some View {
     ZStack {
       RoundedRectangle(cornerRadius: 10)
@@ -30,7 +30,7 @@ struct CardView: View {
         .shadow(radius: shadowRadius)
     }
   }
-  
+
   private var front: some View {
     ZStack {
       RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
@@ -74,9 +74,9 @@ struct CardView: View {
       .font(.title2)
       .foregroundStyle(card.suit.color)
   }
-  
+
   private struct Config {
-    
+
   }
 }
 

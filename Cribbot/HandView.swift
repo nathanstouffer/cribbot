@@ -3,15 +3,15 @@ import SwiftUI
 struct HandView: View {
   @ObservedObject private var game: GameViewModel
 
-  let cards: Array<Card>
+  let cards: [Card]
   let isFaceUp: Bool
-  
-  init(game: GameViewModel, cards: Array<Card>, isFaceUp: Bool) {
+
+  init(game: GameViewModel, cards: [Card], isFaceUp: Bool) {
     self.game = game
     self.cards = cards
     self.isFaceUp = isFaceUp
   }
-  
+
   var sixView: some View {
     HStack {
       ZStack {
@@ -33,7 +33,7 @@ struct HandView: View {
     }
     .padding(.horizontal)
   }
-  
+
   var fourView: some View {
     HStack(spacing: 8) {
       ForEach(cards, id: \.self) { card in
@@ -42,7 +42,7 @@ struct HandView: View {
     }
     .padding(.horizontal)
   }
-  
+
   var scrollView: some View {
     ScrollView(.horizontal, showsIndicators: false) {
       HStack(spacing: 8) {
