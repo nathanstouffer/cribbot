@@ -28,6 +28,6 @@ jobs:
           set -o pipefail
           xcodebuild -project Cribbot.xcodeproj \
             -scheme Cribbot \
-            -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
+            -destination 'generic/platform=iOS Simulator' \
             clean build | xcpretty --no-color
         shell: bash
