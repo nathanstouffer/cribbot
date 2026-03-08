@@ -9,24 +9,6 @@ struct TrayView: View {
   }
 
   var body: some View {
-    VStack {
-      cardStacks
-      HStack(spacing: 100) {
-        Button("Deal") {
-          game.shuffleAndDeal()
-        }
-        .buttonStyle(.borderedProminent)
-        Button("Reset") {
-          game.resetDeck()
-        }
-        .buttonStyle(.borderedProminent)
-      }
-
-    }
-
-  }
-
-  var cardStacks: some View {
     HStack(spacing: 12) {
       deckStack
       Spacer()

@@ -18,9 +18,9 @@ struct HandView: View {
         let overlap: CGFloat = 52
         let mid = CGFloat(cards.count - 1) / 2.0
         ForEach(Array(cards.enumerated()), id: \.element) { i, card in
-          let staged = game.stagedForCrib.contains(card)
+          let isStaged = game.stagedForCrib.contains(card)
           CardView(card, isFaceUp: isFaceUp)
-            .offset(x: (CGFloat(i) - mid) * overlap, y: staged ? -12 : 0)
+            .offset(x: (CGFloat(i) - mid) * overlap, y: isStaged ? -12 : 0)
             .zIndex(Double(i))
             .onTapGesture {
               if isFaceUp {
@@ -33,8 +33,7 @@ struct HandView: View {
             }
         }
       }
-      .animation(.default, value: self.game.stagedForCrib)
-
+      .animation(.default, value: game.stagedForCrib)
     }
     .padding(.horizontal)
   }
@@ -42,9 +41,21 @@ struct HandView: View {
   var fourView: some View {
     HStack(spacing: 8) {
       ForEach(cards) { card in
+        let isStaged = game.stagedForLay != nil && game.stagedForLay!.id == card.id
         CardView(card, isFaceUp: isFaceUp)
+          .offset(x: 0, y: isStaged ? -12 : 0)
+          .onTapGesture {
+            if isFaceUp {
+              if !game.isStagedForLay(card) {
+                game.stageForLay(card)
+              } else {
+                game.unstageForLay(card)
+              }
+            }
+          }
       }
     }
+    .animation(.default, value: game.stagedForLay)
     .padding(.horizontal)
   }
 
