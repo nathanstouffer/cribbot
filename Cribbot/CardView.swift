@@ -3,10 +3,35 @@ import SwiftUI
 struct CardView: View {
 
   var card: Card
-  var isSelected: Bool = false
-  var onToggle: (() -> Void)? = nil
+  var isFaceUp = false
 
   var body: some View {
+    ZStack {
+      front.opacity(isFaceUp ? 1 : 0)
+      CardView.back().opacity(isFaceUp ? 0 : 1)
+    }
+    .frame(width: 80, height: 120)
+    .accessibilityElement(children: .combine)
+    .accessibilityAddTraits(.isButton)
+    .accessibilityLabel("\(card.rank.display) of \(String(describing: card.suit))")
+  }
+
+  static func back(shadowRadius: CGFloat = 4) -> some View {
+    ZStack {
+      RoundedRectangle(cornerRadius: 10)
+        .fill(.white)
+        .frame(width: 80, height: 120)
+      RoundedRectangle(cornerRadius: 5)
+        .fill(
+          LinearGradient(
+            colors: [.orange, .orange], startPoint: .topLeading, endPoint: .bottomTrailing)
+        )
+        .frame(width: 72, height: 112)
+        .shadow(radius: shadowRadius)
+    }
+  }
+
+  private var front: some View {
     ZStack {
       RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
         .fill(Color.white)
@@ -14,13 +39,6 @@ struct CardView: View {
       indexes
       pips
     }
-    .frame(width: 80, height: 120)
-    .offset(y: isSelected ? -12 : 0)
-    .animation(.spring(response: 0.28, dampingFraction: 0.7), value: isSelected)
-    .onTapGesture { onToggle?() }
-    .accessibilityElement(children: .combine)
-    .accessibilityAddTraits(.isButton)
-    .accessibilityLabel("\(card.rank.display) of \(String(describing: card.suit))")
   }
 
   private var indexes: some View {
@@ -56,13 +74,17 @@ struct CardView: View {
       .font(.title2)
       .foregroundStyle(card.suit.color)
   }
+
+  private struct Config {
+
+  }
 }
 
 #Preview("Grid of cards") {
   ScrollView {
     LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 4)) {
-      ForEach(Card.fullDeckByRank.indices, id: \.self) { idx in
-        CardView(card: Card.fullDeckByRank[idx], isSelected: false, onToggle: {})
+      ForEach(Card.fullDeckByRank.indices, id: \.self) { i in
+        CardView(card: Card.fullDeckByRank[i], isFaceUp: true)
       }
     }
     .padding()

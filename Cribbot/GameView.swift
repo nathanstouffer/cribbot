@@ -10,11 +10,33 @@ struct GameView: View {
 
   var body: some View {
     ZStack {
-      Rectangle()
-        .fill(.green)
-        .ignoresSafeArea()
-      DeckView()
+      background
+      VStack {
+        HandView(game: game, cards: game.computer.hand.cards, isFaceUp: false)
+        Spacer()
+        TrayView(game)
+        Spacer()
+        throwButton
+        HandView(game: game, cards: game.human.hand.cards, isFaceUp: true)
+      }
     }
+  }
+
+  private var throwButton: some View {
+    Button("Throw") {
+      if game.stagedForCrib.count == 2 {
+        game.throwToCrib()
+      }
+    }
+    .buttonStyle(.borderedProminent)
+    .disabled(game.stagedForCrib.count != 2 || game.isCribLocked)
+    .padding(20)
+  }
+
+  private var background: some View {
+    Rectangle()
+      .fill(.green)
+      .ignoresSafeArea()
   }
 }
 
