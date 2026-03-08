@@ -1,6 +1,13 @@
 import SwiftUI
 
-struct ContentView: View {
+struct GameView: View {
+
+  @ObservedObject private var game: GameViewModel
+
+  init(_ game: GameViewModel) {
+    self.game = game
+  }
+
   var body: some View {
     ZStack {
       Rectangle()
@@ -12,5 +19,5 @@ struct ContentView: View {
 }
 
 #Preview {
-  ContentView()
+  GameView(GameViewModel())
 }

@@ -1,7 +1,7 @@
 import Foundation
 
-class GameViewModel {
+class GameViewModel: ObservableObject {
 
-  //var game: GameModel
+  @Published private var game = GameModel()
 
 }
