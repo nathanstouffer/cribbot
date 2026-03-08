@@ -77,7 +77,7 @@ class GameViewModel: ObservableObject {
   
   func isStagedForLay(_ card: Card) -> Bool {
     if let staged = game.stagedForLay {
-      return true
+      return card == staged
     } else {
       return false
     }
