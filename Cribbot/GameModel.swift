@@ -2,14 +2,14 @@ import Foundation
 
 struct GameModel {
 
-  var human = Player()
-  var bot = Player()
+  private(set) var human = Player()
+  private(set) var bot = Player()
 
   // TODO (stouff) add some sort of tracking of who is first
 
-  var deck = Deck()
-  var flipped: Card? = nil
-  var crib: [Card] = []
+  private(set) var deck = Card.fullDeckByRank
+  private(set) var flipped: Card? = nil
+  private(set) var crib: [Card] = []
 
   func shuffleAndDeal() {
 
