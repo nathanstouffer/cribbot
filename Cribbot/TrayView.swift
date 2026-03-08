@@ -50,7 +50,7 @@ struct TrayView: View {
   var flip: some View {
     StackView(text: "Flip") {
       if let card = game.flippedCard {
-        CardView(card: card, isSelected: false, onToggle: nil)
+        CardView(card: card, isFaceUp: true)
       } else {
         EmptyView()
       }

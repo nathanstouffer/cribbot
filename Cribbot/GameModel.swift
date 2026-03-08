@@ -60,6 +60,7 @@ struct GameModel {
       crib.append(computer.hand.cards[1])
       computer.hand.cards.removeFirst()
       computer.hand.cards.removeFirst()
+      flip()
       isCribLocked = true
     }
   }
