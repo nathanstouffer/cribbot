@@ -48,6 +48,10 @@ struct GameModel {
       }
     }
   }
+  
+  mutating func unstageForCrib(_ card: Card) {
+    stagedForCrib.removeAll(where: { $0.id == card.id })
+  }
 
   mutating func throwToCrib() {
     if stagedForCrib.count == 2 {

@@ -46,9 +46,17 @@ class GameViewModel: ObservableObject {
   func stageForCrib(_ card: Card) {
     game.stageForCrib(card)
   }
+  
+  func unstageForCrib(_ card: Card) {
+    game.unstageForCrib(card)
+  }
 
   func throwToCrib() {
     game.throwToCrib()
+  }
+  
+  func isStagedForCrib(_ card: Card) -> Bool {
+    return game.stagedForCrib.contains(card)
   }
 
 }

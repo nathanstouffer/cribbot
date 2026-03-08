@@ -24,7 +24,11 @@ struct HandView: View {
             .zIndex(Double(i))
             .onTapGesture {
               if isFaceUp {
-                game.stageForCrib(card)
+                if !game.isStagedForCrib(card) {
+                  game.stageForCrib(card)
+                } else {
+                  game.unstageForCrib(card)
+                }
               }
             }
         }
