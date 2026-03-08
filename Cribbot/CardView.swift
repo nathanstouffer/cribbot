@@ -4,7 +4,7 @@ struct CardView: View {
 
   var card: Card
   var isFaceUp: Bool
-  
+
   init(_ card: Card, isFaceUp: Bool = false) {
     self.card = card
     self.isFaceUp = isFaceUp

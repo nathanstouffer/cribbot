@@ -23,7 +23,7 @@ class GameViewModel: ObservableObject {
   var stagedForCrib: [Card] {
     return game.stagedForCrib
   }
-  
+
   var stagedForLay: Card? {
     return game.stagedForLay
   }
@@ -50,7 +50,7 @@ class GameViewModel: ObservableObject {
   func stageForCrib(_ card: Card) {
     game.stageForCrib(card)
   }
-  
+
   func unstageForCrib(_ card: Card) {
     game.unstageForCrib(card)
   }
@@ -58,23 +58,23 @@ class GameViewModel: ObservableObject {
   func throwToCrib() {
     game.throwToCrib()
   }
-  
+
   func isStagedForCrib(_ card: Card) -> Bool {
     return game.stagedForCrib.contains(card)
   }
-  
+
   func stageForLay(_ card: Card) {
     game.stageForLay(card)
   }
-  
+
   func unstageForLay(_ card: Card) {
     game.unstageForLay(card)
   }
-  
+
   func lay(_ card: Card) {
     game.lay(card)
   }
-  
+
   func isStagedForLay(_ card: Card) -> Bool {
     if let staged = game.stagedForLay {
       return card == staged

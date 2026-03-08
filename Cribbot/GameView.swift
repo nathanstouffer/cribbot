@@ -23,7 +23,7 @@ struct GameView: View {
   }
 
   private var buttons: some View {
-    HStack() {
+    HStack {
       Spacer()
       dealButton
       Spacer()
@@ -36,14 +36,14 @@ struct GameView: View {
     }
     .padding(20)
   }
-  
+
   private var dealButton: some View {
     Button("Deal") {
       game.shuffleAndDeal()
     }
     .buttonStyle(.borderedProminent)
   }
-  
+
   private var throwButton: some View {
     Button("Throw") {
       if game.stagedForCrib.count == 2 {
@@ -53,17 +53,17 @@ struct GameView: View {
     .buttonStyle(.borderedProminent)
     .disabled(game.stagedForCrib.count != 2 || game.isCribLocked)
   }
-  
+
   private var layButton: some View {
     Button("Lay") {
       if game.isCribLocked && game.stagedForLay != nil {
-        
+
       }
     }
     .buttonStyle(.borderedProminent)
     .disabled(game.stagedForLay == nil || !game.isCribLocked)
   }
-  
+
   private var resetButton: some View {
     Button("Reset") {
       game.resetDeck()

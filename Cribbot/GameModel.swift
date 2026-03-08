@@ -49,7 +49,7 @@ struct GameModel {
       }
     }
   }
-  
+
   mutating func unstageForCrib(_ card: Card) {
     stagedForCrib.removeAll(where: { $0.id == card.id })
   }
@@ -69,15 +69,15 @@ struct GameModel {
       isCribLocked = true
     }
   }
-  
+
   mutating func stageForLay(_ card: Card) {
     stagedForLay = card
   }
-  
+
   mutating func unstageForLay(_ card: Card) {
     stagedForLay = nil
   }
-  
+
   mutating func lay(_ card: Card) {
     // TODO: implement this
   }
