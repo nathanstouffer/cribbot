@@ -15,7 +15,6 @@ struct CardView: View {
     .frame(width: 80, height: 120)
     .offset(y: isSelected ? -12 : 0)
     .animation(.spring(response: 0.28, dampingFraction: 0.7), value: isSelected)
-    .onTapGesture { onToggle?() }
     .accessibilityElement(children: .combine)
     .accessibilityAddTraits(.isButton)
     .accessibilityLabel("\(card.rank.display) of \(String(describing: card.suit))")
