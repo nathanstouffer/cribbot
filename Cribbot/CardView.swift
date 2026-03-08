@@ -83,8 +83,8 @@ struct CardView: View {
 #Preview("Grid of cards") {
   ScrollView {
     LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 4)) {
-      ForEach(Card.fullDeckByRank.indices, id: \.self) { i in
-        CardView(card: Card.fullDeckByRank[i], isFaceUp: true)
+      ForEach(Card.fullDeckByRank) { card in
+        CardView(card: card, isFaceUp: true)
       }
     }
     .padding()
