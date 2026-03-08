@@ -13,12 +13,12 @@ struct HandView: View {
   }
   
   var sixView: some View {
-    let cardWidth: CGFloat = 80
-    let overlap: CGFloat = 52
-    let totalWidth = cardWidth + overlap * CGFloat(max(0, cards.count - 1))
-    let mid = CGFloat(cards.count - 1) / 2.0
     HStack {
       ZStack {  // centered
+        let cardWidth: CGFloat = 80
+        let overlap: CGFloat = 52
+        let totalWidth = cardWidth + overlap * CGFloat(max(0, cards.count - 1))
+        let mid = CGFloat(cards.count - 1) / 2.0
         ForEach(cards.indices, id: \.self) { i in
           CardView(card: cards[i], isFaceUp: isFaceUp)
             .offset(x: (CGFloat(i) - mid) * overlap)
