@@ -41,9 +41,11 @@ struct GameModel {
   }
   
   mutating func stageForCrib(_ card: Card) {
-    stagedForCrib.insert(card, at: 0)
-    if stagedForCrib.count > 2 {
-      stagedForCrib.removeLast()
+    if !stagedForCrib.contains(card) {
+      stagedForCrib.insert(card, at: 0)
+      if stagedForCrib.count > 2 {
+        stagedForCrib.removeLast()
+      }
     }
   }
   

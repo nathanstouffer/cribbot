@@ -14,13 +14,14 @@ struct HandView: View {
   
   var sixView: some View {
     HStack {
-      ZStack {  // centered
+      ZStack {
         let cardWidth: CGFloat = 80
         let overlap: CGFloat = 52
         let mid = CGFloat(cards.count - 1) / 2.0
         ForEach(cards.indices, id: \.self) { i in
+          let staged = game.stagedForCrib.contains(cards[i])
           CardView(card: cards[i], isFaceUp: isFaceUp)
-            .offset(x: (CGFloat(i) - mid) * overlap)
+            .offset(x: (CGFloat(i) - mid) * overlap, y: staged ? -12 : 0)
             .zIndex(Double(i))
             .onTapGesture {
               if isFaceUp {
