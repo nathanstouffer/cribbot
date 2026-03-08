@@ -16,6 +16,14 @@ class GameViewModel: ObservableObject {
     return game.crib
   }
   
+  var isCribLocked: Bool {
+    return game.isCribLocked
+  }
+  
+  var stagedForCrib: Array<Card> {
+    return game.stagedForCrib
+  }
+  
   var computer: Player {
     return game.computer
   }
@@ -33,6 +41,14 @@ class GameViewModel: ObservableObject {
   func shuffleAndDeal() {
     game.resetDeck()
     game.shuffleAndDeal()
+  }
+  
+  func stageForCrib(_ card: Card) {
+    game.stageForCrib(card)
+  }
+  
+  func throwToCrib() {
+    game.throwToCrib()
   }
   
 }

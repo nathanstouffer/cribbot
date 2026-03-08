@@ -16,6 +16,11 @@ struct GameView: View {
         Spacer()
         TrayView(game)
         Spacer()
+        Button("Throw") {
+          game.throwToCrib()
+        }
+          .buttonStyle(.borderedProminent)
+          .disabled(game.stagedForCrib.count != 2 || game.isCribLocked)
         HandView(cards: game.human.hand.cards, isFaceUp: true)
       }
     }
