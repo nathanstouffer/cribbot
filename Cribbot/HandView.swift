@@ -29,6 +29,8 @@ struct HandView: View {
             }
         }
       }
+      .animation(.default, value: self.game.stagedForCrib)
+
     }
     .padding(.horizontal)
   }
