@@ -3,7 +3,12 @@ import SwiftUI
 struct CardView: View {
 
   var card: Card
-  var isFaceUp = false
+  var isFaceUp: Bool
+  
+  init(_ card: Card, isFaceUp: Bool = false) {
+    self.card = card
+    self.isFaceUp = isFaceUp
+  }
 
   var body: some View {
     ZStack {
@@ -84,7 +89,7 @@ struct CardView: View {
   ScrollView {
     LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 4)) {
       ForEach(Card.fullDeckByRank) { card in
-        CardView(card: card, isFaceUp: true)
+        CardView(card, isFaceUp: true)
       }
     }
     .padding()
