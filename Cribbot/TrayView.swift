@@ -9,24 +9,6 @@ struct TrayView: View {
   }
 
   var body: some View {
-    VStack {
-      cardStacks
-      HStack(spacing: 100) {
-        Button("Deal") {
-          game.shuffleAndDeal()
-        }
-        .buttonStyle(.borderedProminent)
-        Button("Reset") {
-          game.resetDeck()
-        }
-        .buttonStyle(.borderedProminent)
-      }
-
-    }
-
-  }
-
-  var cardStacks: some View {
     HStack(spacing: 12) {
       deckStack
       Spacer()
@@ -50,7 +32,7 @@ struct TrayView: View {
   var flip: some View {
     StackView(text: "Flip") {
       if let card = game.flippedCard {
-        CardView(card: card, isFaceUp: true)
+        CardView(card, isFaceUp: true)
       } else {
         EmptyView()
       }

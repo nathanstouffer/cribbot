@@ -15,39 +15,55 @@ struct HandView: View {
   var sixView: some View {
     HStack {
       ZStack {
-        let cardWidth: CGFloat = 80
         let overlap: CGFloat = 52
         let mid = CGFloat(cards.count - 1) / 2.0
-        ForEach(cards.indices, id: \.self) { i in
-          let staged = game.stagedForCrib.contains(cards[i])
-          CardView(card: cards[i], isFaceUp: isFaceUp)
-            .offset(x: (CGFloat(i) - mid) * overlap, y: staged ? -12 : 0)
+        ForEach(Array(cards.enumerated()), id: \.element) { i, card in
+          let isStaged = game.stagedForCrib.contains(card)
+          CardView(card, isFaceUp: isFaceUp)
+            .offset(x: (CGFloat(i) - mid) * overlap, y: isStaged ? -12 : 0)
             .zIndex(Double(i))
             .onTapGesture {
               if isFaceUp {
-                game.stageForCrib(cards[i])
+                if !game.isStagedForCrib(card) {
+                  game.stageForCrib(card)
+                } else {
+                  game.unstageForCrib(card)
+                }
               }
             }
         }
       }
+      .animation(.default, value: game.stagedForCrib)
     }
     .padding(.horizontal)
   }
 
   var fourView: some View {
     HStack(spacing: 8) {
-      ForEach(cards, id: \.self) { card in
-        CardView(card: card, isFaceUp: isFaceUp)
+      ForEach(cards) { card in
+        let isStaged = game.stagedForLay != nil && game.stagedForLay!.id == card.id
+        CardView(card, isFaceUp: isFaceUp)
+          .offset(x: 0, y: isStaged ? -12 : 0)
+          .onTapGesture {
+            if isFaceUp {
+              if !game.isStagedForLay(card) {
+                game.stageForLay(card)
+              } else {
+                game.unstageForLay(card)
+              }
+            }
+          }
       }
     }
+    .animation(.default, value: game.stagedForLay)
     .padding(.horizontal)
   }
 
   var scrollView: some View {
     ScrollView(.horizontal, showsIndicators: false) {
       HStack(spacing: 8) {
-        ForEach(cards, id: \.self) { card in
-          CardView(card: card, isFaceUp: isFaceUp)
+        ForEach(cards) { card in
+          CardView(card, isFaceUp: isFaceUp)
         }
       }
       .padding(.horizontal)

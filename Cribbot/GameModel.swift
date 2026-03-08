@@ -8,11 +8,12 @@ struct GameModel {
   // TODO (stouff) add some sort of tracking of who is first
 
   private(set) var deck = Card.fullDeckByRank
-  private(set) var flippedCard: Card? = nil
+  private(set) var flippedCard: Card?
   private(set) var crib: [Card] = []
   private(set) var isCribLocked = false
 
   private(set) var stagedForCrib: [Card] = []
+  private(set) var stagedForLay: Card?
 
   mutating func resetDeck() {
     deck = Card.fullDeckByRank
@@ -49,6 +50,10 @@ struct GameModel {
     }
   }
 
+  mutating func unstageForCrib(_ card: Card) {
+    stagedForCrib.removeAll(where: { $0.id == card.id })
+  }
+
   mutating func throwToCrib() {
     if stagedForCrib.count == 2 {
       crib.append(stagedForCrib[0])
@@ -63,6 +68,18 @@ struct GameModel {
       flip()
       isCribLocked = true
     }
+  }
+
+  mutating func stageForLay(_ card: Card) {
+    stagedForLay = card
+  }
+
+  mutating func unstageForLay(_ card: Card) {
+    stagedForLay = nil
+  }
+
+  mutating func lay(_ card: Card) {
+    // TODO: implement this
   }
 
 }

@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI  // only imported to easily assign color to the suit
 
-struct Card: Hashable {
+struct Card: Hashable, Identifiable, CustomDebugStringConvertible {
 
   enum Rank {
     case ace, two, three, four, five, six, seven, eight, nine, ten
@@ -49,11 +49,20 @@ struct Card: Hashable {
     }
   }
 
-  var rank: Rank
-  var suit: Suit
+  let rank: Rank
+  let suit: Suit
+
+  var id: String {
+    "\(rank) of \(suit)"
+  }
+
+  var debugDescription: String {
+    return id
+  }
 }
 
 // MARK: - Preview helpers
+
 extension Card.Rank {
   static let all: [Self] = [
     .ace, .two, .three, .four, .five, .six,
