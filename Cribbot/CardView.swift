@@ -4,8 +4,6 @@ struct CardView: View {
 
   var card: Card
   var isFaceUp = false
-  var isSelected: Bool = false
-  var onToggle: (() -> Void)? = nil
   
   var body: some View {
     ZStack {
@@ -13,8 +11,6 @@ struct CardView: View {
       CardView.back().opacity(isFaceUp ? 0 : 1)
     }
     .frame(width: 80, height: 120)
-    .offset(y: isSelected ? -12 : 0)
-    .animation(.spring(response: 0.28, dampingFraction: 0.7), value: isSelected)
     .accessibilityElement(children: .combine)
     .accessibilityAddTraits(.isButton)
     .accessibilityLabel("\(card.rank.display) of \(String(describing: card.suit))")
@@ -88,7 +84,7 @@ struct CardView: View {
   ScrollView {
     LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 4)) {
       ForEach(Card.fullDeckByRank.indices, id: \.self) { i in
-        CardView(card: Card.fullDeckByRank[i], isFaceUp: true, isSelected: false, onToggle: {})
+        CardView(card: Card.fullDeckByRank[i], isFaceUp: true)
       }
     }
     .padding()
