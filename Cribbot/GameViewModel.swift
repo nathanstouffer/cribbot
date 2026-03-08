@@ -15,5 +15,24 @@ class GameViewModel: ObservableObject {
   var crib: Array<Card> {
     return game.crib
   }
+  
+  var computer: Player {
+    return game.computer
+  }
+  
+  var human: Player {
+    return game.human
+  }
 
+  // MARK: - Intent functions
+  
+  func resetDeck() {
+    game.resetDeck()
+  }
+  
+  func shuffleAndDeal() {
+    game.resetDeck()
+    game.shuffleAndDeal()
+  }
+  
 }

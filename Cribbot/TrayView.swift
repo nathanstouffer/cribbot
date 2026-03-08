@@ -9,32 +9,62 @@ struct TrayView: View {
   }
 
   var body: some View {
+    VStack {
+      cardStacks
+      HStack(spacing: 100) {
+        Button("Deal") {
+          game.shuffleAndDeal()
+        }
+        .buttonStyle(.borderedProminent)
+        Button("Reset") {
+          game.resetDeck()
+        }
+        .buttonStyle(.borderedProminent)
+      }
+
+    }
+    
+  }
+  
+  var cardStacks: some View {
     HStack(spacing: 12) {
-      StackView(text: "Deck") {
-        VStack(spacing: 8) {
-          CardView.back()
-            .overlay(
-              Text("\(game.deck.count)").foregroundStyle(.white).bold().offset(x: 0, y: 40))
-        }
-      }
+      deckStack
       Spacer()
-      StackView(text: "Flip") {
-        if let card = game.flippedCard {
-          CardView(card: card, isSelected: false, onToggle: nil)
-        } else {
-          EmptyView()
-        }
-      }
+      flip
       Spacer()
-      StackView(text: "Crib") {
-        if game.crib.isEmpty {
-          EmptyView()
-        } else {
-          CardView.back()
-        }
-      }
+      crib
     }
     .padding(.horizontal)
+  }
+  
+  var deckStack: some View {
+    StackView(text: "Deck") {
+      VStack(spacing: 8) {
+        CardView.back()
+          .overlay(
+            Text("\(game.deck.count)").foregroundStyle(.white).bold().offset(x: 0, y: 40))
+      }
+    }
+  }
+  
+  var flip: some View {
+    StackView(text: "Flip") {
+      if let card = game.flippedCard {
+        CardView(card: card, isSelected: false, onToggle: nil)
+      } else {
+        EmptyView()
+      }
+    }
+  }
+  
+  var crib: some View {
+    StackView(text: "Crib") {
+      if game.crib.isEmpty {
+        EmptyView()
+      } else {
+        CardView.back()
+      }
+    }
   }
   
   struct StackView<Content: View>: View {
