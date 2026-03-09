@@ -12,7 +12,7 @@ struct TrayView: View {
 
   var body: some View {
     HStack(spacing: 12) {
-      deckStack
+      deck
       Spacer()
       flip
       Spacer()
@@ -21,7 +21,7 @@ struct TrayView: View {
     .padding(.horizontal)
   }
 
-  var deckStack: some View {
+  var deck: some View {
     StackView(text: "Deck") {
       VStack(spacing: 8) {
         ZStack {
@@ -30,7 +30,9 @@ struct TrayView: View {
               .matchedGeometryEffect(id: card.id, in: animationNamespace)
           }
         }
-        .overlay(Text("\(game.deck.count)").foregroundStyle(.white).bold().offset(x: 0, y: 40))
+        .overlay(
+          Text("\(game.deck.count)").foregroundStyle(.white).bold().offset(x: 0, y: 40)
+        )
       }
     }
   }
