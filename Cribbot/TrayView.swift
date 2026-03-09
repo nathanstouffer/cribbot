@@ -22,9 +22,12 @@ struct TrayView: View {
   var deckStack: some View {
     StackView(text: "Deck") {
       VStack(spacing: 8) {
-        CardView.back()
-          .overlay(
-            Text("\(game.deck.count)").foregroundStyle(.white).bold().offset(x: 0, y: 40))
+        ZStack {
+          ForEach(game.deck) { card in
+            CardView.back(shadowRadius: 0)
+          }
+        }
+        .overlay(Text("\(game.deck.count)").foregroundStyle(.white).bold().offset(x: 0, y: 40))
       }
     }
   }
