@@ -5,11 +5,13 @@ struct HandView: View {
 
   let cards: [Card]
   let isFaceUp: Bool
+  private let animationNamespace: Namespace.ID
 
-  init(game: GameViewModel, cards: [Card], isFaceUp: Bool) {
+  init(game: GameViewModel, cards: [Card], isFaceUp: Bool, animationNamespace: Namespace.ID) {
     self.game = game
     self.cards = cards
     self.isFaceUp = isFaceUp
+    self.animationNamespace = animationNamespace
   }
 
   var sixView: some View {
@@ -22,6 +24,7 @@ struct HandView: View {
           CardView(card, isFaceUp: isFaceUp)
             .offset(x: (CGFloat(i) - mid) * overlap, y: isStaged ? -12 : 0)
             .zIndex(Double(i))
+            .matchedGeometryEffect(id: card.id, in: animationNamespace)
             .onTapGesture {
               if isFaceUp {
                 if !game.isStagedForCrib(card) {
@@ -44,6 +47,7 @@ struct HandView: View {
         let isStaged = game.stagedForLay != nil && game.stagedForLay!.id == card.id
         CardView(card, isFaceUp: isFaceUp)
           .offset(x: 0, y: isStaged ? -12 : 0)
+          .matchedGeometryEffect(id: card.id, in: animationNamespace)
           .onTapGesture {
             if isFaceUp {
               if !game.isStagedForLay(card) {
@@ -64,6 +68,7 @@ struct HandView: View {
       HStack(spacing: 8) {
         ForEach(cards) { card in
           CardView(card, isFaceUp: isFaceUp)
+            .matchedGeometryEffect(id: card.id, in: animationNamespace)
         }
       }
       .padding(.horizontal)

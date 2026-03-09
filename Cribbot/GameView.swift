@@ -4,6 +4,8 @@ struct GameView: View {
 
   @ObservedObject private var game: GameViewModel
 
+  @Namespace private var animationNamespace
+
   init(_ game: GameViewModel) {
     self.game = game
   }
@@ -12,12 +14,16 @@ struct GameView: View {
     ZStack {
       background
       VStack {
-        HandView(game: game, cards: game.computer.hand.cards, isFaceUp: false)
+        HandView(
+          game: game, cards: game.computer.hand.cards, isFaceUp: false,
+          animationNamespace: animationNamespace)
         Spacer()
-        TrayView(game)
+        TrayView(game, animationNamespace: animationNamespace)
         Spacer()
         buttons
-        HandView(game: game, cards: game.human.hand.cards, isFaceUp: true)
+        HandView(
+          game: game, cards: game.human.hand.cards, isFaceUp: true,
+          animationNamespace: animationNamespace)
       }
     }
   }
@@ -39,7 +45,9 @@ struct GameView: View {
 
   private var dealButton: some View {
     Button("Deal") {
-      game.shuffleAndDeal()
+      withAnimation {
+        game.shuffleAndDeal()
+      }
     }
     .buttonStyle(.borderedProminent)
   }
@@ -47,7 +55,9 @@ struct GameView: View {
   private var throwButton: some View {
     Button("Throw") {
       if game.stagedForCrib.count == 2 {
-        game.throwToCrib()
+        withAnimation {
+          game.throwToCrib()
+        }
       }
     }
     .buttonStyle(.borderedProminent)
@@ -57,7 +67,9 @@ struct GameView: View {
   private var layButton: some View {
     Button("Lay") {
       if game.isCribLocked && game.stagedForLay != nil {
+        withAnimation {
 
+        }
       }
     }
     .buttonStyle(.borderedProminent)
@@ -66,7 +78,9 @@ struct GameView: View {
 
   private var resetButton: some View {
     Button("Reset") {
-      game.resetDeck()
+      withAnimation {
+        game.resetDeck()
+      }
     }
     .buttonStyle(.borderedProminent)
   }
