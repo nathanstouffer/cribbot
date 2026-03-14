@@ -15,20 +15,18 @@ struct HandView: View {
   }
 
   var body: some View {
-    HStack {
-      ZStack {
-        let overlap: CGFloat = 52
-        let mid = CGFloat(cards.count - 1) / 2.0
-        ForEach(Array(cards.enumerated()), id: \.element) { i, card in
-          let isStaged = game.stagedForCrib.contains(card) || game.isStagedForLay(card) 
-          CardView(card, isFaceUp: isFaceUp)
-            .offset(x: (CGFloat(i) - mid) * overlap, y: isStaged ? -12 : 0)
-            .zIndex(Double(i))
-            .matchedGeometryEffect(id: card.id, in: animationNamespace)
-            .onTapGesture {
-              onTap(card: card)
-            }
-        }
+    ZStack {
+      let overlap: CGFloat = 52
+      let mid = CGFloat(cards.count - 1) / 2.0
+      ForEach(Array(cards.enumerated()), id: \.element) { i, card in
+        let isStaged = game.stagedForCrib.contains(card) || game.isStagedForLay(card)
+        CardView(card, isFaceUp: isFaceUp)
+          .offset(x: (CGFloat(i) - mid) * overlap, y: isStaged ? -12 : 0)
+          .zIndex(Double(i))
+          .matchedGeometryEffect(id: card.id, in: animationNamespace)
+          .onTapGesture {
+            onTap(card: card)
+          }
       }
     }
     .padding(.horizontal)

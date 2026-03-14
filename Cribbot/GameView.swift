@@ -19,8 +19,8 @@ struct GameView: View {
           animationNamespace: animationNamespace)
         Spacer()
         TrayView(game, animationNamespace: animationNamespace)
-        Spacer()
         buttons
+        Spacer()
         HandView(
           game: game, cards: game.human.hand.cards, isFaceUp: true,
           animationNamespace: animationNamespace)
