@@ -14,6 +14,39 @@ struct HandView: View {
     self.animationNamespace = animationNamespace
   }
 
+  var body: some View {
+    if cards.count == 0 {
+      CardView.back().opacity(0)
+    } else if cards.count == 6 {
+      sixView
+    } else if cards.count == 4 {
+      fourView
+    } else {
+      scrollView
+    }
+  }
+  
+  private func onTap(card: Card) {
+    if isFaceUp {
+      withAnimation {
+        if cards.count == 6 {
+          if !game.isStagedForCrib(card) {
+            game.stageForCrib(card)
+          } else {
+            game.unstageForCrib(card)
+          }
+        } else {
+          if !game.isStagedForLay(card) {
+            game.stageForLay(card)
+          } else {
+            game.unstageForLay(card)
+          }
+        }
+      }
+    }
+
+  }
+
   var sixView: some View {
     HStack {
       ZStack {
@@ -26,15 +59,7 @@ struct HandView: View {
             .zIndex(Double(i))
             .matchedGeometryEffect(id: card.id, in: animationNamespace)
             .onTapGesture {
-              withAnimation {
-                if isFaceUp {
-                  if !game.isStagedForCrib(card) {
-                    game.stageForCrib(card)
-                  } else {
-                    game.unstageForCrib(card)
-                  }
-                }
-              }
+              onTap(card: card)
             }
         }
       }
@@ -50,15 +75,7 @@ struct HandView: View {
           .offset(x: 0, y: isStaged ? -12 : 0)
           .matchedGeometryEffect(id: card.id, in: animationNamespace)
           .onTapGesture {
-            withAnimation {
-              if isFaceUp {
-                if !game.isStagedForLay(card) {
-                  game.stageForLay(card)
-                } else {
-                  game.unstageForLay(card)
-                }
-              }
-            }
+            onTap(card: card)
           }
       }
     }
@@ -77,17 +94,4 @@ struct HandView: View {
     }
   }
 
-  var body: some View {
-    VStack(alignment: .center, spacing: 10) {
-      if cards.count == 0 {
-        CardView.back().opacity(0)
-      } else if cards.count == 6 {
-        sixView
-      } else if cards.count == 4 {
-        fourView
-      } else {
-        scrollView
-      }
-    }
-  }
 }
