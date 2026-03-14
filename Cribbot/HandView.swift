@@ -26,17 +26,18 @@ struct HandView: View {
             .zIndex(Double(i))
             .matchedGeometryEffect(id: card.id, in: animationNamespace)
             .onTapGesture {
-              if isFaceUp {
-                if !game.isStagedForCrib(card) {
-                  game.stageForCrib(card)
-                } else {
-                  game.unstageForCrib(card)
+              withAnimation {
+                if isFaceUp {
+                  if !game.isStagedForCrib(card) {
+                    game.stageForCrib(card)
+                  } else {
+                    game.unstageForCrib(card)
+                  }
                 }
               }
             }
         }
       }
-      .animation(.default, value: game.stagedForCrib)
     }
     .padding(.horizontal)
   }
@@ -49,17 +50,18 @@ struct HandView: View {
           .offset(x: 0, y: isStaged ? -12 : 0)
           .matchedGeometryEffect(id: card.id, in: animationNamespace)
           .onTapGesture {
-            if isFaceUp {
-              if !game.isStagedForLay(card) {
-                game.stageForLay(card)
-              } else {
-                game.unstageForLay(card)
+            withAnimation {
+              if isFaceUp {
+                if !game.isStagedForLay(card) {
+                  game.stageForLay(card)
+                } else {
+                  game.unstageForLay(card)
+                }
               }
             }
           }
       }
     }
-    .animation(.default, value: game.stagedForLay)
     .padding(.horizontal)
   }
 
