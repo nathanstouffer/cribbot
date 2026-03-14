@@ -15,13 +15,11 @@ struct HandView: View {
   }
 
   var body: some View {
-    ZStack {
-      let overlap: CGFloat = 52
-      let mid = CGFloat(cards.count - 1) / 2.0
+    HStack(spacing: cards.count == 6 ? -30 : nil) {
       ForEach(Array(cards.enumerated()), id: \.element) { i, card in
         let isStaged = game.stagedForCrib.contains(card) || game.isStagedForLay(card)
         CardView(card, isFaceUp: isFaceUp)
-          .offset(x: (CGFloat(i) - mid) * overlap, y: isStaged ? -12 : 0)
+          .offset(x: 0, y: isStaged ? -12 : 0)
           .zIndex(Double(i))
           .matchedGeometryEffect(id: card.id, in: animationNamespace)
           .onTapGesture {
