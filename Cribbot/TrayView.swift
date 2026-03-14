@@ -3,14 +3,16 @@ import SwiftUI
 struct TrayView: View {
 
   @ObservedObject private var game: GameViewModel
+  private let animationNamespace: Namespace.ID
 
-  init(_ game: GameViewModel) {
+  init(_ game: GameViewModel, animationNamespace: Namespace.ID) {
     self.game = game
+    self.animationNamespace = animationNamespace
   }
 
   var body: some View {
     HStack(spacing: 12) {
-      deckStack
+      deck
       Spacer()
       flip
       Spacer()
@@ -19,12 +21,18 @@ struct TrayView: View {
     .padding(.horizontal)
   }
 
-  var deckStack: some View {
+  var deck: some View {
     StackView(text: "Deck") {
       VStack(spacing: 8) {
-        CardView.back()
-          .overlay(
-            Text("\(game.deck.count)").foregroundStyle(.white).bold().offset(x: 0, y: 40))
+        ZStack {
+          ForEach(game.deck) { card in
+            CardView.back(shadowRadius: 0)
+              .matchedGeometryEffect(id: card.id, in: animationNamespace)
+          }
+        }
+        .overlay(
+          Text("\(game.deck.count)").foregroundStyle(.white).bold().offset(x: 0, y: 40)
+        )
       }
     }
   }
@@ -33,6 +41,7 @@ struct TrayView: View {
     StackView(text: "Flip") {
       if let card = game.flippedCard {
         CardView(card, isFaceUp: true)
+          .matchedGeometryEffect(id: card.id, in: animationNamespace)
       } else {
         EmptyView()
       }
@@ -44,7 +53,10 @@ struct TrayView: View {
       if game.crib.isEmpty {
         EmptyView()
       } else {
-        CardView.back()
+        ForEach(game.crib) { card in
+          CardView(card, isFaceUp: false)
+            .matchedGeometryEffect(id: card.id, in: animationNamespace)
+        }
       }
     }
   }
@@ -66,8 +78,4 @@ struct TrayView: View {
       }
     }
   }
-}
-
-#Preview {
-  TrayView(GameViewModel())
 }

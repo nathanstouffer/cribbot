@@ -22,6 +22,8 @@ struct GameModel {
     isCribLocked = false
     human.hand.reset()
     computer.hand.reset()
+    stagedForCrib = []
+    stagedForLay = nil
   }
 
   mutating func shuffleAndDeal() {
