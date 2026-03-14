@@ -29,7 +29,7 @@ struct HandView: View {
     }
     .padding(.horizontal)
   }
-  
+
   private func onTap(card: Card) {
     if isFaceUp {
       withAnimation {
