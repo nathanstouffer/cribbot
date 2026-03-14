@@ -15,15 +15,23 @@ struct HandView: View {
   }
 
   var body: some View {
-    if cards.count == 0 {
-      CardView.back().opacity(0)
-    } else if cards.count == 6 {
-      sixView
-    } else if cards.count == 4 {
-      fourView
-    } else {
-      scrollView
+    HStack {
+      ZStack {
+        let overlap: CGFloat = 52
+        let mid = CGFloat(cards.count - 1) / 2.0
+        ForEach(Array(cards.enumerated()), id: \.element) { i, card in
+          let isStaged = game.stagedForCrib.contains(card) || game.isStagedForLay(card) 
+          CardView(card, isFaceUp: isFaceUp)
+            .offset(x: (CGFloat(i) - mid) * overlap, y: isStaged ? -12 : 0)
+            .zIndex(Double(i))
+            .matchedGeometryEffect(id: card.id, in: animationNamespace)
+            .onTapGesture {
+              onTap(card: card)
+            }
+        }
+      }
     }
+    .padding(.horizontal)
   }
   
   private func onTap(card: Card) {
@@ -43,54 +51,6 @@ struct HandView: View {
           }
         }
       }
-    }
-
-  }
-
-  var sixView: some View {
-    HStack {
-      ZStack {
-        let overlap: CGFloat = 52
-        let mid = CGFloat(cards.count - 1) / 2.0
-        ForEach(Array(cards.enumerated()), id: \.element) { i, card in
-          let isStaged = game.stagedForCrib.contains(card)
-          CardView(card, isFaceUp: isFaceUp)
-            .offset(x: (CGFloat(i) - mid) * overlap, y: isStaged ? -12 : 0)
-            .zIndex(Double(i))
-            .matchedGeometryEffect(id: card.id, in: animationNamespace)
-            .onTapGesture {
-              onTap(card: card)
-            }
-        }
-      }
-    }
-    .padding(.horizontal)
-  }
-
-  var fourView: some View {
-    HStack(spacing: 8) {
-      ForEach(cards) { card in
-        let isStaged = game.stagedForLay != nil && game.stagedForLay!.id == card.id
-        CardView(card, isFaceUp: isFaceUp)
-          .offset(x: 0, y: isStaged ? -12 : 0)
-          .matchedGeometryEffect(id: card.id, in: animationNamespace)
-          .onTapGesture {
-            onTap(card: card)
-          }
-      }
-    }
-    .padding(.horizontal)
-  }
-
-  var scrollView: some View {
-    ScrollView(.horizontal, showsIndicators: false) {
-      HStack(spacing: 8) {
-        ForEach(cards) { card in
-          CardView(card, isFaceUp: isFaceUp)
-            .matchedGeometryEffect(id: card.id, in: animationNamespace)
-        }
-      }
-      .padding(.horizontal)
     }
   }
 
