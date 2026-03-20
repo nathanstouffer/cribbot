@@ -16,7 +16,8 @@ struct CribbotTests {
 
     tests.append(
       ScoreTest(
-        hand: [Card(rank: .ace, suit: .clubs)], flip: Card(rank: .king, suit: .diamonds),
+        hand: [Card(.two, .clubs), Card(.four, .diamonds), Card(.six, .hearts), Card(.eight, .spades)],
+        flip: Card(.ten, .clubs),
         isCrib: false, score: 0)
     )
 

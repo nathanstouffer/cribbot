@@ -51,6 +51,11 @@ struct Card: Hashable, Identifiable, CustomDebugStringConvertible {
 
   let rank: Rank
   let suit: Suit
+  
+  init(_ rank: Rank, _ suit: Suit) {
+    self.rank = rank
+    self.suit = suit
+  }
 
   var id: String {
     "\(rank) of \(suit)"
@@ -78,12 +83,12 @@ extension Card.Suit {
 }
 
 extension Card {
-  static let preview = Card(rank: .king, suit: .hearts)
+  static let preview = Card(.king, .hearts)
 
   static let fullDeckBySuit: [Card] = {
     return Card.Suit.all.flatMap { suit in
       Card.Rank.all.map { rank in
-        Card(rank: rank, suit: suit)
+        Card(rank, suit)
       }
     }
   }()
@@ -91,7 +96,7 @@ extension Card {
   static let fullDeckByRank: [Card] = {
     return Card.Rank.all.flatMap { rank in
       Card.Suit.all.map { suit in
-        Card(rank: rank, suit: suit)
+        Card(rank, suit)
       }
     }
   }()
