@@ -7,8 +7,7 @@ on:
     branches: [ main, master ]
 
 jobs:
-  format:
-    name: formatting
+  formatting:
     runs-on: macos-latest
     env:
       LANG: en_US.UTF-8
