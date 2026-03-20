@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-    name: build
     runs-on: macos-latest
     env:
       LANG: en_US.UTF-8
@@ -31,3 +30,14 @@ jobs:
             -destination 'generic/platform=iOS Simulator' \
             clean build | xcpretty --no-color
         shell: bash
+
+  # TODO (stouff) figure out how to run tests on GHA
+  # tests:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+
+  #     - name: Run tests
+  #       run: xcodebuild test -scheme Cribbot -destination 'platform=iOS Simulator,name=iPhone 16'
+  #       shell: bash

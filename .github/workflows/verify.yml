@@ -7,8 +7,7 @@ on:
     branches: [ main, master ]
 
 jobs:
-  format:
-    name: formatting
+  formatting:
     runs-on: macos-latest
     env:
       LANG: en_US.UTF-8
@@ -31,4 +30,3 @@ jobs:
       - name: Fail if formatting changed
         run: |
           git --no-pager diff --exit-code
-        shell: bash
