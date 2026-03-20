@@ -24,6 +24,42 @@ struct Card: Hashable, Identifiable, CustomDebugStringConvertible {
       case .king: return "K"
       }
     }
+
+    var peggingValue: Int {
+      switch self {
+      case .ace: return 1
+      case .two: return 2
+      case .three: return 3
+      case .four: return 4
+      case .five: return 5
+      case .six: return 6
+      case .seven: return 7
+      case .eight: return 8
+      case .nine: return 9
+      case .ten: return 10
+      case .jack: return 10
+      case .queen: return 10
+      case .king: return 10
+      }
+    }
+    
+    var runValue: Int {
+      switch self {
+      case .ace: return 1
+      case .two: return 2
+      case .three: return 3
+      case .four: return 4
+      case .five: return 5
+      case .six: return 6
+      case .seven: return 7
+      case .eight: return 8
+      case .nine: return 9
+      case .ten: return 10
+      case .jack: return 11
+      case .queen: return 12
+      case .king: return 13
+      }
+    }
   }
 
   enum Suit {
@@ -51,7 +87,7 @@ struct Card: Hashable, Identifiable, CustomDebugStringConvertible {
 
   let rank: Rank
   let suit: Suit
-  
+
   init(_ rank: Rank, _ suit: Suit) {
     self.rank = rank
     self.suit = suit
