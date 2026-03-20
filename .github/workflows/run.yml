@@ -31,3 +31,14 @@ jobs:
             -destination 'generic/platform=iOS Simulator' \
             clean build | xcpretty --no-color
         shell: bash
+
+  tests:
+    name: Test
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run tests
+        run: xcodebuild test -scheme Cribbot -destination 'platform=iOS Simulator,name=iPhone 16'
+        shell: bash

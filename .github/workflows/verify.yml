@@ -31,4 +31,3 @@ jobs:
       - name: Fail if formatting changed
         run: |
           git --no-pager diff --exit-code
-        shell: bash
