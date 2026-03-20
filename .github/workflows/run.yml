@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-    name: build
     runs-on: macos-latest
     env:
       LANG: en_US.UTF-8
@@ -33,7 +32,6 @@ jobs:
         shell: bash
 
   tests:
-    name: Test
     runs-on: macos-latest
     steps:
       - name: Checkout repository
