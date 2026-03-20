@@ -1,10 +1,3 @@
-//
-//  CribbotTests.swift
-//  CribbotTests
-//
-//  Created by Nathan Stouffer on 2/6/26.
-//
-
 import Testing
 
 @testable import Cribbot
