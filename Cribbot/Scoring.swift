@@ -113,8 +113,8 @@ extension [Card] {
   func isRun() -> Bool {
     let sorted = self.sorted(by: { $0.rank.runValue < $1.rank.runValue })
     for i in 1..<sorted.count {
-      let prev = self[i - 1]
-      let curr = self[i]
+      let prev = sorted[i - 1]
+      let curr = sorted[i]
       if prev.rank.runValue + 1 != curr.rank.runValue {
         return false
       }
