@@ -101,7 +101,7 @@ extension [Card] {
     result.sort(by: { $0.count > $1.count })
     return result
   }
-  
+
   func sum() -> Int {
     var total = 0
     for card in self {
@@ -109,7 +109,7 @@ extension [Card] {
     }
     return total
   }
-  
+
   func isRun() -> Bool {
     let sorted = self.sorted(by: { $0.rank.runValue < $1.rank.runValue })
     for i in 1..<sorted.count {
@@ -121,7 +121,7 @@ extension [Card] {
     }
     return true
   }
-  
+
   func allSameSuit() -> Bool {
     if count <= 1 {
       return true

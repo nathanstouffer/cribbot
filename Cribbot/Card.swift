@@ -42,7 +42,7 @@ struct Card: Hashable, Identifiable, CustomDebugStringConvertible {
       case .king: return 10
       }
     }
-    
+
     var runValue: Int {
       switch self {
       case .ace: return 1
