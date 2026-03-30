@@ -82,5 +82,9 @@ class GameViewModel: ObservableObject {
       return false
     }
   }
+  
+  func scoreHands() {
+    game.scoreHands()
+  }
 
 }

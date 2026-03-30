@@ -83,6 +83,14 @@ struct GameModel {
   mutating func lay(_ card: Card) {
     // TODO: implement this
   }
+  
+  mutating func scoreHands() {
+    if let flippedCard = flippedCard {
+      computer.score += score(hand: computer.hand.cards, flip: flippedCard, isCrib: false)
+      human.score += score(hand: human.hand.cards, flip: flippedCard, isCrib: false)
+    }
+    
+  }
 
 }
 

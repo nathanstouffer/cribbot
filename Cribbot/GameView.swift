@@ -36,7 +36,7 @@ struct GameView: View {
       Spacer()
       throwButton
       Spacer()
-      layButton
+      scoreButton
       Spacer()
       resetButton
       Spacer()
@@ -63,6 +63,18 @@ struct GameView: View {
     }
     .buttonStyle(.borderedProminent)
     .disabled(game.stagedForCrib.count != 2 || game.isCribLocked)
+  }
+
+  private var scoreButton: some View {
+    Button("Score") {
+      if (game.isCribLocked) {
+        withAnimation {
+          game.scoreHands()
+        }
+      }
+    }
+    .buttonStyle(.borderedProminent)
+    .disabled(!game.isCribLocked)
   }
 
   private var layButton: some View {
