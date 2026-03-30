@@ -20,6 +20,7 @@ struct GameView: View {
         Spacer()
         TrayView(game, animationNamespace: animationNamespace)
         buttons
+        ScoreView(computer: game.computer, human: game.human)
         Spacer()
         HandView(
           game: game, cards: game.human.hand.cards, isFaceUp: true,
