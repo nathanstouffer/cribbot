@@ -31,9 +31,9 @@ struct GameModel {
     deck.shuffle()
     for _ in 0..<6 {
       // TODO (stouff) adapt this to who is going first
-      computer.hand.cards.append(deck[0])
+      computer.hand.append(deck[0])
       deck.removeFirst()
-      human.hand.cards.append(deck[0])
+      human.hand.append(deck[0])
       deck.removeFirst()
     }
   }
@@ -60,13 +60,13 @@ struct GameModel {
     if stagedForCrib.count == 2 {
       crib.append(stagedForCrib[0])
       crib.append(stagedForCrib[1])
-      human.hand.cards.removeAll(where: { $0 == stagedForCrib[0] })
-      human.hand.cards.removeAll(where: { $0 == stagedForCrib[1] })
+      human.hand.removeAll(where: { $0 == stagedForCrib[0] })
+      human.hand.removeAll(where: { $0 == stagedForCrib[1] })
       stagedForCrib = []
-      crib.append(computer.hand.cards[0])
-      crib.append(computer.hand.cards[1])
-      computer.hand.cards.removeFirst()
-      computer.hand.cards.removeFirst()
+      crib.append(computer.hand[0])
+      crib.append(computer.hand[1])
+      computer.hand.removeFirst()
+      computer.hand.removeFirst()
       flip()
       isCribLocked = true
     }
@@ -86,20 +86,10 @@ struct GameModel {
   
   mutating func scoreHands() {
     if let flippedCard = flippedCard {
-      computer.score += score(hand: computer.hand.cards, flip: flippedCard, isCrib: false)
-      human.score += score(hand: human.hand.cards, flip: flippedCard, isCrib: false)
+      computer.score += score(hand: computer.hand, flip: flippedCard, isCrib: false)
+      human.score += score(hand: human.hand, flip: flippedCard, isCrib: false)
     }
     
-  }
-
-}
-
-struct Hand {
-
-  var cards: [Card] = []
-
-  mutating func reset() {
-    cards = []
   }
 
 }
@@ -107,6 +97,12 @@ struct Hand {
 struct Player {
 
   var score: Int = 0
-  var hand = Hand()
+  var hand = [Card]()
 
+}
+
+extension Array<Card> {
+  mutating func reset() {
+    self = []
+  }
 }

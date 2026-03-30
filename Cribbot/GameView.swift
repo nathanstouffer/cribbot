@@ -15,7 +15,7 @@ struct GameView: View {
       background
       VStack {
         HandView(
-          game: game, cards: game.computer.hand.cards, isFaceUp: false,
+          game: game, cards: game.computer.hand, isFaceUp: false,
           animationNamespace: animationNamespace)
         Spacer()
         TrayView(game, animationNamespace: animationNamespace)
@@ -23,7 +23,7 @@ struct GameView: View {
         ScoreView(computer: game.computer, human: game.human)
         Spacer()
         HandView(
-          game: game, cards: game.human.hand.cards, isFaceUp: true,
+          game: game, cards: game.human.hand, isFaceUp: true,
           animationNamespace: animationNamespace)
       }
     }
