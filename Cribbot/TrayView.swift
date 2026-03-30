@@ -49,16 +49,29 @@ struct TrayView: View {
   }
 
   var crib: some View {
-    StackView(text: "Crib") {
-      if game.crib.isEmpty {
-        EmptyView()
-      } else {
-        ForEach(game.crib) { card in
-          CardView(card, isFaceUp: false)
-            .matchedGeometryEffect(id: card.id, in: animationNamespace)
+    ZStack {
+      StackView(text: "Crib") {
+        if game.crib.isEmpty {
+          cribIndicator
+        } else {
+          ZStack {
+            ForEach(game.crib) { card in
+              CardView(card, isFaceUp: false)
+                .matchedGeometryEffect(id: card.id, in: animationNamespace)
+            }
+            cribIndicator
+          }
+
         }
       }
     }
+  }
+
+  var cribIndicator: some View {
+    Image(systemName: "arrowshape.up")
+      .foregroundStyle(.secondary)
+      .font(.largeTitle)
+      .rotationEffect(Angle(degrees: game.cribOwner == .computer ? 0.0 : 180.0))
   }
 
   struct StackView<Content: View>: View {

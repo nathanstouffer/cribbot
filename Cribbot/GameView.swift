@@ -15,7 +15,7 @@ struct GameView: View {
       background
       VStack {
         HandView(
-          game: game, cards: game.computer.hand, isFaceUp: false,
+          game: game, cards: game.computer.hand, isFaceUp: game.stage == .scoringHands,
           animationNamespace: animationNamespace)
         Spacer()
         TrayView(game, animationNamespace: animationNamespace)
@@ -67,7 +67,7 @@ struct GameView: View {
 
   private var scoreButton: some View {
     Button("Score") {
-      if (game.isCribLocked) {
+      if game.isCribLocked {
         withAnimation {
           game.scoreHands()
         }

@@ -18,5 +18,6 @@ struct ScoreView: View {
   private func score(text: String) -> some View {
     Text(text)
       .foregroundStyle(.white)
+      .font(.title2)
   }
 }
