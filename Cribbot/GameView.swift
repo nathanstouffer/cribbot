@@ -2,109 +2,115 @@ import SwiftUI
 
 struct GameView: View {
 
-  @ObservedObject private var game: GameViewModel
+    @ObservedObject private var viewModel: GameViewModel
 
-  @Namespace private var animationNamespace
+    @Namespace private var animationNamespace
 
-  init(_ game: GameViewModel) {
-    self.game = game
-  }
-
-  var body: some View {
-    ZStack {
-      background
-      VStack {
-        HandView(
-          game: game, cards: game.computer.hand, isFaceUp: game.stage == .scoringHands,
-          animationNamespace: animationNamespace)
-        Spacer()
-        TrayView(game, animationNamespace: animationNamespace)
-        buttons
-        ScoreView(computer: game.computer, human: game.human)
-        Spacer()
-        HandView(
-          game: game, cards: game.human.hand, isFaceUp: true,
-          animationNamespace: animationNamespace)
-      }
+    init(_ game: GameViewModel) {
+        self.viewModel = game
     }
-  }
 
-  private var buttons: some View {
-    HStack {
-      Spacer()
-      dealButton
-      Spacer()
-      throwButton
-      Spacer()
-      scoreButton
-      Spacer()
-      resetButton
-      Spacer()
-    }
-    .padding(20)
-  }
-
-  private var dealButton: some View {
-    Button("Deal") {
-      withAnimation {
-        game.shuffleAndDeal()
-      }
-    }
-    .buttonStyle(.borderedProminent)
-  }
-
-  private var throwButton: some View {
-    Button("Throw") {
-      if game.stagedForCrib.count == 2 {
-        withAnimation {
-          game.throwToCrib()
+    var body: some View {
+        ZStack {
+            background
+            VStack {
+                HandView(
+                    cards: $viewModel.computer.hand,
+                    mode: $viewModel.computerStaging,
+                    isFaceUp: viewModel.stage == .scoringHands,
+                    animationNamespace: animationNamespace
+                )
+                Spacer()
+                TrayView(viewModel, animationNamespace: animationNamespace)
+                buttons
+                ScoreView(computer: viewModel.computer, human: viewModel.human)
+                Spacer()
+                HandView(
+                    cards: $viewModel.human.hand,
+                    mode: $viewModel.humanStaging,
+                    isFaceUp: true,
+                    animationNamespace: animationNamespace
+                )
+            }
         }
-      }
     }
-    .buttonStyle(.borderedProminent)
-    .disabled(game.stagedForCrib.count != 2 || game.isCribLocked)
-  }
 
-  private var scoreButton: some View {
-    Button("Score") {
-      if game.isCribLocked {
-        withAnimation {
-          game.scoreHands()
+    private var buttons: some View {
+        HStack {
+            Spacer()
+            dealButton
+            Spacer()
+            throwButton
+            Spacer()
+            scoreButton
+            Spacer()
+            resetButton
+            Spacer()
         }
-      }
+        .padding(20)
     }
-    .buttonStyle(.borderedProminent)
-    .disabled(!game.isCribLocked)
-  }
 
-  private var layButton: some View {
-    Button("Lay") {
-      if game.isCribLocked && game.stagedForLay != nil {
-        withAnimation {
-
+    private var dealButton: some View {
+        Button("Deal") {
+            withAnimation {
+                viewModel.shuffleAndDeal()
+            }
         }
-      }
+        .buttonStyle(.borderedProminent)
     }
-    .buttonStyle(.borderedProminent)
-    .disabled(game.stagedForLay == nil || !game.isCribLocked)
-  }
 
-  private var resetButton: some View {
-    Button("Reset") {
-      withAnimation {
-        game.resetDeck()
-      }
+    private var throwButton: some View {
+        Button("Throw") {
+            if viewModel.stagedForCrib.count == 2 {
+                withAnimation {
+                    viewModel.throwToCrib()
+                }
+            }
+        }
+        .buttonStyle(.borderedProminent)
+        .disabled(viewModel.stagedForCrib.count != 2 || viewModel.isCribLocked)
     }
-    .buttonStyle(.borderedProminent)
-  }
 
-  private var background: some View {
-    Rectangle()
-      .fill(.green)
-      .ignoresSafeArea()
-  }
+    private var scoreButton: some View {
+        Button("Score") {
+            if viewModel.isCribLocked {
+                withAnimation {
+                    viewModel.scoreHands()
+                }
+            }
+        }
+        .buttonStyle(.borderedProminent)
+        .disabled(!viewModel.isCribLocked)
+    }
+
+    private var layButton: some View {
+        Button("Lay") {
+            if viewModel.isCribLocked && viewModel.stagedForLay != nil {
+                withAnimation {
+
+                }
+            }
+        }
+        .buttonStyle(.borderedProminent)
+        .disabled(viewModel.stagedForLay == nil || !viewModel.isCribLocked)
+    }
+
+    private var resetButton: some View {
+        Button("Reset") {
+            withAnimation {
+                viewModel.resetDeck()
+            }
+        }
+        .buttonStyle(.borderedProminent)
+    }
+
+    private var background: some View {
+        Rectangle()
+            .fill(.green)
+            .ignoresSafeArea()
+    }
 }
 
 #Preview {
-  GameView(GameViewModel())
+    GameView(GameViewModel())
 }
