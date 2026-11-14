@@ -31,29 +31,29 @@ struct Game {
   private(set) var stage = HandStage.initial
 
   var adaHand: [CribbageCard] {
-    cards.filter{ $0.owner == .ada }
+    cards.filter { $0.owner == .ada }
   }
 
   var bobHand: [CribbageCard] {
-    cards.filter{ $0.owner == .bob }
+    cards.filter { $0.owner == .bob }
   }
 
   var adaCards: [Card] {
-    adaHand.map{ $0.card }
+    adaHand.map { $0.card }
   }
 
   var bobCards: [Card] {
-    bobHand.map{ $0.card }
+    bobHand.map { $0.card }
   }
 
   var crib: [Card] {
-    cards.filter{ $0.owner == .crib }.map{ $0.card }
+    cards.filter { $0.owner == .crib }.map { $0.card }
   }
 
   var flipped: Card? {
     cards.first(where: { $0.owner == .flip })?.card
   }
-  
+
   mutating func toggleCrib() {
     cribOwner.toggle()
   }
@@ -69,20 +69,34 @@ struct Game {
       cards[2 * i + 1].owner = .bob
     }
   }
-  
+
   mutating func flip() {
     let deckIndices = cards.indices.filter { cards[$0].owner == .deck }
     if let randomIndex = deckIndices.randomElement() {
-        cards[randomIndex].owner = .flip
+      cards[randomIndex].owner = .flip
     }
+  }
+
+  mutating func toss(_ card: Card) {
+    guard let index = findIndex(card) else { return }
+    cards[index].owner = .crib
+  }
+
+  mutating func lay(_ card: Card) {
+    guard let index = findIndex(card) else { return }
+    cards[index].layed = true
   }
 
   mutating func scoreHands() {
     if cribOwner == .ada {
-      bob.score += score(hand: bobHand, flip: flipped!, isCrib: false)
-      ada.score += score(hand: adaHand, flip: flipped!, isCrib: false)
+      bob.score += score(hand: bobCards, flip: flipped!, isCrib: false)
+      ada.score += score(hand: adaCards, flip: flipped!, isCrib: false)
       ada.score += score(hand: crib, flip: flipped!, isCrib: true)
     }
+  }
+
+  private func findIndex(_ card: Card) -> Int? {
+    cards.firstIndex(where: { $0.id == card.id })
   }
 
 }
