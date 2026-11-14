@@ -2,13 +2,13 @@ import Foundation
 
 class GameViewModel: ObservableObject {
 
-  @Published private var game = GameModel()
+  @Published private var game = Game()
 
-  var stage: GameModel.HandStage {
+  var stage: Game.HandStage {
     return game.stage
   }
 
-  var cribOwner: GameModel.CribOwner {
+  var cribOwner: Game.CribOwner {
     return game.cribOwner
   }
 

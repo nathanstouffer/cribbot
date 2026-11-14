@@ -1,6 +1,6 @@
 import Foundation
 
-struct GameModel {
+struct Game {
 
   enum HandStage {
     case initial
