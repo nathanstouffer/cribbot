@@ -2,10 +2,29 @@ import Foundation
 
 struct GameModel {
 
+  enum HandStage {
+    case initial
+    case selectingCrib
+    case scoringHands
+  }
+
+  enum CribOwner: CaseIterable {
+    case computer
+    case human
+
+    mutating func toggle() {
+      if self == .computer {
+        self = .human
+      } else {
+        self = .computer
+      }
+    }
+  }
+
   private(set) var computer = Player()
   private(set) var human = Player()
 
-  // TODO (stouff) add some sort of tracking of who is first
+  private(set) var cribOwner: CribOwner = CribOwner.allCases.randomElement()!
 
   private(set) var deck = Card.fullDeckByRank
   private(set) var flippedCard: Card?
@@ -14,6 +33,8 @@ struct GameModel {
 
   private(set) var stagedForCrib: [Card] = []
   private(set) var stagedForLay: Card?
+
+  private(set) var stage = HandStage.initial
 
   mutating func resetDeck() {
     deck = Card.fullDeckByRank
@@ -24,18 +45,30 @@ struct GameModel {
     computer.hand.reset()
     stagedForCrib = []
     stagedForLay = nil
+    stage = .initial
+    cribOwner.toggle()
   }
 
   mutating func shuffleAndDeal() {
     resetDeck()
     deck.shuffle()
+    var first = [Card]()
+    var second = [Card]()
     for _ in 0..<6 {
       // TODO (stouff) adapt this to who is going first
-      computer.hand.cards.append(deck[0])
+      first.append(deck[0])
       deck.removeFirst()
-      human.hand.cards.append(deck[0])
+      second.append(deck[0])
       deck.removeFirst()
     }
+    if cribOwner == .computer {
+      computer.hand = first
+      human.hand = second
+    } else {
+      human.hand = first
+      computer.hand = second
+    }
+    stage = .selectingCrib
   }
 
   mutating func flip() {
@@ -60,15 +93,16 @@ struct GameModel {
     if stagedForCrib.count == 2 {
       crib.append(stagedForCrib[0])
       crib.append(stagedForCrib[1])
-      human.hand.cards.removeAll(where: { $0 == stagedForCrib[0] })
-      human.hand.cards.removeAll(where: { $0 == stagedForCrib[1] })
+      human.hand.removeAll(where: { $0 == stagedForCrib[0] })
+      human.hand.removeAll(where: { $0 == stagedForCrib[1] })
       stagedForCrib = []
-      crib.append(computer.hand.cards[0])
-      crib.append(computer.hand.cards[1])
-      computer.hand.cards.removeFirst()
-      computer.hand.cards.removeFirst()
+      crib.append(computer.hand[0])
+      crib.append(computer.hand[1])
+      computer.hand.removeFirst()
+      computer.hand.removeFirst()
       flip()
       isCribLocked = true
+      stage = .scoringHands
     }
   }
 
@@ -84,14 +118,12 @@ struct GameModel {
     // TODO: implement this
   }
 
-}
+  mutating func scoreHands() {
+    if let flippedCard = flippedCard {
+      computer.score += score(hand: computer.hand, flip: flippedCard, isCrib: false)
+      human.score += score(hand: human.hand, flip: flippedCard, isCrib: false)
+    }
 
-struct Hand {
-
-  var cards: [Card] = []
-
-  mutating func reset() {
-    cards = []
   }
 
 }
@@ -99,6 +131,12 @@ struct Hand {
 struct Player {
 
   var score: Int = 0
-  var hand = Hand()
+  var hand = [Card]()
 
+}
+
+extension [Card] {
+  mutating func reset() {
+    self = []
+  }
 }

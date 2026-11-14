@@ -15,14 +15,15 @@ struct GameView: View {
       background
       VStack {
         HandView(
-          game: game, cards: game.computer.hand.cards, isFaceUp: false,
+          game: game, cards: game.computer.hand, isFaceUp: game.stage == .scoringHands,
           animationNamespace: animationNamespace)
         Spacer()
         TrayView(game, animationNamespace: animationNamespace)
         buttons
+        ScoreView(computer: game.computer, human: game.human)
         Spacer()
         HandView(
-          game: game, cards: game.human.hand.cards, isFaceUp: true,
+          game: game, cards: game.human.hand, isFaceUp: true,
           animationNamespace: animationNamespace)
       }
     }
@@ -35,7 +36,7 @@ struct GameView: View {
       Spacer()
       throwButton
       Spacer()
-      layButton
+      scoreButton
       Spacer()
       resetButton
       Spacer()
@@ -62,6 +63,18 @@ struct GameView: View {
     }
     .buttonStyle(.borderedProminent)
     .disabled(game.stagedForCrib.count != 2 || game.isCribLocked)
+  }
+
+  private var scoreButton: some View {
+    Button("Score") {
+      if game.isCribLocked {
+        withAnimation {
+          game.scoreHands()
+        }
+      }
+    }
+    .buttonStyle(.borderedProminent)
+    .disabled(!game.isCribLocked)
   }
 
   private var layButton: some View {

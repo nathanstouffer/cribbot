@@ -4,6 +4,14 @@ class GameViewModel: ObservableObject {
 
   @Published private var game = GameModel()
 
+  var stage: GameModel.HandStage {
+    return game.stage
+  }
+
+  var cribOwner: GameModel.CribOwner {
+    return game.cribOwner
+  }
+
   var deck: [Card] {
     return game.deck
   }
@@ -81,6 +89,10 @@ class GameViewModel: ObservableObject {
     } else {
       return false
     }
+  }
+
+  func scoreHands() {
+    game.scoreHands()
   }
 
 }
