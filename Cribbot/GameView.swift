@@ -15,7 +15,7 @@ struct GameView: View {
       background
       VStack {
         HandView(
-          game: game, cards: game.computer.hand, isFaceUp: game.stage == .scoringHands,
+          game: game, cards: game.bobCards, isFaceUp: game.stage == .scoringHands,
           animationNamespace: animationNamespace)
         Spacer()
         TrayView(game, animationNamespace: animationNamespace)

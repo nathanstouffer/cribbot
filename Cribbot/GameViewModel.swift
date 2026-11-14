@@ -8,7 +8,7 @@ class GameViewModel: ObservableObject {
     return game.stage
   }
 
-  var cribOwner: Game.CribOwner {
+  var cribOwner: Game.Player {
     return game.cribOwner
   }
 
@@ -17,7 +17,7 @@ class GameViewModel: ObservableObject {
   }
 
   var flippedCard: Card? {
-    return game.flippedCard
+    return game.flipped
   }
 
   var crib: [Card] {
@@ -25,29 +25,21 @@ class GameViewModel: ObservableObject {
   }
 
   var isCribLocked: Bool {
-    return game.isCribLocked
+    return crib.count == 4
   }
 
-  var stagedForCrib: [Card] {
-    return game.stagedForCrib
+  var ada: Game.Player {
+    return game.ada
   }
 
-  var stagedForLay: Card? {
-    return game.stagedForLay
-  }
-
-  var computer: Player {
-    return game.computer
-  }
-
-  var human: Player {
-    return game.human
+  var bob: Game.Player {
+    return game.bob
   }
 
   // MARK: - Intent functions
 
-  func resetDeck() {
-    game.resetDeck()
+  func shuffle() {
+    game.shuffle()
   }
 
   func shuffleAndDeal() {
