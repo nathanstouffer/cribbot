@@ -30,12 +30,20 @@ struct Game {
 
   private(set) var stage = HandStage.initial
 
-  var adaHand: [Card] {
-    cards.filter{ $0.owner == .ada }.map{ $0.card }
+  var adaHand: [CribbageCard] {
+    cards.filter{ $0.owner == .ada }
   }
-  
-  var bobHand: [Card] {
-    cards.filter{ $0.owner == .bob }.map{ $0.card }
+
+  var bobHand: [CribbageCard] {
+    cards.filter{ $0.owner == .bob }
+  }
+
+  var adaCards: [Card] {
+    adaHand.map{ $0.card }
+  }
+
+  var bobCards: [Card] {
+    bobHand.map{ $0.card }
   }
 
   var crib: [Card] {

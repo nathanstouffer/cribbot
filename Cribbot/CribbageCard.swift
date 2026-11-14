@@ -14,10 +14,12 @@ struct CribbageCard {
 
   let card: Card
   var owner: Owner
+  var layed: Bool
 
   init(_ card: Card) {
     self.card = card
     self.owner = .deck
+    self.layed = false
   }
 
   var id: String {
