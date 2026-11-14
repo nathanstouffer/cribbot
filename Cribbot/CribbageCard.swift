@@ -2,14 +2,18 @@ struct CribbageCard {
 
   enum Owner {
     case deck
-    case player1
-    case player2
+    case ada
+    case bob
     case crib
     case flip
+
+    var isPlayer: Bool {
+      return self == .ada || self == .bob
+    }
   }
 
   let card: Card
-  let owner: Owner
+  var owner: Owner
 
   init(_ card: Card) {
     self.card = card
@@ -23,4 +27,14 @@ struct CribbageCard {
   var debugDescription: String {
     return id
   }
+}
+
+extension CribbageCard {
+  static let fullDeckByRank: [CribbageCard] = {
+    return Card.Rank.all.flatMap { rank in
+      Card.Suit.all.map { suit in
+        CribbageCard(Card(rank, suit))
+      }
+    }
+  }()
 }
