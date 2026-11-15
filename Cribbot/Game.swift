@@ -89,8 +89,10 @@ struct Game {
     toss(right)
   }
 
-  mutating func lay(_ card: Card) {
+  mutating func lay(_ card: Card, by: Player) {
     precondition(flipped != nil, "Flipped card has not been selected")
+    precondition(find(card).owner == by, "Card is not owned by player")
+    precondition(!find(card).layed, "Card has already been layed")
     let i = findIndex(card)
     cards[i].layed = true
   }
