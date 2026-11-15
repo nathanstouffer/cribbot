@@ -15,15 +15,16 @@ struct GameView: View {
       background
       VStack {
         HandView(
-          game: game, cards: game.computer.hand, isFaceUp: game.stage == .scoringHands,
+          game: game, cards: game.adaCards, isFaceUp: game.stage == .scoringHands,
           animationNamespace: animationNamespace)
         Spacer()
+        ScoreView(score: game.adaScore).padding(20)
         TrayView(game, animationNamespace: animationNamespace)
         buttons
-        ScoreView(computer: game.computer, human: game.human)
+        ScoreView(score: game.bobScore)
         Spacer()
         HandView(
-          game: game, cards: game.human.hand, isFaceUp: true,
+          game: game, cards: game.bobCards, isFaceUp: true,
           animationNamespace: animationNamespace)
       }
     }
@@ -34,7 +35,7 @@ struct GameView: View {
       Spacer()
       dealButton
       Spacer()
-      throwButton
+      tossButton
       Spacer()
       scoreButton
       Spacer()
@@ -47,22 +48,22 @@ struct GameView: View {
   private var dealButton: some View {
     Button("Deal") {
       withAnimation {
-        game.shuffleAndDeal()
+        game.startNewHand()
       }
     }
     .buttonStyle(.borderedProminent)
   }
 
-  private var throwButton: some View {
-    Button("Throw") {
-      if game.stagedForCrib.count == 2 {
+  private var tossButton: some View {
+    Button("Toss") {
+      if game.canToss {
         withAnimation {
-          game.throwToCrib()
+          game.toss(game.staged[0], game.staged[1])
         }
       }
     }
     .buttonStyle(.borderedProminent)
-    .disabled(game.stagedForCrib.count != 2 || game.isCribLocked)
+    .disabled(!game.canToss)
   }
 
   private var scoreButton: some View {
@@ -79,20 +80,20 @@ struct GameView: View {
 
   private var layButton: some View {
     Button("Lay") {
-      if game.isCribLocked && game.stagedForLay != nil {
+      if game.isCribLocked && game.staged.count == 1 {
         withAnimation {
 
         }
       }
     }
     .buttonStyle(.borderedProminent)
-    .disabled(game.stagedForLay == nil || !game.isCribLocked)
+    .disabled(game.staged.count != 1 || !game.isCribLocked)
   }
 
   private var resetButton: some View {
     Button("Reset") {
       withAnimation {
-        game.resetDeck()
+        game.clearHand()
       }
     }
     .buttonStyle(.borderedProminent)

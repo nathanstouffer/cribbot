@@ -3,6 +3,7 @@ import SwiftUI
 struct TrayView: View {
 
   @ObservedObject private var game: GameViewModel
+  @State private var arrowRotationAngle = 0.0
   private let animationNamespace: Namespace.ID
 
   init(_ game: GameViewModel, animationNamespace: Namespace.ID) {
@@ -71,7 +72,15 @@ struct TrayView: View {
     Image(systemName: "arrowshape.up")
       .foregroundStyle(.secondary)
       .font(.largeTitle)
-      .rotationEffect(Angle(degrees: game.cribOwner == .computer ? 0.0 : 180.0))
+      .rotationEffect(.degrees(arrowRotationAngle))
+      .onAppear {
+        arrowRotationAngle = game.playerOwnsCrib ? 0.0 : 180.0
+      }
+      .onChange(of: game.playerOwnsCrib) { _, _ in
+        withAnimation(.easeInOut(duration: 0.4)) {
+          arrowRotationAngle += 180.0
+        }
+      }
   }
 
   struct StackView<Content: View>: View {

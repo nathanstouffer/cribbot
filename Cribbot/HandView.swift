@@ -17,9 +17,8 @@ struct HandView: View {
   var body: some View {
     HStack(spacing: cards.count == 6 ? -30 : nil) {
       ForEach(Array(cards.enumerated()), id: \.element) { i, card in
-        let isStaged = game.stagedForCrib.contains(card) || game.isStagedForLay(card)
         CardView(card, isFaceUp: isFaceUp)
-          .offset(x: 0, y: isStaged ? -12 : 0)
+          .offset(x: 0, y: game.isStaged(card) ? -12 : 0)
           .zIndex(Double(i))
           .matchedGeometryEffect(id: card.id, in: animationNamespace)
           .onTapGesture {
@@ -33,18 +32,10 @@ struct HandView: View {
   private func onTap(card: Card) {
     if isFaceUp {
       withAnimation {
-        if cards.count == 6 {
-          if !game.isStagedForCrib(card) {
-            game.stageForCrib(card)
-          } else {
-            game.unstageForCrib(card)
-          }
+        if !game.isStaged(card) {
+          game.stage(card)
         } else {
-          if !game.isStagedForLay(card) {
-            game.stageForLay(card)
-          } else {
-            game.unstageForLay(card)
-          }
+          game.unstage(card)
         }
       }
     }
