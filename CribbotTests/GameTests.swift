@@ -13,7 +13,7 @@ struct GameTests {
 
     #expect(Game.Player.ada != CribbageCard.Owner.bob, "Failed Player.ada != Owner.bob")
     #expect(Game.Player.bob != CribbageCard.Owner.ada, "Failed Player.bob != Owner.ada")
-    
+
     #expect(CribbageCard.Owner.ada != Game.Player.bob, "Failed Owner.ada != Player.bob")
     #expect(CribbageCard.Owner.bob != Game.Player.ada, "Failed Owner.bob != Player.ada")
   }

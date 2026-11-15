@@ -40,7 +40,7 @@ class GameViewModel: ObservableObject {
   var crib: [Card] {
     return game.crib
   }
-  
+
   // MARK: - Indicators
 
   var playerOwnsCrib: Bool {
@@ -50,11 +50,11 @@ class GameViewModel: ObservableObject {
   var isCribLocked: Bool {
     return crib.count == 4
   }
-  
+
   var canToss: Bool {
     !isCribLocked && staged.count == 2
   }
-  
+
   var canLay: Bool {
     isCribLocked && staged.count == 1
   }

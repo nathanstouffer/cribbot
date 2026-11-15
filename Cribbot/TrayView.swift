@@ -73,14 +73,14 @@ struct TrayView: View {
       .foregroundStyle(.secondary)
       .font(.largeTitle)
       .rotationEffect(.degrees(arrowRotationAngle))
-                  .onAppear {
-                    arrowRotationAngle = game.playerOwnsCrib ? 0.0 : 180.0
-                  }
-                  .onChange(of: game.playerOwnsCrib) { _, _ in
-                      withAnimation(.easeInOut(duration: 0.4)) {
-                        arrowRotationAngle += 180.0
-                      }
-                  }
+      .onAppear {
+        arrowRotationAngle = game.playerOwnsCrib ? 0.0 : 180.0
+      }
+      .onChange(of: game.playerOwnsCrib) { _, _ in
+        withAnimation(.easeInOut(duration: 0.4)) {
+          arrowRotationAngle += 180.0
+        }
+      }
   }
 
   struct StackView<Content: View>: View {
