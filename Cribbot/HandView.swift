@@ -17,7 +17,7 @@ struct HandView: View {
   var body: some View {
     HStack(spacing: cards.count == 6 ? -30 : nil) {
       ForEach(Array(cards.enumerated()), id: \.element) { i, card in
-        let isStaged = game.stagedForCrib.contains(card) || game.isStagedForLay(card)
+        let isStaged = game.staged.contains(card) || game.isStaged(card)
         CardView(card, isFaceUp: isFaceUp)
           .offset(x: 0, y: isStaged ? -12 : 0)
           .zIndex(Double(i))
@@ -34,16 +34,16 @@ struct HandView: View {
     if isFaceUp {
       withAnimation {
         if cards.count == 6 {
-          if !game.isStagedForCrib(card) {
-            game.stageForCrib(card)
+          if !game.isStaged(card) {
+            game.stage(card)
           } else {
-            game.unstageForCrib(card)
+            game.unstage(card)
           }
         } else {
-          if !game.isStagedForLay(card) {
-            game.stageForLay(card)
+          if !game.isStaged(card) {
+            game.stage(card)
           } else {
-            game.unstageForLay(card)
+            game.unstage(card)
           }
         }
       }

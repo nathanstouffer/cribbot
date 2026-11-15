@@ -2,15 +2,15 @@ import SwiftUI
 
 struct ScoreView: View {
 
-  var computer: Player
-  var human: Player
+  var adaScore: Int
+  var bobScore: Int
 
   var body: some View {
     HStack {
       Spacer()
-      score(text: "Opponent: \(computer.score)")
+      score(text: "Opponent: \(adaScore)")
       Spacer()
-      score(text: "You: \(human.score)")
+      score(text: "You: \(bobScore)")
       Spacer()
     }
   }

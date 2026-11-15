@@ -1,19 +1,34 @@
 import Foundation
 
+/// This class utilizes the Game struct to control the state of a cribbage game
+/// The computer has the role of Ada and the player has the role of Bob
 class GameViewModel: ObservableObject {
 
   @Published private var game = Game()
 
+  // TODO (stouff) find a new name for this
   var stage: Game.HandStage {
     return game.stage
   }
 
-  var cribOwner: Game.Player {
-    return game.cribOwner
+  var adaScore: Int {
+    game.adaScore
+  }
+
+  var bobScore: Int {
+    game.bobScore
   }
 
   var deck: [Card] {
     return game.deck
+  }
+
+  var adaCards: [Card] {
+    game.adaCards
+  }
+
+  var bobCards: [Card] {
+    game.bobCards
   }
 
   var flippedCard: Card? {
@@ -24,67 +39,51 @@ class GameViewModel: ObservableObject {
     return game.crib
   }
 
+  var playerOwnsCrib: Bool {
+    return game.cribOwner == Game.Player.bob
+  }
+
   var isCribLocked: Bool {
     return crib.count == 4
   }
 
-  var ada: Game.Player {
-    return game.ada
-  }
-
-  var bob: Game.Player {
-    return game.bob
-  }
-
   // MARK: - Intent functions
 
-  func shuffle() {
+  func startNewHand() {
     game.shuffle()
+    game.deal()
   }
 
-  func shuffleAndDeal() {
-    game.resetDeck()
-    game.shuffleAndDeal()
+  func stage(_ card: Card) {
+    staged.append(card)
   }
 
-  func stageForCrib(_ card: Card) {
-    game.stageForCrib(card)
+  func unstage(_ card: Card) {
+    staged.removeAll(where: { $0 == card })
   }
 
-  func unstageForCrib(_ card: Card) {
-    game.unstageForCrib(card)
-  }
-
-  func throwToCrib() {
-    game.throwToCrib()
-  }
-
-  func isStagedForCrib(_ card: Card) -> Bool {
-    return game.stagedForCrib.contains(card)
-  }
-
-  func stageForLay(_ card: Card) {
-    game.stageForLay(card)
-  }
-
-  func unstageForLay(_ card: Card) {
-    game.unstageForLay(card)
+  func toss(_ left: Card, _ right: Card) {
+    game.toss(left, right, by: .bob)
+    game.toss(game.adaCards[0], game.adaCards[1], by: .ada)
   }
 
   func lay(_ card: Card) {
-    game.lay(card)
-  }
-
-  func isStagedForLay(_ card: Card) -> Bool {
-    if let staged = game.stagedForLay {
-      return card == staged
-    } else {
-      return false
-    }
+    game.lay(card, by: .bob)
   }
 
   func scoreHands() {
     game.scoreHands()
   }
 
+  func clearHand() {
+    game.shuffle()
+  }
+
+  // MARK: - Staging functions
+
+  private(set) var staged = [Card]()
+
+  func isStaged(_ card: Card) -> Bool {
+    staged.contains(card)
+  }
 }

@@ -71,7 +71,7 @@ struct TrayView: View {
     Image(systemName: "arrowshape.up")
       .foregroundStyle(.secondary)
       .font(.largeTitle)
-      .rotationEffect(Angle(degrees: game.cribOwner == .computer ? 0.0 : 180.0))
+      .rotationEffect(Angle(degrees: game.playerOwnsCrib ? 0.0 : 180.0))
   }
 
   struct StackView<Content: View>: View {
