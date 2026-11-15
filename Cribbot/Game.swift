@@ -104,6 +104,11 @@ struct Game {
       adaScore += score(hand: adaCards, flip: flipped!, isCrib: false)
       adaScore += score(hand: crib, flip: flipped!, isCrib: true)
     }
+    if cribOwner == .bob {
+      adaScore += score(hand: adaCards, flip: flipped!, isCrib: false)
+      bobScore += score(hand: bobCards, flip: flipped!, isCrib: false)
+      bobScore += score(hand: crib, flip: flipped!, isCrib: true)
+    }
   }
 
   // MARK: - Private helpers

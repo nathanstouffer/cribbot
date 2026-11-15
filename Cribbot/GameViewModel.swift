@@ -19,6 +19,8 @@ class GameViewModel: ObservableObject {
     game.bobScore
   }
 
+  // MARK: - Card accessors
+
   var deck: [Card] {
     return game.deck
   }
@@ -38,6 +40,8 @@ class GameViewModel: ObservableObject {
   var crib: [Card] {
     return game.crib
   }
+  
+  // MARK: - Indicators
 
   var playerOwnsCrib: Bool {
     return game.cribOwner == Game.Player.bob
@@ -45,6 +49,14 @@ class GameViewModel: ObservableObject {
 
   var isCribLocked: Bool {
     return crib.count == 4
+  }
+  
+  var canToss: Bool {
+    !isCribLocked && staged.count == 2
+  }
+  
+  var canLay: Bool {
+    isCribLocked && staged.count == 1
   }
 
   // MARK: - Intent functions
@@ -63,8 +75,10 @@ class GameViewModel: ObservableObject {
   }
 
   func toss(_ left: Card, _ right: Card) {
+    staged.removeAll()
     game.toss(left, right, by: .bob)
     game.toss(game.adaCards[0], game.adaCards[1], by: .ada)
+    game.flip()
   }
 
   func lay(_ card: Card) {
@@ -81,7 +95,7 @@ class GameViewModel: ObservableObject {
 
   // MARK: - Staging functions
 
-  private(set) var staged = [Card]()
+  @Published private(set) var staged = [Card]()
 
   func isStaged(_ card: Card) -> Bool {
     staged.contains(card)
