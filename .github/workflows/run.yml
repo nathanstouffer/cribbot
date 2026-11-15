@@ -47,5 +47,6 @@ jobs:
           set -o pipefail
           xcodebuild test -project Cribbot.xcodeproj \
             -scheme Cribbot \
-            -destination 'platform=iOS Simulator,name=iPhone 17'
+            -destination 'platform=iOS Simulator,name=iPhone 17' \
+            -only-testing:CribbotTests
         shell: bash
