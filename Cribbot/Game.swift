@@ -128,9 +128,8 @@ struct Game {
 
 func == (_ lhs: Game.Player, _ rhs: CribbageCard.Owner) -> Bool {
   switch lhs {
-  case .ada: return rhs == .ada
-  case .bob: return rhs == .bob
-  default: return false
+  case .ada: return rhs == CribbageCard.Owner.ada
+  case .bob: return rhs == CribbageCard.Owner.bob
   }
 }
 
