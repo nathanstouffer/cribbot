@@ -67,7 +67,13 @@ class GameViewModel: ObservableObject {
   }
 
   func stage(_ card: Card) {
-    staged.append(card)
+    if !isStaged(card) {
+      staged.append(card)
+      let max = isCribLocked ? 1 : 2
+      while staged.count > max {
+        staged.remove(at: 0)
+      }
+    }
   }
 
   func unstage(_ card: Card) {
