@@ -13,19 +13,19 @@ struct GameView: View {
   var body: some View {
     ZStack {
       background
-//      VStack {
-//        HandView(
-//          game: game, cards: game.adaCards, isFaceUp: game.stage == .scoringHands,
-//          animationNamespace: animationNamespace)
-//        Spacer()
-//        TrayView(game, animationNamespace: animationNamespace)
-//        buttons
-//        ScoreView(adaScore: game.adaScore, bobScore: game.bobScore)
-//        Spacer()
-//        HandView(
-//          game: game, cards: game.bobCards, isFaceUp: true,
-//          animationNamespace: animationNamespace)
-//      }
+      VStack {
+        HandView(
+          game: game, cards: game.adaCards, isFaceUp: game.stage == .scoringHands,
+          animationNamespace: animationNamespace)
+        Spacer()
+        TrayView(game, animationNamespace: animationNamespace)
+        buttons
+        ScoreView(adaScore: game.adaScore, bobScore: game.bobScore)
+        Spacer()
+        HandView(
+          game: game, cards: game.bobCards, isFaceUp: true,
+          animationNamespace: animationNamespace)
+      }
     }
   }
 
