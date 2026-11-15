@@ -42,13 +42,18 @@ jobs:
       - name: Install xcpretty
         run: gem install --no-document xcpretty
 
+      - name: Cache DerivedData
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-xcode-deriveddata-${{ hashFiles('**/*.swift', '**/*.xcodeproj') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-deriveddata-
+
       - name: Run tests
         run: |
           set -o pipefail
           xcodebuild test -project Cribbot.xcodeproj \
             -scheme Cribbot \
-            -destination 'platform=iOS Simulator,name=iPhone 17' \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
+            -destination 'platform=iOS Simulator,name=iPhone 17'
         shell: bash
