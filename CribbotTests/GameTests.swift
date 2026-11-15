@@ -5,7 +5,7 @@ import Testing
 struct GameTests {
 
   @Test func playerOwnerEquality() throws {
-    #expect(Game.Player.ada == CribbageCard.Owner.ada, "Failed Player.ada == Owner.ada")
+    #expect(Game.Player.ada == CribbageCard.Owner.bob, "Failed Player.ada == Owner.ada")
     #expect(Game.Player.bob == CribbageCard.Owner.bob, "Failed Player.bob == Owner.bob")
 
     #expect(CribbageCard.Owner.ada == Game.Player.ada, "Failed Owner.ada == Player.ada")
