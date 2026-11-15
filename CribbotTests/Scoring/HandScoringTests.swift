@@ -71,6 +71,15 @@ struct ScoringTests {
     tests.append(
       ScoreTest(
         hand: [
+          Card(.two, .clubs), Card(.three, .diamonds), Card(.four, .hearts), Card(.four, .spades),
+        ],
+        flip: Card(.five, .diamonds),
+        isCrib: true, score: 12)
+    )
+
+    tests.append(
+      ScoreTest(
+        hand: [
           Card(.four, .clubs), Card(.six, .diamonds), Card(.five, .hearts), Card(.four, .spades),
         ],
         flip: Card(.five, .diamonds),
