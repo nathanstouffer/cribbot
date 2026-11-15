@@ -18,9 +18,10 @@ struct GameView: View {
           game: game, cards: game.adaCards, isFaceUp: game.stage == .scoringHands,
           animationNamespace: animationNamespace)
         Spacer()
+        ScoreView(score: game.adaScore).padding(20)
         TrayView(game, animationNamespace: animationNamespace)
         buttons
-        ScoreView(adaScore: game.adaScore, bobScore: game.bobScore)
+        ScoreView(score: game.bobScore)
         Spacer()
         HandView(
           game: game, cards: game.bobCards, isFaceUp: true,
