@@ -48,5 +48,7 @@ jobs:
           xcodebuild test -project Cribbot.xcodeproj \
             -scheme Cribbot \
             -destination 'platform=iOS Simulator,name=iPhone 17' \
-            -only-testing:CribbotTests
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
         shell: bash
