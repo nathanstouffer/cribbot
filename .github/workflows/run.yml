@@ -39,11 +39,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install xcpretty
+        run: gem install --no-document xcpretty
+
       - name: Run tests
         run: |
           set -o pipefail
-          xcodebuild test \
-            -project Cribbot.xcodeproj \
+          xcodebuild test -project Cribbot.xcodeproj \
             -scheme Cribbot \
-            -destination 'platform=iOS Simulator,name=iPhone 16'
+            -destination 'platform=iOS Simulator,name=iPhone 16' | xcpretty --no-color
         shell: bash
