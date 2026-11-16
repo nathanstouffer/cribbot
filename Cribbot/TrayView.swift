@@ -74,7 +74,7 @@ struct TrayView: View {
       .font(.largeTitle)
       .rotationEffect(.degrees(arrowRotationAngle))
       .onAppear {
-        arrowRotationAngle = game.playerOwnsCrib ? 0.0 : 180.0
+        arrowRotationAngle = game.playerOwnsCrib ? 180.0 : 0.0
       }
       .onChange(of: game.playerOwnsCrib) { _, _ in
         withAnimation(.easeInOut(duration: 0.4)) {

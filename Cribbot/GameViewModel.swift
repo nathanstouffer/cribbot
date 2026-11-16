@@ -59,15 +59,15 @@ class GameViewModel: ObservableObject {
   }
   
   var canScore: Bool {
-    isCribLocked && !game.hasScoredHand
+    isCribLocked && !game.scoringProgress.isDone
   }
   
   var canEndHand: Bool {
-    game.hasScoredHand
+    game.scoringProgress.isDone
   }
 
   var showAdaCards: Bool {
-    false
+    isCribLocked
   }
 
   // MARK: - Intent functions
@@ -102,8 +102,14 @@ class GameViewModel: ObservableObject {
     game.lay(card, by: .bob)
   }
 
-  func scoreHands() {
-    game.scoreHands()
+  func scoreNextHand() {
+    if game.scoringProgress.dealerHand {
+      game.scoreCrib()
+    } else if game.scoringProgress.nondealerHand {
+      game.scoreDealer()
+    } else {
+      game.scoreNondealer()
+    }
   }
 
   func endHand() {

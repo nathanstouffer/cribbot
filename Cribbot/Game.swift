@@ -14,15 +14,25 @@ struct Game {
       }
     }
   }
+  
+  struct ScoringProgress {
+    var nondealerHand = false
+    var dealerHand = false
+    var crib = false
+    
+    var isDone: Bool {
+      nondealerHand && dealerHand && crib
+    }
+  }
 
   private(set) var adaScore = 0
   private(set) var bobScore = 0
 
-  private(set) var cribOwner: Player = Player.allCases.randomElement()!
+  private(set) var cribOwner = Player.allCases.randomElement()!
 
   private(set) var cards = CribbageCard.fullDeckByRank
   
-  private(set) var hasScoredHand = false
+  private(set) var scoringProgress = ScoringProgress()
 
   var deck: [Card] {
     cards.filter { $0.owner == .deck }.map { $0.card }
@@ -59,7 +69,7 @@ struct Game {
   mutating func shuffle() {
     cards = CribbageCard.fullDeckByRank
     cards.shuffle()
-    hasScoredHand = false
+    scoringProgress = ScoringProgress()
   }
 
   mutating func deal() {
@@ -91,20 +101,40 @@ struct Game {
     let i = findIndex(card)
     cards[i].layed = true
   }
-
-  mutating func scoreHands() {
+  
+  mutating func scoreNondealer() {
     precondition(flipped != nil, "Flipped card has not been selected")
+    precondition(!scoringProgress.crib && !scoringProgress.dealerHand, "Nondealer must be scored first")
     if cribOwner == .ada {
       bobScore += score(hand: bobCards, flip: flipped!, isCrib: false)
-      adaScore += score(hand: adaCards, flip: flipped!, isCrib: false)
-      adaScore += score(hand: crib, flip: flipped!, isCrib: true)
     }
     if cribOwner == .bob {
       adaScore += score(hand: adaCards, flip: flipped!, isCrib: false)
+    }
+    scoringProgress.nondealerHand = true
+  }
+  
+  mutating func scoreDealer() {
+    precondition(flipped != nil, "Flipped card has not been selected")
+    precondition(scoringProgress.nondealerHand, "Nondealer hand must be scored before dealer")
+    if cribOwner == .ada {
+      adaScore += score(hand: adaCards, flip: flipped!, isCrib: false)
+    }
+    if cribOwner == .bob {
       bobScore += score(hand: bobCards, flip: flipped!, isCrib: false)
+    }
+    scoringProgress.dealerHand = true
+  }
+  mutating func scoreCrib() {
+    precondition(flipped != nil, "Flipped card has not been selected")
+    precondition(scoringProgress.dealerHand, "Dealer hand must be scored before crib")
+    if cribOwner == .ada {
+      adaScore += score(hand: crib, flip: flipped!, isCrib: true)
+    }
+    if cribOwner == .bob {
       bobScore += score(hand: crib, flip: flipped!, isCrib: true)
     }
-    hasScoredHand = true
+    scoringProgress.crib = true
   }
 
   // MARK: - Private helpers

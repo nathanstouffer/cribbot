@@ -71,9 +71,9 @@ struct GameView: View {
 
   private var scoreButton: some View {
     Button("Score") {
-      if game.isCribLocked {
+      if game.canScore {
         withAnimation {
-          game.scoreHands()
+          game.scoreNextHand()
         }
       }
     }
