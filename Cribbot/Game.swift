@@ -14,12 +14,12 @@ struct Game {
       }
     }
   }
-  
+
   struct ScoringProgress {
     var nondealerHand = false
     var dealerHand = false
     var crib = false
-    
+
     var isDone: Bool {
       nondealerHand && dealerHand && crib
     }
@@ -31,7 +31,7 @@ struct Game {
   private(set) var cribOwner = Player.allCases.randomElement()!
 
   private(set) var cards = CribbageCard.fullDeckByRank
-  
+
   private(set) var scoringProgress = ScoringProgress()
 
   var deck: [Card] {
@@ -101,10 +101,11 @@ struct Game {
     let i = findIndex(card)
     cards[i].layed = true
   }
-  
+
   mutating func scoreNondealer() {
     precondition(flipped != nil, "Flipped card has not been selected")
-    precondition(!scoringProgress.crib && !scoringProgress.dealerHand, "Nondealer must be scored first")
+    precondition(
+      !scoringProgress.crib && !scoringProgress.dealerHand, "Nondealer must be scored first")
     if cribOwner == .ada {
       bobScore += score(hand: bobCards, flip: flipped!, isCrib: false)
     }
@@ -113,7 +114,7 @@ struct Game {
     }
     scoringProgress.nondealerHand = true
   }
-  
+
   mutating func scoreDealer() {
     precondition(flipped != nil, "Flipped card has not been selected")
     precondition(scoringProgress.nondealerHand, "Nondealer hand must be scored before dealer")

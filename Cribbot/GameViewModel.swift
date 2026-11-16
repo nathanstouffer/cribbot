@@ -45,7 +45,7 @@ class GameViewModel: ObservableObject {
   var isCribLocked: Bool {
     return crib.count == 4
   }
-  
+
   var canDeal: Bool {
     game.deck.count == 52
   }
@@ -57,11 +57,11 @@ class GameViewModel: ObservableObject {
   var canLay: Bool {
     isCribLocked && staged.count == 1
   }
-  
+
   var canScore: Bool {
     isCribLocked && !game.scoringProgress.isDone
   }
-  
+
   var canEndHand: Bool {
     game.scoringProgress.isDone
   }
