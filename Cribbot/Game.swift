@@ -97,14 +97,12 @@ struct Game {
     if cribOwner == .ada {
       bobScore += score(hand: bobCards, flip: flipped!, isCrib: false)
       adaScore += score(hand: adaCards, flip: flipped!, isCrib: false)
-      // TODO (stouff) eventually handle crib scoring
-      //adaScore += score(hand: crib, flip: flipped!, isCrib: true)
+      adaScore += score(hand: crib, flip: flipped!, isCrib: true)
     }
     if cribOwner == .bob {
       adaScore += score(hand: adaCards, flip: flipped!, isCrib: false)
       bobScore += score(hand: bobCards, flip: flipped!, isCrib: false)
-      // TODO (stouff) eventually handle crib scoring
-      //bobScore += score(hand: crib, flip: flipped!, isCrib: true)
+      bobScore += score(hand: crib, flip: flipped!, isCrib: true)
     }
     hasScoredHand = true
   }
