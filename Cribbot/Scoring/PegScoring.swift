@@ -15,7 +15,7 @@ func pegFromFifteen(cards: [Card]) -> Int {
 
 // TODO (stouff) figure out how to score a "go"
 func pegFromThirtyOne(cards: [Card]) -> Int {
-  cards.sum() == 31 ? 1 : 0
+  cards.sum() == 31 ? 2 : 0
 }
 
 func pegFromRun(cards: [Card]) -> Int {
@@ -31,7 +31,7 @@ func pegFromRun(cards: [Card]) -> Int {
 func pegFromPairs(cards: [Card]) -> Int {
   for i in 0..<cards.count {
     let trimmed = Array(cards[i...])
-    if trimmed.allSameRank() {
+    if trimmed.count >= 2 && trimmed.allSameRank() {
       switch trimmed.count {
       case 2: return 2
       case 3: return 6

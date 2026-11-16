@@ -2,7 +2,7 @@ import Testing
 
 @testable import Cribbot
 
-struct ScoringTests {
+struct HandScoringTests {
 
   struct ScoreTest {
     let hand: [Card]
