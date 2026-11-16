@@ -2,9 +2,11 @@ name: run
 
 on:
   push:
-    branches: [ main, master ]
+    branches:
+      - main
   pull_request:
-    branches: [ main, master ]
+    branches:
+      - main
 
 jobs:
   build:
@@ -31,13 +33,27 @@ jobs:
             clean build | xcpretty --no-color
         shell: bash
 
-  # TODO (stouff) figure out how to run tests on GHA
-  # tests:
-  #   runs-on: macos-latest
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+  tests:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Run tests
-  #       run: xcodebuild test -scheme Cribbot -destination 'platform=iOS Simulator,name=iPhone 16'
-  #       shell: bash
+      - name: Install xcpretty
+        run: gem install --no-document xcpretty
+
+      - name: Cache DerivedData
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: ${{ runner.os }}-xcode-deriveddata-${{ hashFiles('**/*.swift', '**/*.xcodeproj') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-deriveddata-
+
+      - name: Run tests
+        run: |
+          set -o pipefail
+          xcodebuild test -project Cribbot.xcodeproj \
+            -scheme Cribbot \
+            -destination 'platform=iOS Simulator,name=iPhone 17'
+        shell: bash
