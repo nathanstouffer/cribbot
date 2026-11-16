@@ -101,6 +101,8 @@ struct Game {
     let i = findIndex(card)
     cards[i].layed = true
   }
+  
+  // MARK: - Scoring functions
 
   mutating func scoreNondealer() {
     precondition(flipped != nil, "Flipped card has not been selected")
@@ -108,9 +110,12 @@ struct Game {
       !scoringProgress.crib && !scoringProgress.dealerHand, "Nondealer must be scored first")
     if cribOwner == .ada {
       bobScore += score(hand: bobCards, flip: flipped!, isCrib: false)
+      // TODO (stouff) consider if retargeting is a good idea
+      //retarget(cards: bobCards, to: .deck)
     }
     if cribOwner == .bob {
       adaScore += score(hand: adaCards, flip: flipped!, isCrib: false)
+      //retarget(cards: adaCards, to: .deck)
     }
     scoringProgress.nondealerHand = true
   }
@@ -120,9 +125,13 @@ struct Game {
     precondition(scoringProgress.nondealerHand, "Nondealer hand must be scored before dealer")
     if cribOwner == .ada {
       adaScore += score(hand: adaCards, flip: flipped!, isCrib: false)
+      //retarget(cards: adaCards, to: .deck)
+      //retarget(cards: crib, to: .ada)
     }
     if cribOwner == .bob {
       bobScore += score(hand: bobCards, flip: flipped!, isCrib: false)
+      //retarget(cards: bobCards, to: .deck)
+      //retarget(cards: crib, to: .bob)
     }
     scoringProgress.dealerHand = true
   }
@@ -130,10 +139,12 @@ struct Game {
     precondition(flipped != nil, "Flipped card has not been selected")
     precondition(scoringProgress.dealerHand, "Dealer hand must be scored before crib")
     if cribOwner == .ada {
-      adaScore += score(hand: crib, flip: flipped!, isCrib: true)
+      adaScore += score(hand: adaCards, flip: flipped!, isCrib: true)
+      //retarget(cards: adaCards, to: .deck)
     }
     if cribOwner == .bob {
-      bobScore += score(hand: crib, flip: flipped!, isCrib: true)
+      bobScore += score(hand: bobCards, flip: flipped!, isCrib: true)
+      //retarget(cards: bobCards, to: .deck)
     }
     scoringProgress.crib = true
   }
@@ -153,6 +164,14 @@ struct Game {
   private mutating func toss(_ card: Card) {
     let i = findIndex(card)
     cards[i].owner = .crib
+  }
+  
+  private mutating func retarget(cards arr: [Card], to owner: CribbageCard.Owner) {
+    for i in cards.indices {
+      if arr.contains(cards[i].card) {
+        cards[i].owner = owner
+      }
+    }
   }
 }
 
