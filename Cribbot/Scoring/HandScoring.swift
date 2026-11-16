@@ -1,6 +1,5 @@
 func score(hand: [Card], flip: Card, isCrib: Bool) -> Int {
-  var cards = hand
-  cards.append(flip)
+  var cards = hand + [flip]
 
   var score = 0
   score += scoreFromPairs(cards: cards)
@@ -100,26 +99,6 @@ extension [Card] {
 
     result.sort(by: { $0.count > $1.count })
     return result
-  }
-
-  func sum() -> Int {
-    var total = 0
-    for card in self {
-      total += card.rank.peggingValue
-    }
-    return total
-  }
-
-  func isRun() -> Bool {
-    let sorted = self.sorted(by: { $0.rank.runValue < $1.rank.runValue })
-    for i in 1..<sorted.count {
-      let prev = sorted[i - 1]
-      let curr = sorted[i]
-      if prev.rank.runValue + 1 != curr.rank.runValue {
-        return false
-      }
-    }
-    return true
   }
 
   func allSameSuit() -> Bool {

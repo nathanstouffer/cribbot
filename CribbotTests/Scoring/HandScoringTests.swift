@@ -2,7 +2,7 @@ import Testing
 
 @testable import Cribbot
 
-struct ScoringTests {
+struct HandScoringTests {
 
   struct ScoreTest {
     let hand: [Card]
@@ -66,6 +66,15 @@ struct ScoringTests {
         ],
         flip: Card(.five, .clubs),
         isCrib: false, score: 29)
+    )
+
+    tests.append(
+      ScoreTest(
+        hand: [
+          Card(.two, .clubs), Card(.three, .diamonds), Card(.four, .hearts), Card(.four, .spades),
+        ],
+        flip: Card(.five, .diamonds),
+        isCrib: true, score: 12)
     )
 
     tests.append(
