@@ -15,7 +15,7 @@ struct GameView: View {
       background
       VStack {
         HandView(
-          game: game, cards: game.adaCards, isFaceUp: game.stage == .scoringHands,
+          game: game, cards: game.adaCards, isFaceUp: game.showAdaCards,
           animationNamespace: animationNamespace)
         Spacer()
         ScoreView(score: game.adaScore).padding(20)
@@ -37,9 +37,11 @@ struct GameView: View {
       Spacer()
       tossButton
       Spacer()
+      layButton
+      Spacer()
       scoreButton
       Spacer()
-      resetButton
+      nextButton
       Spacer()
     }
     .padding(20)
@@ -52,6 +54,7 @@ struct GameView: View {
       }
     }
     .buttonStyle(.borderedProminent)
+    .disabled(!game.canDeal)
   }
 
   private var tossButton: some View {
@@ -75,28 +78,29 @@ struct GameView: View {
       }
     }
     .buttonStyle(.borderedProminent)
-    .disabled(!game.isCribLocked)
+    .disabled(!game.canScore)
   }
 
   private var layButton: some View {
     Button("Lay") {
       if game.isCribLocked && game.staged.count == 1 {
         withAnimation {
-
+          game.lay(game.staged[0])
         }
       }
     }
     .buttonStyle(.borderedProminent)
-    .disabled(game.staged.count != 1 || !game.isCribLocked)
+    .disabled(!game.canLay)
   }
 
-  private var resetButton: some View {
-    Button("Reset") {
+  private var nextButton: some View {
+    Button("Next") {
       withAnimation {
-        game.clearHand()
+        game.endHand()
       }
     }
     .buttonStyle(.borderedProminent)
+    .disabled(!game.canEndHand)
   }
 
   private var background: some View {

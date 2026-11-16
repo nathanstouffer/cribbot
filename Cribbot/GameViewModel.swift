@@ -6,11 +6,6 @@ class GameViewModel: ObservableObject {
 
   @Published private var game = Game()
 
-  // TODO (stouff) find a new name for this
-  var stage: Game.HandStage {
-    return game.stage
-  }
-
   var adaScore: Int {
     game.adaScore
   }
@@ -50,6 +45,10 @@ class GameViewModel: ObservableObject {
   var isCribLocked: Bool {
     return crib.count == 4
   }
+  
+  var canDeal: Bool {
+    game.deck.count == 52
+  }
 
   var canToss: Bool {
     !isCribLocked && staged.count == 2
@@ -58,11 +57,22 @@ class GameViewModel: ObservableObject {
   var canLay: Bool {
     isCribLocked && staged.count == 1
   }
+  
+  var canScore: Bool {
+    isCribLocked && !game.hasScoredHand
+  }
+  
+  var canEndHand: Bool {
+    game.hasScoredHand
+  }
+
+  var showAdaCards: Bool {
+    false
+  }
 
   // MARK: - Intent functions
 
   func startNewHand() {
-    game.toggleCrib()
     game.shuffle()
     game.deal()
   }
@@ -96,8 +106,9 @@ class GameViewModel: ObservableObject {
     game.scoreHands()
   }
 
-  func clearHand() {
+  func endHand() {
     game.shuffle()
+    game.toggleCrib()
   }
 
   // MARK: - Staging functions

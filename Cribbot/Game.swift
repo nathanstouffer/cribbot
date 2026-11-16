@@ -2,12 +2,6 @@ import Foundation
 
 struct Game {
 
-  enum HandStage {
-    case initial
-    case selectingCrib
-    case scoringHands
-  }
-
   enum Player: CaseIterable {
     case ada
     case bob
@@ -27,8 +21,8 @@ struct Game {
   private(set) var cribOwner: Player = Player.allCases.randomElement()!
 
   private(set) var cards = CribbageCard.fullDeckByRank
-
-  private(set) var stage = HandStage.initial
+  
+  private(set) var hasScoredHand = false
 
   var deck: [Card] {
     cards.filter { $0.owner == .deck }.map { $0.card }
@@ -65,6 +59,7 @@ struct Game {
   mutating func shuffle() {
     cards = CribbageCard.fullDeckByRank
     cards.shuffle()
+    hasScoredHand = false
   }
 
   mutating func deal() {
@@ -111,6 +106,7 @@ struct Game {
       // TODO (stouff) eventually handle crib scoring
       //bobScore += score(hand: crib, flip: flipped!, isCrib: true)
     }
+    hasScoredHand = true
   }
 
   // MARK: - Private helpers
