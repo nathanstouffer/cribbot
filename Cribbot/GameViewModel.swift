@@ -59,7 +59,7 @@ class GameViewModel: ObservableObject {
   }
 
   var canScore: Bool {
-    isCribLocked
+    isCribLocked && !game.scoringProgress.isDone
   }
 
   var canEndHand: Bool {
