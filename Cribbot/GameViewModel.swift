@@ -5,6 +5,8 @@ import Foundation
 class GameViewModel: ObservableObject {
 
   @Published private var game = Game()
+  
+  private var adaHandSelector = RandomHandSelector()
 
   var adaScore: Int {
     game.adaScore
@@ -130,7 +132,11 @@ class GameViewModel: ObservableObject {
   func toss(_ left: Card, _ right: Card) {
     staged.removeAll()
     game.toss(left, right, by: .bob)
-    game.toss(game.adaCards[0], game.adaCards[1], by: .ada)
+    let adaToss = adaHandSelector.toss(cards: game.adaCards)
+    guard adaToss.count == 2 else {
+      fatalError("Ada tosses incorrect number of cards (2)")
+    }
+    game.toss(adaToss[0], adaToss[1], by: .ada)
     game.flip()
   }
 
