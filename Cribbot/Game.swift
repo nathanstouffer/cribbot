@@ -89,6 +89,13 @@ struct Game {
     let selected = deck.randomElement()!
     let i = findIndex(selected)
     cards[i].owner = .flip
+    if selected.rank == .jack {
+      if cribOwner == .ada {
+        adaScore += 2
+      } else if cribOwner == .bob {
+        bobScore += 2
+      }
+    }
   }
 
   mutating func toss(_ left: Card, _ right: Card, by: Player) {
