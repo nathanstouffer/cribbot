@@ -3,10 +3,10 @@ import SwiftUI
 struct ScoreView: View {
 
   var score: Int
-  
+
   @State private var delta: Int?
   @State private var animateDelta = false
-  
+
   private static let animationDuration = 2.0
 
   var body: some View {
@@ -36,16 +36,16 @@ struct ScoreView: View {
         triggerDeltaAnimation(diff)
       }
   }
-  
+
   private func triggerDeltaAnimation(_ amount: Int) {
     // Reset state in case points are scored back-to-back
     delta = amount
     animateDelta = false
-    
+
     withAnimation(.easeOut(duration: ScoreView.animationDuration)) {
       animateDelta = true
     }
-    
+
     // Clean up after the animation finishes
     Task {
       try? await Task.sleep(for: .seconds(ScoreView.animationDuration))
