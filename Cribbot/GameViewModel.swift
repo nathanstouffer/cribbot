@@ -45,6 +45,10 @@ class GameViewModel: ObservableObject {
   var isCribLocked: Bool {
     return crib.count == 4
   }
+  
+  var cribInTray: Bool {
+    isCribLocked && !scoringCrib && !hasScoredCrib
+  }
 
   var canDeal: Bool {
     game.deck.count == 52
@@ -82,12 +86,16 @@ class GameViewModel: ObservableObject {
     scoringCrib && game.cribOwner == .bob
   }
   
+  var hasScoredCrib: Bool {
+    game.scoringProgress.isDone
+  }
+  
   var hasScoredAdaCrib: Bool {
-    game.scoringProgress.isDone && game.cribOwner == .ada
+    hasScoredCrib && game.cribOwner == .ada
   }
   
   var hasScoredBobCrib: Bool {
-    game.scoringProgress.isDone && game.cribOwner == .bob
+    hasScoredCrib && game.cribOwner == .bob
   }
   
   var showAdaCrib: Bool {
