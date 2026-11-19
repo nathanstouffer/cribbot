@@ -16,7 +16,7 @@ struct RetainedHandSelectorTests {
       expectedToss == RetainedHandSelector().toss(cards: dealt),
       "Failed to focus on retained hand for RandomHandSelector")
   }
-  
+
   @Test func detectsFlush() throws {
     let dealt = [
       Card(.two, .clubs), Card(.six, .clubs), Card(.ten, .clubs), Card(.king, .diamonds),
@@ -29,7 +29,7 @@ struct RetainedHandSelectorTests {
       expectedToss == RetainedHandSelector().toss(cards: dealt),
       "Failed to detect flush for RandomHandSelector")
   }
-  
+
   @Test func detectsDoubleRun() throws {
     let dealt = [
       Card(.six, .clubs), Card(.five, .hearts), Card(.three, .hearts), Card(.six, .diamonds),
