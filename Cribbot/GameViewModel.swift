@@ -5,7 +5,7 @@ import Foundation
 class GameViewModel: ObservableObject {
 
   @Published private var game = Game()
-  
+
   private var adaHandSelector = RandomHandSelector()
 
   var adaScore: Int {

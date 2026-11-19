@@ -1,15 +1,15 @@
 /// A hand selector that chooses the cards to keep based solely on
 /// how the good the retained hand scores
 struct RetainedHandSelector: HandSelector {
-  
+
   struct Candidate {
     let toss: [Card]
     let score: Double
     let sum: Int
   }
-  
+
   func keep(cards: [Card]) -> [Card] {
-    var best = Candidate(toss: [], score: 0.0, sum: 10000) // assign invalid value that will be overwritten
+    var best = Candidate(toss: [], score: 0.0, sum: 10000)  // assign invalid value that will be overwritten
     for toss in allPossibleTosses(cards: cards) {
       let hand = cards.minus(toss)
       let score = expectedValue(cards: hand, dead: toss, isCrib: false)
@@ -25,5 +25,5 @@ struct RetainedHandSelector: HandSelector {
     }
     return cards.minus(best.toss)
   }
-  
+
 }

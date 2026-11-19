@@ -1,5 +1,5 @@
 protocol HandSelector {
-  
+
   func keep(cards: [Card]) -> [Card]
   func toss(cards: [Card]) -> [Card]
 }
@@ -10,11 +10,11 @@ extension HandSelector {
   func toss(cards: [Card]) -> [Card] {
     cards.minus(keep(cards: cards))
   }
-  
+
   func allPossibleTosses(cards: [Card]) -> [[Card]] {
     var variants = [[Card]]()
-    for i in 0..<cards.count-1 {
-      for j in i+1..<cards.count {
+    for i in 0..<cards.count - 1 {
+      for j in i + 1..<cards.count {
         variants.append([cards[i], cards[j]])
       }
     }
@@ -32,12 +32,11 @@ extension HandSelector {
     }
     return expected
   }
-  
+
 }
 
 extension [Card] {
 
-  
   /// Return a copy with all passed in elements removed
   func minus(_ rhs: [Card]) -> [Card] {
     filter { !rhs.contains($0) }
