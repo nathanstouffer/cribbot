@@ -4,11 +4,17 @@ protocol HandSelector {
   func toss(cards: [Card]) -> [Card]
 }
 
+struct CandidateToss {
+  let toss: [Card]
+  let score: Double
+  let sum: Int
+}
+
 extension HandSelector {
 
-  /// Default implementation for toss -- written in terms of keep
-  func toss(cards: [Card]) -> [Card] {
-    cards.minus(keep(cards: cards))
+  /// Default implementation for keep -- written in terms of toss
+  func keep(cards: [Card]) -> [Card] {
+    cards.minus(toss(cards: cards))
   }
 
   func allPossibleTosses(cards: [Card]) -> [[Card]] {
