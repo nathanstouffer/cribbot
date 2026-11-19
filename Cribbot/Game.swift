@@ -133,10 +133,10 @@ struct Game {
     precondition(flipped != nil, "Flipped card has not been selected")
     precondition(scoringProgress.dealerHand, "Dealer hand must be scored before crib")
     if cribOwner == .ada {
-      adaScore += score(hand: adaCards, flip: flipped!, isCrib: true)
+      adaScore += score(hand: crib, flip: flipped!, isCrib: true)
     }
     if cribOwner == .bob {
-      bobScore += score(hand: bobCards, flip: flipped!, isCrib: true)
+      bobScore += score(hand: crib, flip: flipped!, isCrib: true)
     }
     scoringProgress.crib = true
   }
