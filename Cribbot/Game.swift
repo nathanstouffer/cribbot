@@ -23,7 +23,7 @@ struct Game {
     var onCrib: Bool {
       nondealerHand && dealerHand && !crib
     }
-    
+
     var isDone: Bool {
       nondealerHand && dealerHand && crib
     }
@@ -105,7 +105,7 @@ struct Game {
     let i = findIndex(card)
     cards[i].layed = true
   }
-  
+
   // MARK: - Scoring functions
 
   mutating func scoreNondealer() {
@@ -161,7 +161,7 @@ struct Game {
     let i = findIndex(card)
     cards[i].owner = .crib
   }
-  
+
   private mutating func retarget(cards arr: [Card], to owner: CribbageCard.Owner) {
     for i in cards.indices {
       if arr.contains(cards[i].card) {
