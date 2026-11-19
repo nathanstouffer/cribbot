@@ -69,6 +69,34 @@ class GameViewModel: ObservableObject {
   var showAdaCards: Bool {
     isCribLocked
   }
+  
+  var scoringCrib: Bool {
+    isCribLocked && game.scoringProgress.onCrib
+  }
+  
+  var scoringAdaCrib: Bool {
+    scoringCrib && game.cribOwner == .ada
+  }
+  
+  var scoringBobCrib: Bool {
+    scoringCrib && game.cribOwner == .bob
+  }
+  
+  var hasScoredAdaCrib: Bool {
+    game.scoringProgress.isDone && game.cribOwner == .ada
+  }
+  
+  var hasScoredBobCrib: Bool {
+    game.scoringProgress.isDone && game.cribOwner == .bob
+  }
+  
+  var showAdaCrib: Bool {
+    scoringAdaCrib || hasScoredAdaCrib
+  }
+  
+  var showBobCrib: Bool {
+    scoringBobCrib || hasScoredBobCrib
+  }
 
   // MARK: - Intent functions
 

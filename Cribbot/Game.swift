@@ -20,6 +20,10 @@ struct Game {
     var dealerHand = false
     var crib = false
 
+    var onCrib: Bool {
+      nondealerHand && dealerHand && !crib
+    }
+    
     var isDone: Bool {
       nondealerHand && dealerHand && crib
     }
