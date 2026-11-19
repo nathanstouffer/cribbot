@@ -27,27 +27,11 @@ struct GameView: View {
   }
 
   private var adaHand: some View {
-    //hand(cards: game.adaCards, crib: game.showAdaCrib ? game.crib : [], isFaceUp: game.showAdaCards)
-    ZStack {
-      HandView(
-        game: game, cards: game.adaCards, isFaceUp: game.showAdaCards,
-        animationNamespace: animationNamespace)
-      HandView(
-        game: game, cards: game.showAdaCrib ? game.crib : [], isFaceUp: true,
-        animationNamespace: animationNamespace)
-    }
+    hand(cards: game.adaCards, crib: game.showAdaCrib ? game.crib : [], isFaceUp: game.showAdaCards)
   }
 
   private var bobHand: some View {
-    //hand(cards: game.bobCards, crib: game.showBobCrib ? game.crib : [], isFaceUp: true)
-    ZStack {
-      HandView(
-        game: game, cards: game.bobCards, isFaceUp: true,
-        animationNamespace: animationNamespace)
-      HandView(
-        game: game, cards: game.showBobCrib ? game.crib : [], isFaceUp: true,
-        animationNamespace: animationNamespace)
-    }
+    hand(cards: game.bobCards, crib: game.showBobCrib ? game.crib : [], isFaceUp: true)
   }
 
   private var buttons: some View {
