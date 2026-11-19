@@ -6,7 +6,7 @@ class GameViewModel: ObservableObject {
 
   @Published private var game = Game()
 
-  private var adaHandSelector = RandomHandSelector()
+  private var adaHandSelector = RetainedHandSelector()
 
   var adaScore: Int {
     game.adaScore
