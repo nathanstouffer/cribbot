@@ -14,19 +14,39 @@ struct GameView: View {
     ZStack {
       background
       VStack {
-        HandView(
-          game: game, cards: game.adaCards, isFaceUp: game.stage == .scoringHands,
-          animationNamespace: animationNamespace)
+        adaHand
         Spacer()
         ScoreView(score: game.adaScore).padding(20)
         TrayView(game, animationNamespace: animationNamespace)
         buttons
         ScoreView(score: game.bobScore)
         Spacer()
-        HandView(
-          game: game, cards: game.bobCards, isFaceUp: true,
-          animationNamespace: animationNamespace)
+        bobHand
       }
+    }
+  }
+
+  private var adaHand: some View {
+    //hand(cards: game.adaCards, crib: game.showAdaCrib ? game.crib : [], isFaceUp: game.showAdaCards)
+    ZStack {
+      HandView(
+        game: game, cards: game.adaCards, isFaceUp: game.showAdaCards,
+        animationNamespace: animationNamespace)
+      HandView(
+        game: game, cards: game.showAdaCrib ? game.crib : [], isFaceUp: true,
+        animationNamespace: animationNamespace)
+    }
+  }
+
+  private var bobHand: some View {
+    //hand(cards: game.bobCards, crib: game.showBobCrib ? game.crib : [], isFaceUp: true)
+    ZStack {
+      HandView(
+        game: game, cards: game.bobCards, isFaceUp: true,
+        animationNamespace: animationNamespace)
+      HandView(
+        game: game, cards: game.showBobCrib ? game.crib : [], isFaceUp: true,
+        animationNamespace: animationNamespace)
     }
   }
 
@@ -37,9 +57,11 @@ struct GameView: View {
       Spacer()
       tossButton
       Spacer()
+      layButton
+      Spacer()
       scoreButton
       Spacer()
-      resetButton
+      nextButton
       Spacer()
     }
     .padding(20)
@@ -52,6 +74,7 @@ struct GameView: View {
       }
     }
     .buttonStyle(.borderedProminent)
+    .disabled(!game.canDeal)
   }
 
   private var tossButton: some View {
@@ -68,41 +91,54 @@ struct GameView: View {
 
   private var scoreButton: some View {
     Button("Score") {
-      if game.isCribLocked {
+      if game.canScore {
         withAnimation {
-          game.scoreHands()
+          game.scoreNextHand()
         }
       }
     }
     .buttonStyle(.borderedProminent)
-    .disabled(!game.isCribLocked)
+    .disabled(!game.canScore)
   }
 
   private var layButton: some View {
     Button("Lay") {
       if game.isCribLocked && game.staged.count == 1 {
         withAnimation {
-
+          game.lay(game.staged[0])
         }
       }
     }
     .buttonStyle(.borderedProminent)
-    .disabled(game.staged.count != 1 || !game.isCribLocked)
+    .disabled(!game.canLay)
   }
 
-  private var resetButton: some View {
-    Button("Reset") {
+  private var nextButton: some View {
+    Button("Next") {
       withAnimation {
-        game.clearHand()
+        game.endHand()
       }
     }
     .buttonStyle(.borderedProminent)
+    .disabled(!game.canEndHand)
   }
 
   private var background: some View {
     Rectangle()
       .fill(.green)
       .ignoresSafeArea()
+  }
+
+  // MARK: - hand view
+  private func hand(cards: [Card], crib: [Card], isFaceUp: Bool) -> some View {
+    ZStack {
+      HandView(
+        game: game, cards: cards, isFaceUp: isFaceUp,
+        animationNamespace: animationNamespace)
+      HandView(
+        game: game, cards: crib, isFaceUp: isFaceUp,
+        animationNamespace: animationNamespace)
+    }
   }
 }
 

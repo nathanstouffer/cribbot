@@ -52,9 +52,7 @@ struct TrayView: View {
   var crib: some View {
     ZStack {
       StackView(text: "Crib") {
-        if game.crib.isEmpty {
-          cribIndicator
-        } else {
+        if game.cribInTray {
           ZStack {
             ForEach(game.crib) { card in
               CardView(card, isFaceUp: false)
@@ -62,7 +60,8 @@ struct TrayView: View {
             }
             cribIndicator
           }
-
+        } else {
+          cribIndicator
         }
       }
     }
@@ -74,7 +73,7 @@ struct TrayView: View {
       .font(.largeTitle)
       .rotationEffect(.degrees(arrowRotationAngle))
       .onAppear {
-        arrowRotationAngle = game.playerOwnsCrib ? 0.0 : 180.0
+        arrowRotationAngle = game.playerOwnsCrib ? 180.0 : 0.0
       }
       .onChange(of: game.playerOwnsCrib) { _, _ in
         withAnimation(.easeInOut(duration: 0.4)) {

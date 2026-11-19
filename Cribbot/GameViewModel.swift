@@ -6,11 +6,6 @@ class GameViewModel: ObservableObject {
 
   @Published private var game = Game()
 
-  // TODO (stouff) find a new name for this
-  var stage: Game.HandStage {
-    return game.stage
-  }
-
   var adaScore: Int {
     game.adaScore
   }
@@ -51,6 +46,14 @@ class GameViewModel: ObservableObject {
     return crib.count == 4
   }
 
+  var cribInTray: Bool {
+    isCribLocked && !scoringCrib && !hasScoredCrib
+  }
+
+  var canDeal: Bool {
+    game.deck.count == 52
+  }
+
   var canToss: Bool {
     !isCribLocked && staged.count == 2
   }
@@ -59,10 +62,53 @@ class GameViewModel: ObservableObject {
     isCribLocked && staged.count == 1
   }
 
+  var canScore: Bool {
+    isCribLocked && !game.scoringProgress.isDone
+  }
+
+  var canEndHand: Bool {
+    game.scoringProgress.isDone
+  }
+
+  var showAdaCards: Bool {
+    isCribLocked
+  }
+
+  var scoringCrib: Bool {
+    isCribLocked && game.scoringProgress.onCrib
+  }
+
+  var scoringAdaCrib: Bool {
+    scoringCrib && game.cribOwner == .ada
+  }
+
+  var scoringBobCrib: Bool {
+    scoringCrib && game.cribOwner == .bob
+  }
+
+  var hasScoredCrib: Bool {
+    game.scoringProgress.isDone
+  }
+
+  var hasScoredAdaCrib: Bool {
+    hasScoredCrib && game.cribOwner == .ada
+  }
+
+  var hasScoredBobCrib: Bool {
+    hasScoredCrib && game.cribOwner == .bob
+  }
+
+  var showAdaCrib: Bool {
+    scoringAdaCrib || hasScoredAdaCrib
+  }
+
+  var showBobCrib: Bool {
+    scoringBobCrib || hasScoredBobCrib
+  }
+
   // MARK: - Intent functions
 
   func startNewHand() {
-    game.toggleCrib()
     game.shuffle()
     game.deal()
   }
@@ -92,12 +138,19 @@ class GameViewModel: ObservableObject {
     game.lay(card, by: .bob)
   }
 
-  func scoreHands() {
-    game.scoreHands()
+  func scoreNextHand() {
+    if game.scoringProgress.dealerHand {
+      game.scoreCrib()
+    } else if game.scoringProgress.nondealerHand {
+      game.scoreDealer()
+    } else {
+      game.scoreNondealer()
+    }
   }
 
-  func clearHand() {
+  func endHand() {
     game.shuffle()
+    game.toggleCrib()
   }
 
   // MARK: - Staging functions
