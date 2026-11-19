@@ -16,8 +16,10 @@ struct RetainedHandSelector: HandSelector {
       let candidate = Candidate(toss: toss, score: score, sum: hand.sum())
       if score > best.score {
         best = candidate
-      } else if hand.sum() < best.sum {
-        best = candidate
+      } else if score == best.score {
+        if candidate.sum < best.sum {
+          best = candidate
+        }
       }
     }
     guard !best.toss.isEmpty else {
