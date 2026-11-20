@@ -10,7 +10,7 @@ struct RelativeHandSelectorTests {
       Card(.ace, .diamonds), Card(.nine, .clubs),
     ]
 
-    let expectedToss = [Card(.seven, .clubs), Card(.ace, .diamonds)]
+    let expectedToss = [Card(.eight, .clubs), Card(.ace, .diamonds)]
 
     #expect(
       expectedToss == RelativeHandSelector().toss(cards: dealt, ownsCrib: false),
