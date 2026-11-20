@@ -1,5 +1,5 @@
 func score(hand: [Card], flip: Card, isCrib: Bool) -> Int {
-  var cards = hand + [flip]
+  let cards = hand + [flip]
 
   var score = 0
   score += scoreFromPairs(cards: cards)

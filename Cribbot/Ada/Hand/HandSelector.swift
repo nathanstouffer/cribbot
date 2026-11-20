@@ -1,10 +1,11 @@
 protocol HandSelector {
 
-  func keep(cards: [Card]) -> [Card]
-  func toss(cards: [Card]) -> [Card]
+  func keep(cards: [Card], ownsCrib: Bool) -> [Card]
+  func toss(cards: [Card], ownsCrib: Bool) -> [Card]
+
 }
 
-struct CandidateToss {
+struct TossCandidate {
   let toss: [Card]
   let score: Double
   let sum: Int
@@ -13,8 +14,8 @@ struct CandidateToss {
 extension HandSelector {
 
   /// Default implementation for keep -- written in terms of toss
-  func keep(cards: [Card]) -> [Card] {
-    cards.minus(toss(cards: cards))
+  func keep(cards: [Card], ownsCrib: Bool) -> [Card] {
+    cards.minus(toss(cards: cards, ownsCrib: ownsCrib))
   }
 
   func allPossibleTosses(cards: [Card]) -> [[Card]] {
@@ -27,24 +28,17 @@ extension HandSelector {
     return variants
   }
 
-  /// Compute the expected value of the hand over all possible flipped cards
-  func expectedValue(cards: [Card], dead: [Card], isCrib: Bool) -> Double {
-    var expected = 0.0
-    let options = Card.fullDeckByRank.minus(cards).minus(dead)
-    let flipProbability = 1.0 / Double(options.count)
-    for flipped in options {
-      let s = score(hand: cards, flip: flipped, isCrib: isCrib)
-      expected += flipProbability * Double(s)
-    }
-    return expected
-  }
-
 }
 
 extension [Card] {
 
-  /// Return a copy with all passed in elements removed
+  /// Return a copy  of self with all passed in elements removed
   func minus(_ rhs: [Card]) -> [Card] {
     filter { !rhs.contains($0) }
   }
+  
+  func minus(_ rhs: Card) -> [Card] {
+    minus([rhs])
+  }
+
 }

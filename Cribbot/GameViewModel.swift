@@ -6,7 +6,7 @@ class GameViewModel: ObservableObject {
 
   @Published private var game = Game()
 
-  private var adaHandSelector = RetainedHandSelector()
+  private var adaHandSelector = RelativeHandSelector()
 
   var adaScore: Int {
     game.adaScore
@@ -132,7 +132,7 @@ class GameViewModel: ObservableObject {
   func toss(_ left: Card, _ right: Card) {
     staged.removeAll()
     game.toss(left, right, by: .bob)
-    let adaToss = adaHandSelector.toss(cards: game.adaCards)
+    let adaToss = adaHandSelector.toss(cards: game.adaCards, ownsCrib: game.cribOwner == .ada)
     guard adaToss.count == 2 else {
       fatalError("Ada tosses incorrect number of cards (2)")
     }
