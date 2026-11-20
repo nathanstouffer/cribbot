@@ -6,7 +6,7 @@ struct RelativeHandSelectorTests {
 
   @Test func avoidsThrowingFive() throws {
     let dealt = [
-      Card(.seven, .clubs), Card(.three, .spades), Card(.three, .hearts), Card(.five, .diamonds),
+      Card(.eight, .clubs), Card(.three, .spades), Card(.three, .hearts), Card(.five, .diamonds),
       Card(.ace, .diamonds), Card(.nine, .clubs),
     ]
 
