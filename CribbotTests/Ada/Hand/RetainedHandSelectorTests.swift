@@ -13,8 +13,8 @@ struct RetainedHandSelectorTests {
     let expectedToss = [Card(.five, .diamonds), Card(.five, .clubs)]
 
     #expect(
-      expectedToss == RetainedHandSelector().toss(cards: dealt),
-      "Failed to focus on retained hand for RandomHandSelector")
+      expectedToss == RetainedHandSelector().toss(cards: dealt, ownsCrib: false),
+      "Failed to focus on retained hand for RetainedHandSelector")
   }
 
   @Test func detectsFlush() throws {
@@ -26,8 +26,8 @@ struct RetainedHandSelectorTests {
     let expectedToss = [Card(.king, .diamonds), Card(.queen, .spades)]
 
     #expect(
-      expectedToss == RetainedHandSelector().toss(cards: dealt),
-      "Failed to detect flush for RandomHandSelector")
+      expectedToss == RetainedHandSelector().toss(cards: dealt, ownsCrib: false),
+      "Failed to detect flush for RetainedHandSelector")
   }
 
   @Test func detectsDoubleRun() throws {
@@ -39,8 +39,8 @@ struct RetainedHandSelectorTests {
     let expectedToss = [Card(.three, .hearts), Card(.queen, .clubs)]
 
     #expect(
-      expectedToss == RetainedHandSelector().toss(cards: dealt),
-      "Failed to detect flush for RandomHandSelector")
+      expectedToss == RetainedHandSelector().toss(cards: dealt, ownsCrib: false),
+      "Failed to detect flush for RetainedHandSelector")
   }
 
 }

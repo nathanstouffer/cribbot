@@ -15,7 +15,7 @@ struct RelativeHandSelector: HandSelector {
       }
     }
     guard !best.toss.isEmpty else {
-      fatalError("RetainedHandSelector failed to compute a best toss")
+      fatalError("RelativeHandSelector failed to compute a best toss")
     }
     return best.toss
   }
