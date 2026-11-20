@@ -19,7 +19,7 @@ struct RetainedHandSelector: HandSelector {
     }
     return best.toss
   }
-  
+
   func evaluate(hand: [Card], toss: [Card], ownsCrib _: Bool) -> TossCandidate {
     // compute the expected value of the hand over all possible flipped cards
     var expected = 0.0
@@ -27,9 +27,9 @@ struct RetainedHandSelector: HandSelector {
     let flipProbability = 1.0 / Double(flipOptions.count)
     for flipped in flipOptions {
       let s = score(hand: hand, flip: flipped, isCrib: false)
-        expected += flipProbability * Double(s)
-      }
-      return TossCandidate(toss: toss, score: expected, sum: hand.sum())
+      expected += flipProbability * Double(s)
     }
+    return TossCandidate(toss: toss, score: expected, sum: hand.sum())
+  }
 
 }

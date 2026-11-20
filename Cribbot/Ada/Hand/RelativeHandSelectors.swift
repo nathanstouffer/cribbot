@@ -19,7 +19,7 @@ struct RelativeHandSelector: HandSelector {
     }
     return best.toss
   }
-  
+
   func evaluate(hand: [Card], toss: [Card], ownsCrib: Bool) -> TossCandidate {
     // compute the expected value of the hand over all possible flipped cards
     var expected = 0.0

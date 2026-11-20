@@ -36,7 +36,7 @@ extension [Card] {
   func minus(_ rhs: [Card]) -> [Card] {
     filter { !rhs.contains($0) }
   }
-  
+
   func minus(_ rhs: Card) -> [Card] {
     minus([rhs])
   }
