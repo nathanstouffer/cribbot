@@ -34,7 +34,8 @@ extension [Card] {
   /// Return all pairs of Cards in the array. This is all pairs of elements in the array,
   /// not a scoring pair
   func allPairs() -> [[Card]] {
-    let capacity = count >= 2 ? count * (count - 1) : 0
+    let nChoose2 = count * (count - 1) / 2
+    let capacity = count >= 2 ? nChoose2 : 0
     var variants = [[Card]]()
     variants.reserveCapacity(capacity)
     for i in 0..<count - 1 {
@@ -48,7 +49,8 @@ extension [Card] {
   /// Return all triples of Cards in the array. This is all triples of elements in the array,
   /// not a scoring triple
   func allTriples() -> [[Card]] {
-    let capacity = count >= 3 ? count * (count - 1) * (count - 2) : 0
+    let nChoose3 = count * (count - 1) * (count - 2) / 6
+    let capacity = count >= 3 ? nChoose3 : 0
     var variants = [[Card]]()
     variants.reserveCapacity(capacity)
     for i in 0..<count - 2 {

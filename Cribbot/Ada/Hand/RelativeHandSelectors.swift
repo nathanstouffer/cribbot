@@ -23,16 +23,16 @@ struct RelativeHandSelector: HandSelector {
   func evaluate(hand: [Card], toss: [Card], ownsCrib: Bool) -> TossCandidate {
     // compute the expected value of the hand over all possible flipped cards
     var expected = 0.0
-    let flipOptions = Card.fullDeckByRank.minus(hand).minus(toss)
-    let flipProbability = 1.0 / Double(flipOptions.count)
-    for flipped in flipOptions {
-      let opponentTossOptions = flipOptions.minus(flipped).allPairs()
-      let tossProbability = 1.0 / Double(opponentTossOptions.count)
-      for opponentToss in opponentTossOptions {
+    let remaining = Card.fullDeckByRank.minus(hand).minus(toss)
+    let options = remaining.allTriples()
+    let tripleProbability = 1.0 / Double(options.count)
+    for triple in options {
+      let flipProbability = 1.0 / 3.0
+      for flipped in triple {
         let handScore = score(hand: hand, flip: flipped, isCrib: false)
-        let cribScore = score(hand: toss + opponentToss, flip: flipped, isCrib: true)
+        let cribScore = score(hand: toss + triple.minus(flipped), flip: flipped, isCrib: true)
         let score = ownsCrib ? handScore + cribScore : handScore - cribScore
-        expected += flipProbability * tossProbability * Double(score)
+        expected += tripleProbability * flipProbability * Double(score)
       }
     }
     return TossCandidate(toss: toss, score: expected, sum: hand.sum())
