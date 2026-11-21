@@ -4,7 +4,7 @@ import Testing
 
 struct HandSelectorTests {
 
-  @Test func allPossibleTossesTest() throws {
+  @Test func allPossiblePairsTests() throws {
     let dealt = [
       Card(.ace, .clubs), Card(.jack, .spades), Card(.ten, .hearts), Card(.two, .diamonds),
       Card(.eight, .diamonds), Card(.four, .clubs),
@@ -33,8 +33,8 @@ struct HandSelectorTests {
     ]
 
     #expect(
-      expected == RandomHandSelector().allPossibleTosses(cards: dealt),
-      "Failed to identify all possible tosses for RandomHandSelector")
+      expected == dealt.allPairs(),
+      "Failed to identify all possible pairs from [Card]")
   }
 
 }
