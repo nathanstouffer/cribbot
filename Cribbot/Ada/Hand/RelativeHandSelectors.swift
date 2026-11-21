@@ -4,7 +4,7 @@ struct RelativeHandSelector: HandSelector {
 
   func toss(cards: [Card], ownsCrib: Bool) -> [Card] {
     var best = TossCandidate(toss: [], score: 0.0, sum: 10000)  // assign invalid value that will be overwritten
-    for toss in allPossibleTosses(cards: cards) {
+    for toss in cards.allPairs() {
       let candidate = evaluate(hand: cards.minus(toss), toss: toss, ownsCrib: ownsCrib)
       if candidate.score > best.score {
         best = candidate
@@ -26,7 +26,7 @@ struct RelativeHandSelector: HandSelector {
     let flipOptions = Card.fullDeckByRank.minus(hand).minus(toss)
     let flipProbability = 1.0 / Double(flipOptions.count)
     for flipped in flipOptions {
-      let opponentTossOptions = allPossibleTosses(cards: flipOptions.minus(flipped))
+      let opponentTossOptions = flipOptions.minus(flipped).allPairs()
       let tossProbability = 1.0 / Double(opponentTossOptions.count)
       for opponentToss in opponentTossOptions {
         let handScore = score(hand: hand, flip: flipped, isCrib: false)

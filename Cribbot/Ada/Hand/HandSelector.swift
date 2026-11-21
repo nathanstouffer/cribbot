@@ -18,16 +18,6 @@ extension HandSelector {
     cards.minus(toss(cards: cards, ownsCrib: ownsCrib))
   }
 
-  func allPossibleTosses(cards: [Card]) -> [[Card]] {
-    var variants = [[Card]]()
-    for i in 0..<cards.count - 1 {
-      for j in i + 1..<cards.count {
-        variants.append([cards[i], cards[j]])
-      }
-    }
-    return variants
-  }
-
 }
 
 extension [Card] {
@@ -39,6 +29,36 @@ extension [Card] {
 
   func minus(_ rhs: Card) -> [Card] {
     minus([rhs])
+  }
+
+  /// Return all pairs of Cards in the array. This is all pairs of elements in the array,
+  /// not a scoring pair
+  func allPairs() -> [[Card]] {
+    let capacity = count >= 2 ? count * (count - 1) : 0
+    var variants = [[Card]]()
+    variants.reserveCapacity(capacity)
+    for i in 0..<count - 1 {
+      for j in i + 1..<count {
+        variants.append([self[i], self[j]])
+      }
+    }
+    return variants
+  }
+
+  /// Return all triples of Cards in the array. This is all triples of elements in the array,
+  /// not a scoring triple
+  func allTriples() -> [[Card]] {
+    let capacity = count >= 3 ? count * (count - 1) * (count - 2) : 0
+    var variants = [[Card]]()
+    variants.reserveCapacity(capacity)
+    for i in 0..<count - 2 {
+      for j in i + 1..<count - 1 {
+        for k in j + 1..<count {
+          variants.append([self[i], self[j], self[k]])
+        }
+      }
+    }
+    return variants
   }
 
 }
