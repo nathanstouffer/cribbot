@@ -36,7 +36,7 @@ class GameViewModel: ObservableObject {
   var adaUnlayedCards: [Card] {
     game.adaHand.filter { !$0.layed }.map { $0.card }
   }
-  
+
   var bobUnlayedCards: [Card] {
     game.bobHand.filter { !$0.layed }.map { $0.card }
   }
@@ -56,11 +56,15 @@ class GameViewModel: ObservableObject {
   // MARK: - Indicators
 
   var playerOwnsCrib: Bool {
-    return game.cribOwner == Game.Player.bob
+    game.cribOwner == Game.Player.bob
+  }
+
+  var playerLayTurn: Bool {
+    game.pegging.turn == .bob
   }
 
   var isCribLocked: Bool {
-    return crib.count == 4
+    crib.count == 4
   }
 
   var showCribInTray: Bool {
@@ -74,7 +78,7 @@ class GameViewModel: ObservableObject {
   var canToss: Bool {
     !bobTossed && staged.count == 2
   }
-  
+
   var isPegging: Bool {
     isCribLocked && !game.scoringProgress.pegging
   }

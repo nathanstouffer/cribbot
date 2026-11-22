@@ -7,6 +7,7 @@ struct PeggingView: View {
 
   private let animationNamespace: Namespace.ID
 
+  @State private var arrowRotationAngle = 0.0
   @State private var delta: Int?
   @State private var animateDelta = false
 
@@ -19,18 +20,21 @@ struct PeggingView: View {
   }
 
   var body: some View {
-    if cards.isEmpty {
-      EmptyView()
-    } else {
+    if game.isPegging {
       ZStack {
         HStack {
           stack
           Spacer()
-          total.padding(.trailing, 30)
+          VStack {
+            turnIndicator.padding(.bottom, 10)
+            total
+          }.padding(.trailing, 30)
         }
         .padding()
         .background(Color.black.opacity(0.8))
       }
+    } else {
+      EmptyView()
     }
   }
 
@@ -62,6 +66,21 @@ struct PeggingView: View {
       .onChange(of: cards.sum()) { oldSum, newSum in
         let diff = newSum - oldSum
         triggerDeltaAnimation(diff)
+      }
+  }
+
+  var turnIndicator: some View {
+    Image(systemName: "arrowshape.up")
+      .foregroundStyle(.white)
+      .font(.largeTitle)
+      .rotationEffect(.degrees(arrowRotationAngle))
+      .onAppear {
+        arrowRotationAngle = game.playerLayTurn ? 180.0 : 0.0
+      }
+      .onChange(of: game.playerLayTurn) { _, _ in
+        withAnimation(.easeInOut(duration: 0.4)) {
+          arrowRotationAngle += 180.0
+        }
       }
   }
 

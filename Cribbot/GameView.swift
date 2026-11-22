@@ -30,11 +30,15 @@ struct GameView: View {
   }
 
   private var adaHand: some View {
-    hand(cards: game.isPegging ? game.adaUnlayedCards : game.adaCards, crib: game.showAdaCrib ? game.crib : [], isFaceUp: game.showAdaCards)
+    hand(
+      cards: game.isPegging ? game.adaUnlayedCards : game.adaCards,
+      crib: game.showAdaCrib ? game.crib : [], isFaceUp: game.showAdaCards)
   }
 
   private var bobHand: some View {
-    hand(cards: game.isPegging ? game.bobUnlayedCards : game.bobCards, crib: game.showBobCrib ? game.crib : [], isFaceUp: true)
+    hand(
+      cards: game.isPegging ? game.bobUnlayedCards : game.bobCards,
+      crib: game.showBobCrib ? game.crib : [], isFaceUp: true)
   }
 
   private var buttons: some View {
