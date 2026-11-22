@@ -45,7 +45,7 @@ struct RelativeHandSelectorTests {
       expectedToss == actualToss,
       "Failed to focus on dangerous crib for RelativeHandSelector")
   }
-  
+
   @Test func avoidsTossingConsecutive() async throws {
     let dealt = [
       Card(.three, .clubs), Card(.eight, .spades), Card(.seven, .hearts), Card(.six, .diamonds),
