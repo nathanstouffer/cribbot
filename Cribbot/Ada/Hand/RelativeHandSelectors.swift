@@ -26,10 +26,10 @@ struct RelativeHandSelector: HandSelector {
     let flipOptions = Card.fullDeckByRank.minus(hand).minus(toss)
     let flipProbability = 1.0 / Double(flipOptions.count)
     for flipped in flipOptions {
+      let handScore = score(hand: hand, flip: flipped, isCrib: false)
       let oppoTossOptions = approximateTossOptions(flipOptions.minus(flipped))
       let oppoTossProbability = 1.0 / Double(oppoTossOptions.count)
       for oppoToss in oppoTossOptions {
-        let handScore = score(hand: hand, flip: flipped, isCrib: false)
         let cribScore = score(hand: toss + oppoToss, flip: flipped, isCrib: true)
         let score = ownsCrib ? handScore + cribScore : handScore - cribScore
         expected += flipProbability * oppoTossProbability * Double(score)
