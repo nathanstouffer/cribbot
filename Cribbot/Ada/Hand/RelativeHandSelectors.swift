@@ -29,10 +29,11 @@ struct RelativeHandSelector: HandSelector {
       let handScore = score(hand: hand, flip: flipped, isCrib: false)
       let oppoTossOptions = approximateTossOptions(flipOptions.minus(flipped))
       let oppoTossProbability = 1.0 / Double(oppoTossOptions.count)
+      let probability = flipProbability * oppoTossProbability
       for oppoToss in oppoTossOptions {
         let cribScore = score(hand: toss + oppoToss, flip: flipped, isCrib: true)
         let score = ownsCrib ? handScore + cribScore : handScore - cribScore
-        expected += flipProbability * oppoTossProbability * Double(score)
+        expected += probability * Double(score)
       }
     }
     return TossCandidate(toss: toss, score: expected, sum: hand.sum())
