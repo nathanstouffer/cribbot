@@ -2,23 +2,36 @@
 /// score of the hand and the crib (opponent's crib counts against)
 struct RelativeHandSelector: HandSelector {
 
-  func toss(cards: [Card], ownsCrib: Bool) -> [Card] {
-    var best = TossCandidate(toss: [], score: 0.0, sum: 10000)  // assign invalid value that will be overwritten
-    for toss in cards.allPairs() {
-      let candidate = evaluate(hand: cards.minus(toss), toss: toss, ownsCrib: ownsCrib)
-      if candidate.score > best.score {
-        best = candidate
-      } else if candidate.score == best.score {
-        if candidate.sum < best.sum {
-          best = candidate
+  func toss(cards: [Card], ownsCrib: Bool) async -> [Card] {
+      let pairs = cards.allPairs()
+
+      let selected: TossCandidate = await withTaskGroup(of: TossCandidate.self) { group in
+        for toss in pairs {
+          let hand = cards.minus(toss)
+          group.addTask {
+            return evaluate(hand: hand, toss: toss, ownsCrib: ownsCrib)
+          }
         }
+
+        var best = TossCandidate(toss: [], score: 0.0, sum: 10000)  // assign invalid value that will be overwritten
+        for await candidate in group {
+          if candidate.score > best.score {
+            best = candidate
+          } else if candidate.score == best.score {
+            if candidate.sum < best.sum {
+              best = candidate
+            }
+          }
+        }
+        return best
       }
+
+      guard !selected.toss.isEmpty else {
+        fatalError("RelativeHandSelector failed to select a toss")
+      }
+      return selected.toss
     }
-    guard !best.toss.isEmpty else {
-      fatalError("RelativeHandSelector failed to compute a best toss")
-    }
-    return best.toss
-  }
+
 
   func evaluate(hand: [Card], toss: [Card], ownsCrib: Bool) -> TossCandidate {
     // compute the expected value of the hand over all possible flipped cards

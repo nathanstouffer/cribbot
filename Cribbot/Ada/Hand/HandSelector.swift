@@ -1,7 +1,7 @@
 protocol HandSelector {
 
-  func keep(cards: [Card], ownsCrib: Bool) -> [Card]
-  func toss(cards: [Card], ownsCrib: Bool) -> [Card]
+  func keep(cards: [Card], ownsCrib: Bool) async -> [Card]
+  func toss(cards: [Card], ownsCrib: Bool) async -> [Card]
 
 }
 
@@ -14,8 +14,8 @@ struct TossCandidate {
 extension HandSelector {
 
   /// Default implementation for keep -- written in terms of toss
-  func keep(cards: [Card], ownsCrib: Bool) -> [Card] {
-    cards.minus(toss(cards: cards, ownsCrib: ownsCrib))
+  func keep(cards: [Card], ownsCrib: Bool) async -> [Card] {
+    await cards.minus(toss(cards: cards, ownsCrib: ownsCrib))
   }
 
 }
