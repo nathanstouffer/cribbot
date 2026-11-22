@@ -92,7 +92,9 @@ struct PeggingView: View {
     var body: some View {
       PeggingView(
         GameViewModel(),
-        cards: [Card(.three, .spades), Card(.eight, .hearts), Card(.four, .spades), Card(.ten, .diamonds)],
+        cards: [
+          Card(.three, .spades), Card(.eight, .hearts), Card(.four, .spades), Card(.ten, .diamonds),
+        ],
         animationNamespace: namespace
       )
     }

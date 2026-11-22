@@ -132,12 +132,7 @@ class GameViewModel: ObservableObject {
           if isCribLocked {
             game.flip()
             if game.pegging.turn == .ada {
-              let selected = adaPegSelector.lay(played: [], available: adaCards)
-              if let selected = selected {
-                game.lay(selected, by: .ada)
-              } else {
-                game.go(by: .ada)
-              }
+              adaLay()
             }
           }
         }
@@ -166,19 +161,24 @@ class GameViewModel: ObservableObject {
     if isCribLocked {
       game.flip()
       if game.pegging.turn == .ada {
-        let selected = adaPegSelector.lay(played: [], available: adaCards)
-        if let selected = selected {
-          game.lay(selected, by: .ada)
-        } else {
-          game.go(by: .ada)
-        }
+        adaLay()
       }
+    }
+  }
+
+  func adaLay() {
+    let selected = adaPegSelector.lay(played: [], available: adaCards)
+    if let selected = selected {
+      game.lay(selected, by: .ada)
+    } else {
+      game.go(by: .ada)
     }
   }
 
   func lay(_ card: Card) {
     staged.removeAll()
     game.lay(card, by: .bob)
+    adaLay()
   }
 
   func scoreNextHand() {
