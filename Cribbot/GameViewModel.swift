@@ -49,8 +49,8 @@ class GameViewModel: ObservableObject {
     return crib.count == 4
   }
 
-  var cribInTray: Bool {
-    isCribLocked && !scoringCrib && !hasScoredCrib
+  var showCribInTray: Bool {
+     !scoringCrib && !hasScoredCrib
   }
 
   var canDeal: Bool {

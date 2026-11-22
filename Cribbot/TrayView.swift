@@ -52,7 +52,7 @@ struct TrayView: View {
   var crib: some View {
     ZStack {
       StackView(text: "Crib") {
-        if game.cribInTray {
+        if game.showCribInTray {
           ZStack {
             ForEach(game.crib) { card in
               CardView(card, isFaceUp: false)
