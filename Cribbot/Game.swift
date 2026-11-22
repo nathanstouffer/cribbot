@@ -13,7 +13,7 @@ struct Game {
         return .ada
       }
     }
-    
+
     mutating func toggle() {
       self = opponent()
     }
@@ -33,21 +33,21 @@ struct Game {
       pegging && nondealerHand && dealerHand && crib
     }
   }
-  
+
   struct Pegging {
     var turn: Player
     var stack = [Card]()
     var adaGo = false
     var bobGo = false
-    
+
     var someGo: Bool {
       adaGo || bobGo
     }
-    
+
     var noGo: Bool {
       !someGo
     }
-    
+
     var bothGo: Bool {
       return adaGo && bobGo
     }
@@ -62,7 +62,7 @@ struct Game {
   private(set) var cards = CribbageCard.fullDeckByRank
 
   private(set) var scoringProgress = ScoringProgress()
-  
+
   init() {
     pegging = Pegging(turn: cribOwner.opponent())
   }
@@ -133,11 +133,11 @@ struct Game {
     toss(left)
     toss(right)
   }
-  
+
   func canLay(_ card: Card) -> Bool {
-    (pegging.stack + [card]).sum() > 31
+    !find(card).layed && (pegging.stack + [card]).sum() > 31
   }
-  
+
   mutating func go(by: Player) {
     precondition(flipped != nil, "Flipped card has not been selected")
     precondition(pegging.turn == by, "Player is out of order")
