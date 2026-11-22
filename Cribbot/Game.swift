@@ -97,6 +97,7 @@ struct Game {
 
   mutating func toggleCrib() {
     cribOwner.toggle()
+    pegging = Pegging(turn: cribOwner.opponent())
   }
 
   mutating func shuffle() {
@@ -177,8 +178,18 @@ struct Game {
     }
     pegging.stack.append(card)
     pegging.turn.toggle()
+
+    // check if pegging must be reset
     if pegging.stack.sum() == 31 {
       pegging = Pegging(turn: pegging.turn)
+    }
+
+    // check if pegging is over
+    let adaDone = adaHand.allSatisfy { $0.layed }
+    let bobDone = bobHand.allSatisfy { $0.layed }
+    if adaDone && bobDone {
+      pegging = Pegging(turn: cribOwner.opponent())
+      scoringProgress.pegging = true
     }
   }
 
