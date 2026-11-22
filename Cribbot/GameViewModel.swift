@@ -40,7 +40,7 @@ class GameViewModel: ObservableObject {
   var crib: [Card] {
     game.crib
   }
-  
+
   var peggingStack: [Card] {
     game.pegging.stack
   }
