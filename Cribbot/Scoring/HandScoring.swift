@@ -1,5 +1,5 @@
 func score(hand: [Card], flip: Card, isCrib: Bool) -> Int {
-  var cards = hand + [flip]
+  let cards = hand + [flip]
 
   var score = 0
   score += scoreFromPairs(cards: cards)
@@ -55,9 +55,9 @@ func scoreFromFlush(cards: [Card], flip: Card, isCrib: Bool) -> Int {
   if cards.allSameSuit() {
     let suit = cards[0].suit
     if suit == flip.suit {
-      return 5
+      return cards.count + 1
     } else if !isCrib {
-      return 4
+      return cards.count
     } else {
       return 0
     }

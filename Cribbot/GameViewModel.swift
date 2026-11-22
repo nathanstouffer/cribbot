@@ -1,10 +1,13 @@
 import Foundation
+import SwiftUI
 
 /// This class utilizes the Game struct to control the state of a cribbage game
 /// The computer has the role of Ada and the player has the role of Bob
 class GameViewModel: ObservableObject {
 
   @Published private var game = Game()
+
+  private var adaHandSelector = RelativeHandSelector()
 
   var adaScore: Int {
     game.adaScore
@@ -46,8 +49,8 @@ class GameViewModel: ObservableObject {
     return crib.count == 4
   }
 
-  var cribInTray: Bool {
-    isCribLocked && !scoringCrib && !hasScoredCrib
+  var showCribInTray: Bool {
+    !scoringCrib && !hasScoredCrib
   }
 
   var canDeal: Bool {
@@ -111,6 +114,21 @@ class GameViewModel: ObservableObject {
   func startNewHand() {
     game.shuffle()
     game.deal()
+    Task {
+      let adaToss = await adaHandSelector.toss(
+        cards: game.adaCards, ownsCrib: game.cribOwner == .ada)
+      guard adaToss.count == 2 else {
+        fatalError("Ada tosses incorrect number of cards (2)")
+      }
+      await MainActor.run {
+        withAnimation {
+          game.toss(adaToss[0], adaToss[1], by: .ada)
+          if isCribLocked {
+            game.flip()
+          }
+        }
+      }
+    }
   }
 
   func stage(_ card: Card) {
@@ -130,8 +148,9 @@ class GameViewModel: ObservableObject {
   func toss(_ left: Card, _ right: Card) {
     staged.removeAll()
     game.toss(left, right, by: .bob)
-    game.toss(game.adaCards[0], game.adaCards[1], by: .ada)
-    game.flip()
+    if isCribLocked {
+      game.flip()
+    }
   }
 
   func lay(_ card: Card) {
