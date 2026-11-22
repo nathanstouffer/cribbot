@@ -136,7 +136,7 @@ struct Game {
   }
 
   func canLay(_ card: Card) -> Bool {
-    !find(card).layed && (pegging.stack + [card]).sum() < 31
+    !find(card).layed && (pegging.stack + [card]).sum() <= 31
   }
 
   mutating func go(by: Player) {
@@ -165,7 +165,7 @@ struct Game {
   mutating func lay(_ card: Card, by: Player) {
     precondition(flipped != nil, "Flipped card has not been selected")
     precondition(pegging.turn == by, "Player is out of order")
-    precondition((pegging.stack + [card]).sum() < 31, "Card would exceed 31")
+    precondition((pegging.stack + [card]).sum() <= 31, "Card would exceed 31")
     precondition(find(card).owner == by, "Card is not owned by player")
     precondition(!find(card).layed, "Card has already been layed")
     let i = findIndex(card)
