@@ -50,7 +50,7 @@ class GameViewModel: ObservableObject {
   }
 
   var showCribInTray: Bool {
-     !scoringCrib && !hasScoredCrib
+    !scoringCrib && !hasScoredCrib
   }
 
   var canDeal: Bool {
