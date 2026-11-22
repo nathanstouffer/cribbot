@@ -132,12 +132,16 @@ class GameViewModel: ObservableObject {
   func toss(_ left: Card, _ right: Card) {
     staged.removeAll()
     game.toss(left, right, by: .bob)
-    let adaToss = adaHandSelector.toss(cards: game.adaCards, ownsCrib: game.cribOwner == .ada)
-    guard adaToss.count == 2 else {
-      fatalError("Ada tosses incorrect number of cards (2)")
+    Task {
+      let adaToss = await adaHandSelector.toss(cards: game.adaCards, ownsCrib: game.cribOwner == .ada)
+      guard adaToss.count == 2 else {
+        fatalError("Ada tosses incorrect number of cards (2)")
+      }
+      await MainActor.run {
+        game.toss(adaToss[0], adaToss[1], by: .ada)
+        game.flip()
+      }
     }
-    game.toss(adaToss[0], adaToss[1], by: .ada)
-    game.flip()
   }
 
   func lay(_ card: Card) {
