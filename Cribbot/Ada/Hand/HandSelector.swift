@@ -1,4 +1,4 @@
-protocol HandSelector {
+nonisolated protocol HandSelector {
 
   func keep(cards: [Card], ownsCrib: Bool) async -> [Card]
   func toss(cards: [Card], ownsCrib: Bool) async -> [Card]
