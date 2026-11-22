@@ -26,14 +26,16 @@ struct PeggingView: View {
         HStack {
           stack
           Spacer()
-          total.padding()
-        }.background(Color.black.opacity(0.8))
+          total.padding(.trailing, 30)
+        }
+        .padding()
+        .background(Color.black.opacity(0.8))
       }
     }
   }
 
   var stack: some View {
-    HStack(spacing: cards.count == 6 ? -30 : nil) {
+    HStack(spacing: -60) {
       ForEach(Array(cards.enumerated()), id: \.element) { i, card in
         CardView(card, isFaceUp: true)
           .zIndex(Double(i))
@@ -90,7 +92,7 @@ struct PeggingView: View {
     var body: some View {
       PeggingView(
         GameViewModel(),
-        cards: [Card(.three, .spades), Card(.eight, .hearts)],
+        cards: [Card(.three, .spades), Card(.eight, .hearts), Card(.four, .spades), Card(.ten, .diamonds)],
         animationNamespace: namespace
       )
     }
