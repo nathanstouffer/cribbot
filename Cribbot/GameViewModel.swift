@@ -8,6 +8,7 @@ class GameViewModel: ObservableObject {
   @Published private var game = Game()
 
   private var adaHandSelector = RelativeHandSelector()
+  private var bobTossed = false
 
   var adaScore: Int {
     game.adaScore
@@ -58,15 +59,15 @@ class GameViewModel: ObservableObject {
   }
 
   var canToss: Bool {
-    !isCribLocked && staged.count == 2
+    !bobTossed && staged.count == 2
   }
 
   var canLay: Bool {
-    isCribLocked && staged.count == 1
+    isCribLocked && staged.count == 1 && !game.scoringProgress.pegging
   }
 
   var canScore: Bool {
-    isCribLocked && !game.scoringProgress.isDone
+    isCribLocked && game.scoringProgress.pegging && !game.scoringProgress.isDone
   }
 
   var canEndHand: Bool {
@@ -148,6 +149,7 @@ class GameViewModel: ObservableObject {
   func toss(_ left: Card, _ right: Card) {
     staged.removeAll()
     game.toss(left, right, by: .bob)
+    bobTossed = true
     if isCribLocked {
       game.flip()
     }
