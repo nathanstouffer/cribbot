@@ -8,6 +8,7 @@ class GameViewModel: ObservableObject {
   @Published private var game = Game()
 
   private var adaHandSelector = RelativeHandSelector()
+  private var adaPegSelector = RandomPegSelector()
   private var bobTossed = false
 
   var adaScore: Int {
@@ -67,7 +68,7 @@ class GameViewModel: ObservableObject {
   }
 
   var canLay: Bool {
-    isCribLocked && staged.count == 1 && !game.scoringProgress.pegging
+    isCribLocked && staged.count == 1 && !game.scoringProgress.pegging && game.pegging.turn == .bob
   }
 
   var canScore: Bool {
@@ -130,6 +131,14 @@ class GameViewModel: ObservableObject {
           game.toss(adaToss[0], adaToss[1], by: .ada)
           if isCribLocked {
             game.flip()
+            if game.pegging.turn == .ada {
+              let selected = adaPegSelector.lay(played: [], available: adaCards)
+              if let selected = selected {
+                game.lay(selected, by: .ada)
+              } else {
+                game.go(by: .ada)
+              }
+            }
           }
         }
       }
@@ -156,6 +165,14 @@ class GameViewModel: ObservableObject {
     bobTossed = true
     if isCribLocked {
       game.flip()
+      if game.pegging.turn == .ada {
+        let selected = adaPegSelector.lay(played: [], available: adaCards)
+        if let selected = selected {
+          game.lay(selected, by: .ada)
+        } else {
+          game.go(by: .ada)
+        }
+      }
     }
   }
 

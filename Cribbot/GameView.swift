@@ -90,7 +90,7 @@ struct GameView: View {
 
   private var layButton: some View {
     Button("Lay") {
-      if game.isCribLocked && game.staged.count == 1 {
+      if game.canLay {
         withAnimation {
           game.lay(game.staged[0])
         }
