@@ -33,11 +33,15 @@ class GameViewModel: ObservableObject {
   }
 
   var flippedCard: Card? {
-    return game.flipped
+    game.flipped
   }
 
   var crib: [Card] {
-    return game.crib
+    game.crib
+  }
+  
+  var peggingStack: [Card] {
+    game.pegging.stack
   }
 
   // MARK: - Indicators
@@ -156,6 +160,7 @@ class GameViewModel: ObservableObject {
   }
 
   func lay(_ card: Card) {
+    staged.removeAll()
     game.lay(card, by: .bob)
   }
 

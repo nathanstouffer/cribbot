@@ -13,7 +13,6 @@ func pegFromFifteen(cards: [Card]) -> Int {
   cards.sum() == 15 ? 2 : 0
 }
 
-// TODO (stouff) figure out how to score a "go"
 func pegFromThirtyOne(cards: [Card]) -> Int {
   cards.sum() == 31 ? 2 : 0
 }

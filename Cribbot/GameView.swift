@@ -17,7 +17,10 @@ struct GameView: View {
         adaHand
         Spacer()
         ScoreView(score: game.adaScore).padding(20)
-        TrayView(game, animationNamespace: animationNamespace)
+        ZStack {
+          TrayView(game, animationNamespace: animationNamespace)
+          PeggingView(game, cards: game.peggingStack, animationNamespace: animationNamespace)
+        }
         buttons
         ScoreView(score: game.bobScore)
         Spacer()
