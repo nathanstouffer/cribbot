@@ -183,11 +183,22 @@ class GameViewModel: ObservableObject {
   }
 
   func adaLay() {
-    let selected = adaPegSelector.lay(played: [], available: adaCards)
-    if let selected = selected {
-      game.lay(selected, by: .ada)
-    } else {
-      game.go(by: .ada)
+    Task {
+      do {
+        try await Task.sleep(for: .seconds(2))
+        await MainActor.run {
+          withAnimation {
+            let selected = adaPegSelector.lay(played: [], available: adaCards)
+            if let selected = selected {
+              game.lay(selected, by: .ada)
+            } else {
+              game.go(by: .ada)
+            }
+          }
+        }
+      } catch {
+
+      }
     }
   }
 
