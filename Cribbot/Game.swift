@@ -39,6 +39,7 @@ struct Game {
     var stack = [Card]()
     var adaGo = false
     var bobGo = false
+    var firstGo: Player? = nil
 
     var someGo: Bool {
       adaGo || bobGo
@@ -143,11 +144,7 @@ struct Game {
     precondition(flipped != nil, "Flipped card has not been selected")
     precondition(pegging.turn == by, "Player is out of order")
     if pegging.noGo {
-      if by == .ada {
-        bobScore += 1
-      } else if by == .bob {
-        adaScore += 1
-      }
+      pegging.firstGo = by
     }
     if by == .ada {
       pegging.adaGo = true
@@ -158,6 +155,13 @@ struct Game {
 
     // check if pegging must be reset
     if pegging.bothGo {
+      if let firstGo = pegging.firstGo {
+        if firstGo == .ada {
+          bobScore += 1
+        } else if firstGo == .bob {
+          adaScore += 1
+        }
+      }
       pegging = Pegging(turn: by.opponent())
     }
   }

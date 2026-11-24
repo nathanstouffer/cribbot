@@ -102,7 +102,8 @@ class GameViewModel: ObservableObject {
   }
 
   var showAdaCards: Bool {
-    isCribLocked && game.scoringProgress.pegging
+    true
+    //isCribLocked && game.scoringProgress.pegging
   }
 
   var scoringCrib: Bool {
@@ -193,11 +194,15 @@ class GameViewModel: ObservableObject {
       try await Task.sleep(for: .seconds(2))
       await MainActor.run {
         withAnimation {
-          let selected = adaPegSelector.lay(played: [], available: adaCards)
-          if let selected = selected {
-            game.lay(selected, by: .ada)
-          } else {
-            game.go(by: .ada)
+          // check if we are still in pegging mode
+          if isPegging {
+            let selected = adaPegSelector.lay(
+              played: game.pegging.stack, available: adaUnlayedCards)
+            if let selected = selected {
+              game.lay(selected, by: .ada)
+            } else {
+              game.go(by: .ada)
+            }
           }
         }
       }
@@ -229,6 +234,7 @@ class GameViewModel: ObservableObject {
   func endHand() {
     game.shuffle()
     game.toggleCrib()
+    bobTossed = false
   }
 
   // MARK: - Staging functions

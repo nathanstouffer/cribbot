@@ -98,7 +98,11 @@ struct Card: Hashable, Identifiable, CustomDebugStringConvertible {
   }
 
   var debugDescription: String {
-    return id
+    id
+  }
+
+  var peggingValue: Int {
+    rank.peggingValue
   }
 }
 
