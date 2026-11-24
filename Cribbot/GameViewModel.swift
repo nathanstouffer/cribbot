@@ -59,7 +59,7 @@ class GameViewModel: ObservableObject {
     game.cribOwner == Game.Player.bob
   }
 
-  var playerLayTurn: Bool {
+  var playerToLay: Bool {
     game.pegging.turn == .bob
   }
 
@@ -84,7 +84,13 @@ class GameViewModel: ObservableObject {
   }
 
   var canLay: Bool {
-    isCribLocked && staged.count == 1 && !game.scoringProgress.pegging && game.pegging.turn == .bob
+    isPegging && staged.count == 1 && game.pegging.turn == .bob
+      && (game.pegging.stack + [staged[0]]).sum() <= 31
+  }
+
+  var canGo: Bool {
+    isPegging && game.pegging.turn == .bob
+      && bobUnlayedCards.filter { $0.rank.peggingValue <= 31 - game.pegging.stack.sum() }.isEmpty
   }
 
   var canScore: Bool {
@@ -196,6 +202,12 @@ class GameViewModel: ObservableObject {
         }
       }
     }
+  }
+
+  func go() {
+    staged.removeAll()
+    game.go(by: .bob)
+    adaLay()
   }
 
   func lay(_ card: Card) {

@@ -58,9 +58,9 @@ struct PeggingView: View {
       .font(.largeTitle)
       .rotationEffect(.degrees(arrowRotationAngle))
       .onAppear {
-        arrowRotationAngle = game.playerLayTurn ? 180.0 : 0.0
+        arrowRotationAngle = game.playerToLay ? 180.0 : 0.0
       }
-      .onChange(of: game.playerLayTurn) { _, _ in
+      .onChange(of: game.playerToLay) { _, _ in
         withAnimation(.easeInOut(duration: 0.4)) {
           arrowRotationAngle += 180.0
         }

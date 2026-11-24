@@ -50,6 +50,8 @@ struct GameView: View {
       Spacer()
       layButton
       Spacer()
+      goButton
+      Spacer()
       scoreButton
       Spacer()
       nextButton
@@ -80,18 +82,6 @@ struct GameView: View {
     .disabled(!game.canToss)
   }
 
-  private var scoreButton: some View {
-    Button("Score") {
-      if game.canScore {
-        withAnimation {
-          game.scoreNextHand()
-        }
-      }
-    }
-    .buttonStyle(.borderedProminent)
-    .disabled(!game.canScore)
-  }
-
   private var layButton: some View {
     Button("Lay") {
       if game.canLay {
@@ -102,6 +92,30 @@ struct GameView: View {
     }
     .buttonStyle(.borderedProminent)
     .disabled(!game.canLay)
+  }
+
+  private var goButton: some View {
+    Button("Go") {
+      if game.canGo {
+        withAnimation {
+          game.go()
+        }
+      }
+    }
+    .buttonStyle(.borderedProminent)
+    .disabled(!game.canGo)
+  }
+
+  private var scoreButton: some View {
+    Button("Score") {
+      if game.canScore {
+        withAnimation {
+          game.scoreNextHand()
+        }
+      }
+    }
+    .buttonStyle(.borderedProminent)
+    .disabled(!game.canScore)
   }
 
   private var nextButton: some View {
