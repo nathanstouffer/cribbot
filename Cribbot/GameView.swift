@@ -52,8 +52,6 @@ struct GameView: View {
       Spacer()
       goButton
       Spacer()
-      scoreButton
-      Spacer()
       nextButton
       Spacer()
     }
@@ -121,11 +119,15 @@ struct GameView: View {
   private var nextButton: some View {
     Button("Next") {
       withAnimation {
-        game.endHand()
+        if game.canScore {
+          game.scoreNextHand()
+        } else if game.canEndHand {
+          game.endHand()
+        }
       }
     }
     .buttonStyle(.borderedProminent)
-    .disabled(!game.canEndHand)
+    .disabled(!(game.canScore || game.canEndHand))
   }
 
   private var background: some View {
