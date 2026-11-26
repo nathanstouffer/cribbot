@@ -6,26 +6,51 @@ struct Game {
     case ada
     case bob
 
-    mutating func toggle() {
+    func opponent() -> Player {
       if self == .ada {
-        self = .bob
+        return .bob
       } else {
-        self = .ada
+        return .ada
       }
+    }
+
+    mutating func toggle() {
+      self = opponent()
     }
   }
 
   struct ScoringProgress {
+    var pegging = false
     var nondealerHand = false
     var dealerHand = false
     var crib = false
 
     var onCrib: Bool {
-      nondealerHand && dealerHand && !crib
+      pegging && nondealerHand && dealerHand && !crib
     }
 
     var isDone: Bool {
-      nondealerHand && dealerHand && crib
+      pegging && nondealerHand && dealerHand && crib
+    }
+  }
+
+  struct Pegging {
+    var turn: Player
+    var stack = [Card]()
+    var adaGo = false
+    var bobGo = false
+    var firstGo: Player? = nil
+
+    var someGo: Bool {
+      adaGo || bobGo
+    }
+
+    var noGo: Bool {
+      !someGo
+    }
+
+    var bothGo: Bool {
+      return adaGo && bobGo
     }
   }
 
@@ -33,10 +58,15 @@ struct Game {
   private(set) var bobScore = 0
 
   private(set) var cribOwner = Player.allCases.randomElement()!
+  private(set) var pegging: Pegging
 
   private(set) var cards = CribbageCard.fullDeckByRank
 
   private(set) var scoringProgress = ScoringProgress()
+
+  init() {
+    pegging = Pegging(turn: cribOwner.opponent())
+  }
 
   var deck: [Card] {
     cards.filter { $0.owner == .deck }.map { $0.card }
@@ -68,6 +98,7 @@ struct Game {
 
   mutating func toggleCrib() {
     cribOwner.toggle()
+    pegging = Pegging(turn: cribOwner.opponent())
   }
 
   mutating func shuffle() {
@@ -105,17 +136,78 @@ struct Game {
     toss(right)
   }
 
+  func canLay(_ card: Card) -> Bool {
+    !find(card).layed && (pegging.stack + [card]).sum() <= 31
+  }
+
+  mutating func go(by: Player) {
+    precondition(flipped != nil, "Flipped card has not been selected")
+    precondition(pegging.turn == by, "Player is out of order")
+    if pegging.noGo {
+      pegging.firstGo = by
+    }
+    if by == .ada {
+      pegging.adaGo = true
+    } else if by == .bob {
+      pegging.bobGo = true
+    }
+    pegging.turn.toggle()
+
+    // check if pegging must be reset
+    if pegging.bothGo {
+      if let firstGo = pegging.firstGo {
+        if firstGo == .ada {
+          bobScore += 1
+        } else if firstGo == .bob {
+          adaScore += 1
+        }
+      }
+      pegging = Pegging(turn: by.opponent())
+    }
+  }
+
   mutating func lay(_ card: Card, by: Player) {
     precondition(flipped != nil, "Flipped card has not been selected")
+    precondition(pegging.turn == by, "Player is out of order")
+    precondition((pegging.stack + [card]).sum() <= 31, "Card would exceed 31")
     precondition(find(card).owner == by, "Card is not owned by player")
     precondition(!find(card).layed, "Card has already been layed")
     let i = findIndex(card)
     cards[i].layed = true
+    let score = peg(played: pegging.stack, playing: card)
+    if by == .ada {
+      adaScore += score
+    } else if by == .bob {
+      bobScore += score
+    }
+    pegging.stack.append(card)
+    pegging.turn.toggle()
+
+    // check if pegging must be reset
+    if pegging.stack.sum() == 31 {
+      pegging = Pegging(turn: pegging.turn)
+    }
+
+    // check if pegging is over
+    let adaDone = adaHand.allSatisfy { $0.layed }
+    let bobDone = bobHand.allSatisfy { $0.layed }
+    if adaDone && bobDone {
+      if pegging.stack.sum() != 0 {
+        if by == .ada {
+          adaScore += 1
+        } else if by == .bob {
+          bobScore += 1
+        }
+      }
+      pegging = Pegging(turn: cribOwner.opponent())
+      scoringProgress.pegging = true
+    }
   }
 
   // MARK: - Scoring functions
 
   mutating func scoreNondealer() {
+    precondition(scoringProgress.pegging, "Pegging has not been completed")
     precondition(flipped != nil, "Flipped card has not been selected")
     precondition(
       !scoringProgress.crib && !scoringProgress.dealerHand, "Nondealer must be scored first")

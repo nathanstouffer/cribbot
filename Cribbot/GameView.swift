@@ -17,7 +17,10 @@ struct GameView: View {
         adaHand
         Spacer()
         ScoreView(score: game.adaScore).padding(20)
-        TrayView(game, animationNamespace: animationNamespace)
+        ZStack {
+          TrayView(game, animationNamespace: animationNamespace)
+          PeggingView(game, cards: game.peggingStack, animationNamespace: animationNamespace)
+        }
         buttons
         ScoreView(score: game.bobScore)
         Spacer()
@@ -27,11 +30,15 @@ struct GameView: View {
   }
 
   private var adaHand: some View {
-    hand(cards: game.adaCards, crib: game.showAdaCrib ? game.crib : [], isFaceUp: game.showAdaCards)
+    hand(
+      cards: game.isPegging ? game.adaUnlayedCards : game.adaCards,
+      crib: game.showAdaCrib ? game.crib : [], isFaceUp: game.showAdaCards)
   }
 
   private var bobHand: some View {
-    hand(cards: game.bobCards, crib: game.showBobCrib ? game.crib : [], isFaceUp: true)
+    hand(
+      cards: game.isPegging ? game.bobUnlayedCards : game.bobCards,
+      crib: game.showBobCrib ? game.crib : [], isFaceUp: true)
   }
 
   private var buttons: some View {
@@ -43,7 +50,7 @@ struct GameView: View {
       Spacer()
       layButton
       Spacer()
-      scoreButton
+      goButton
       Spacer()
       nextButton
       Spacer()
@@ -73,6 +80,30 @@ struct GameView: View {
     .disabled(!game.canToss)
   }
 
+  private var layButton: some View {
+    Button("Lay") {
+      if game.canLay {
+        withAnimation {
+          game.lay(game.staged[0])
+        }
+      }
+    }
+    .buttonStyle(.borderedProminent)
+    .disabled(!game.canLay)
+  }
+
+  private var goButton: some View {
+    Button("Go") {
+      if game.canGo {
+        withAnimation {
+          game.go()
+        }
+      }
+    }
+    .buttonStyle(.borderedProminent)
+    .disabled(!game.canGo)
+  }
+
   private var scoreButton: some View {
     Button("Score") {
       if game.canScore {
@@ -85,26 +116,18 @@ struct GameView: View {
     .disabled(!game.canScore)
   }
 
-  private var layButton: some View {
-    Button("Lay") {
-      if game.isCribLocked && game.staged.count == 1 {
-        withAnimation {
-          game.lay(game.staged[0])
+  private var nextButton: some View {
+    Button("Next") {
+      withAnimation {
+        if game.canScore {
+          game.scoreNextHand()
+        } else if game.canEndHand {
+          game.endHand()
         }
       }
     }
     .buttonStyle(.borderedProminent)
-    .disabled(!game.canLay)
-  }
-
-  private var nextButton: some View {
-    Button("Next") {
-      withAnimation {
-        game.endHand()
-      }
-    }
-    .buttonStyle(.borderedProminent)
-    .disabled(!game.canEndHand)
+    .disabled(!(game.canScore || game.canEndHand))
   }
 
   private var background: some View {

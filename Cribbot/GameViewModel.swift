@@ -8,6 +8,8 @@ class GameViewModel: ObservableObject {
   @Published private var game = Game()
 
   private var adaHandSelector = RelativeHandSelector()
+  private var adaPegSelector = RandomPegSelector()
+  private var bobTossed = false
 
   var adaScore: Int {
     game.adaScore
@@ -31,22 +33,38 @@ class GameViewModel: ObservableObject {
     game.bobCards
   }
 
+  var adaUnlayedCards: [Card] {
+    game.adaHand.filter { !$0.layed }.map { $0.card }
+  }
+
+  var bobUnlayedCards: [Card] {
+    game.bobHand.filter { !$0.layed }.map { $0.card }
+  }
+
   var flippedCard: Card? {
-    return game.flipped
+    game.flipped
   }
 
   var crib: [Card] {
-    return game.crib
+    game.crib
+  }
+
+  var peggingStack: [Card] {
+    game.pegging.stack
   }
 
   // MARK: - Indicators
 
   var playerOwnsCrib: Bool {
-    return game.cribOwner == Game.Player.bob
+    game.cribOwner == Game.Player.bob
+  }
+
+  var playerToLay: Bool {
+    game.pegging.turn == .bob
   }
 
   var isCribLocked: Bool {
-    return crib.count == 4
+    crib.count == 4
   }
 
   var showCribInTray: Bool {
@@ -58,15 +76,25 @@ class GameViewModel: ObservableObject {
   }
 
   var canToss: Bool {
-    !isCribLocked && staged.count == 2
+    !bobTossed && staged.count == 2
+  }
+
+  var isPegging: Bool {
+    isCribLocked && !game.scoringProgress.pegging
   }
 
   var canLay: Bool {
-    isCribLocked && staged.count == 1
+    isPegging && staged.count == 1 && game.pegging.turn == .bob
+      && (game.pegging.stack + [staged[0]]).sum() <= 31
+  }
+
+  var canGo: Bool {
+    isPegging && game.pegging.turn == .bob
+      && bobUnlayedCards.filter { $0.rank.peggingValue <= 31 - game.pegging.stack.sum() }.isEmpty
   }
 
   var canScore: Bool {
-    isCribLocked && !game.scoringProgress.isDone
+    isCribLocked && game.scoringProgress.pegging && !game.scoringProgress.isDone
   }
 
   var canEndHand: Bool {
@@ -74,7 +102,8 @@ class GameViewModel: ObservableObject {
   }
 
   var showAdaCards: Bool {
-    isCribLocked
+    true
+    //isCribLocked && game.scoringProgress.pegging
   }
 
   var scoringCrib: Bool {
@@ -125,6 +154,9 @@ class GameViewModel: ObservableObject {
           game.toss(adaToss[0], adaToss[1], by: .ada)
           if isCribLocked {
             game.flip()
+            if game.pegging.turn == .ada {
+              adaLay()
+            }
           }
         }
       }
@@ -148,13 +180,45 @@ class GameViewModel: ObservableObject {
   func toss(_ left: Card, _ right: Card) {
     staged.removeAll()
     game.toss(left, right, by: .bob)
+    bobTossed = true
     if isCribLocked {
       game.flip()
+      if game.pegging.turn == .ada {
+        adaLay()
+      }
     }
   }
 
+  func adaLay() {
+    Task {
+      try await Task.sleep(for: .seconds(2))
+      await MainActor.run {
+        withAnimation {
+          // check if we are still in pegging mode
+          if isPegging {
+            let selected = adaPegSelector.lay(
+              played: game.pegging.stack, available: adaUnlayedCards)
+            if let selected = selected {
+              game.lay(selected, by: .ada)
+            } else {
+              game.go(by: .ada)
+            }
+          }
+        }
+      }
+    }
+  }
+
+  func go() {
+    staged.removeAll()
+    game.go(by: .bob)
+    adaLay()
+  }
+
   func lay(_ card: Card) {
+    staged.removeAll()
     game.lay(card, by: .bob)
+    adaLay()
   }
 
   func scoreNextHand() {
@@ -170,6 +234,7 @@ class GameViewModel: ObservableObject {
   func endHand() {
     game.shuffle()
     game.toggleCrib()
+    bobTossed = false
   }
 
   // MARK: - Staging functions
