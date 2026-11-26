@@ -3,7 +3,7 @@
 struct RetainedHandSelector: HandSelector {
 
   func toss(cards: [Card], ownsCrib: Bool) -> [Card] {
-    var best = TossCandidate(toss: [], score: 0.0, sum: 10000)  // assign invalid value that will be overwritten
+    var best = TossCandidate(toss: [], score: -1000.0, sum: 10000)  // assign invalid value that will be overwritten
     for toss in cards.allPairs() {
       let candidate = evaluate(hand: cards.minus(toss), toss: toss, ownsCrib: ownsCrib)
       if candidate.score > best.score {

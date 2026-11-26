@@ -79,4 +79,23 @@ struct RelativeHandSelectorTests {
       "Failed to focus on dangerous crib for RelativeHandSelector")
   }
 
+  @Test func negativeExpectedValue() async throws {
+    let dealt = [
+      Card(.six, .diamonds), Card(.four, .hearts), Card(.three, .clubs), Card(.seven, .spades),
+      Card(.queen, .hearts), Card(.ten, .hearts),
+    ]
+
+    // this is one that I do not agree with. passing a pair to the opponent's crib is
+    // dangerous because the opponent is prone to tossing cards that will compound the
+    // points. I suspect that the selector does not pick up on this because it treats
+    // the all opponent's tosses as equally likely instead of assuming they are
+    // intelligent
+    let expectedToss = [Card(.queen, .hearts), Card(.ten, .hearts)]
+    let actualToss = await RelativeHandSelector().toss(cards: dealt, ownsCrib: false)
+
+    #expect(
+      expectedToss == actualToss,
+      "Failed to focus on dangerous crib for RelativeHandSelector")
+  }
+
 }

@@ -13,7 +13,7 @@ nonisolated struct RelativeHandSelector: HandSelector {
         }
       }
 
-      var best = TossCandidate(toss: [], score: 0.0, sum: 10000)  // assign invalid value that will be overwritten
+      var best = TossCandidate(toss: [], score: -1000.0, sum: 10000)  // assign invalid value that will be overwritten
       for await candidate in group {
         if candidate.score > best.score {
           best = candidate
