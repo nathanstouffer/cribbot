@@ -192,6 +192,13 @@ struct Game {
     let adaDone = adaHand.allSatisfy { $0.layed }
     let bobDone = bobHand.allSatisfy { $0.layed }
     if adaDone && bobDone {
+      if pegging.stack.sum() != 0 {
+        if by == .ada {
+          adaScore += 1
+        } else if by == .bob {
+          bobScore += 1
+        }
+      }
       pegging = Pegging(turn: cribOwner.opponent())
       scoringProgress.pegging = true
     }
