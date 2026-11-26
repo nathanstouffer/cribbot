@@ -19,7 +19,7 @@ struct HeuristicPegSelector: PegSelector {
       return best.lay
     }
   }
-  
+
   func evaluate(played: [Card], playing: Card) -> LayCandidate {
     var score = Double(peg(played: played, playing: playing))
     let stack = played + [playing]
