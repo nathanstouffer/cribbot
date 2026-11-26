@@ -8,7 +8,7 @@ class GameViewModel: ObservableObject {
   @Published private var game = Game()
 
   private var adaHandSelector = RelativeHandSelector()
-  private var adaPegSelector = RandomPegSelector()
+  private var adaPegSelector = HeuristicPegSelector()
   private var bobTossed = false
 
   var adaScore: Int {
