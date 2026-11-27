@@ -54,6 +54,28 @@ struct Game {
     }
   }
 
+  struct Hand {
+
+    let hand: [CribbageCard]
+
+    init(hand: [CribbageCard]) {
+      self.hand = hand
+    }
+
+    var cards: [Card] {
+      hand.map { $0.card }
+    }
+
+    var layed: [Card] {
+      hand.filter { $0.layed }.map { $0.card }
+    }
+
+    var unlayed: [Card] {
+      hand.filter { !$0.layed }.map { $0.card }
+    }
+
+  }
+
   private(set) var adaScore = 0
   private(set) var bobScore = 0
 
