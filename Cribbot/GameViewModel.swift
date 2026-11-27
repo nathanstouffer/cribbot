@@ -82,7 +82,7 @@ class GameViewModel: ObservableObject {
 
   var canGo: Bool {
     isPegging && game.pegging.turn == .bob
-    && bobHand.unlayed.filter { $0.rank.peggingValue <= 31 - game.pegging.stack.sum() }.isEmpty
+      && bobHand.unlayed.filter { $0.rank.peggingValue <= 31 - game.pegging.stack.sum() }.isEmpty
   }
 
   var canScore: Bool {

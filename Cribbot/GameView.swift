@@ -30,15 +30,11 @@ struct GameView: View {
   }
 
   private var adaHand: some View {
-    hand(
-      cards: game.isPegging ? game.adaHand.unlayed : game.adaHand.cards,
-      crib: game.showAdaCrib ? game.crib : [], isFaceUp: game.showAdaCards)
+    player(hand: game.adaHand, crib: game.showAdaCrib ? game.crib : [], isFaceUp: game.showAdaCards)
   }
 
   private var bobHand: some View {
-    hand(
-      cards: game.isPegging ? game.bobHand.unlayed : game.bobHand.cards,
-      crib: game.showBobCrib ? game.crib : [], isFaceUp: true)
+    player(hand: game.bobHand, crib: game.showBobCrib ? game.crib : [], isFaceUp: true)
   }
 
   private var buttons: some View {
@@ -137,15 +133,27 @@ struct GameView: View {
   }
 
   // MARK: - hand view
-  private func hand(cards: [Card], crib: [Card], isFaceUp: Bool) -> some View {
-    ZStack {
-      HandView(
-        game: game, cards: cards, isFaceUp: isFaceUp,
-        animationNamespace: animationNamespace)
-      HandView(
-        game: game, cards: crib, isFaceUp: isFaceUp,
-        animationNamespace: animationNamespace)
+  private func player(hand: Game.Hand, crib: [Card], isFaceUp: Bool) -> some View {
+    if game.isPegging {
+      ZStack {
+        HandView(
+          game: game, cards: hand.unlayed, isFaceUp: isFaceUp,
+          animationNamespace: animationNamespace)
+        HandView(
+          game: game, cards: crib, isFaceUp: isFaceUp,
+          animationNamespace: animationNamespace)
+      }
+    } else {
+      ZStack {
+        HandView(
+          game: game, cards: hand.cards, isFaceUp: isFaceUp,
+          animationNamespace: animationNamespace)
+        HandView(
+          game: game, cards: crib, isFaceUp: isFaceUp,
+          animationNamespace: animationNamespace)
+      }
     }
+
   }
 }
 

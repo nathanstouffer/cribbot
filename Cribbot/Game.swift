@@ -73,7 +73,7 @@ struct Game {
     var unlayed: [Card] {
       hand.filter { !$0.layed }.map { $0.card }
     }
-    
+
     var allLayed: Bool {
       hand.allSatisfy { $0.layed }
     }
