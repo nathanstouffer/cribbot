@@ -25,20 +25,12 @@ class GameViewModel: ObservableObject {
     return game.deck
   }
 
-  var adaCards: [Card] {
-    game.adaCards
+  var adaHand: Game.Hand {
+    game.adaHand
   }
 
-  var bobCards: [Card] {
-    game.bobCards
-  }
-
-  var adaUnlayedCards: [Card] {
-    game.adaHand.filter { !$0.layed }.map { $0.card }
-  }
-
-  var bobUnlayedCards: [Card] {
-    game.bobHand.filter { !$0.layed }.map { $0.card }
+  var bobHand: Game.Hand {
+    game.bobHand
   }
 
   var flippedCard: Card? {
@@ -90,7 +82,7 @@ class GameViewModel: ObservableObject {
 
   var canGo: Bool {
     isPegging && game.pegging.turn == .bob
-      && bobUnlayedCards.filter { $0.rank.peggingValue <= 31 - game.pegging.stack.sum() }.isEmpty
+    && bobHand.unlayed.filter { $0.rank.peggingValue <= 31 - game.pegging.stack.sum() }.isEmpty
   }
 
   var canScore: Bool {
@@ -145,7 +137,7 @@ class GameViewModel: ObservableObject {
     game.deal()
     Task {
       let adaToss = await adaHandSelector.toss(
-        cards: game.adaCards, ownsCrib: game.cribOwner == .ada)
+        cards: game.adaHand.cards, ownsCrib: game.cribOwner == .ada)
       guard adaToss.count == 2 else {
         fatalError("Ada tosses incorrect number of cards (2)")
       }
@@ -197,7 +189,7 @@ class GameViewModel: ObservableObject {
           // check if we are still in pegging mode
           if isPegging {
             let selected = adaPegSelector.lay(
-              played: game.pegging.stack, available: adaUnlayedCards)
+              played: game.pegging.stack, available: adaHand.unlayed)
             if let selected = selected {
               game.lay(selected, by: .ada)
             } else {

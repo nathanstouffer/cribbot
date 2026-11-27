@@ -31,13 +31,13 @@ struct GameView: View {
 
   private var adaHand: some View {
     hand(
-      cards: game.isPegging ? game.adaUnlayedCards : game.adaCards,
+      cards: game.isPegging ? game.adaHand.unlayed : game.adaHand.cards,
       crib: game.showAdaCrib ? game.crib : [], isFaceUp: game.showAdaCards)
   }
 
   private var bobHand: some View {
     hand(
-      cards: game.isPegging ? game.bobUnlayedCards : game.bobCards,
+      cards: game.isPegging ? game.bobHand.unlayed : game.bobHand.cards,
       crib: game.showBobCrib ? game.crib : [], isFaceUp: true)
   }
 

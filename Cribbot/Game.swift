@@ -58,7 +58,7 @@ struct Game {
 
     let hand: [CribbageCard]
 
-    init(hand: [CribbageCard]) {
+    init(_ hand: [CribbageCard]) {
       self.hand = hand
     }
 
@@ -72,6 +72,10 @@ struct Game {
 
     var unlayed: [Card] {
       hand.filter { !$0.layed }.map { $0.card }
+    }
+    
+    var allLayed: Bool {
+      hand.allSatisfy { $0.layed }
     }
 
   }
@@ -94,20 +98,12 @@ struct Game {
     cards.filter { $0.owner == .deck }.map { $0.card }
   }
 
-  var adaHand: [CribbageCard] {
-    cards.filter { $0.owner == .ada }
+  var adaHand: Hand {
+    Hand(cards.filter { $0.owner == .ada })
   }
 
-  var bobHand: [CribbageCard] {
-    cards.filter { $0.owner == .bob }
-  }
-
-  var adaCards: [Card] {
-    adaHand.map { $0.card }
-  }
-
-  var bobCards: [Card] {
-    bobHand.map { $0.card }
+  var bobHand: Hand {
+    Hand(cards.filter { $0.owner == .bob })
   }
 
   var crib: [Card] {
@@ -211,9 +207,7 @@ struct Game {
     }
 
     // check if pegging is over
-    let adaDone = adaHand.allSatisfy { $0.layed }
-    let bobDone = bobHand.allSatisfy { $0.layed }
-    if adaDone && bobDone {
+    if adaHand.allLayed && bobHand.allLayed {
       if pegging.stack.sum() != 0 {
         if by == .ada {
           adaScore += 1
@@ -234,10 +228,10 @@ struct Game {
     precondition(
       !scoringProgress.crib && !scoringProgress.dealerHand, "Nondealer must be scored first")
     if cribOwner == .ada {
-      bobScore += score(hand: bobCards, flip: flipped!, isCrib: false)
+      bobScore += score(hand: bobHand.cards, flip: flipped!, isCrib: false)
     }
     if cribOwner == .bob {
-      adaScore += score(hand: adaCards, flip: flipped!, isCrib: false)
+      adaScore += score(hand: adaHand.cards, flip: flipped!, isCrib: false)
     }
     scoringProgress.nondealerHand = true
   }
@@ -246,10 +240,10 @@ struct Game {
     precondition(flipped != nil, "Flipped card has not been selected")
     precondition(scoringProgress.nondealerHand, "Nondealer hand must be scored before dealer")
     if cribOwner == .ada {
-      adaScore += score(hand: adaCards, flip: flipped!, isCrib: false)
+      adaScore += score(hand: adaHand.cards, flip: flipped!, isCrib: false)
     }
     if cribOwner == .bob {
-      bobScore += score(hand: bobCards, flip: flipped!, isCrib: false)
+      bobScore += score(hand: bobHand.cards, flip: flipped!, isCrib: false)
     }
     scoringProgress.dealerHand = true
   }
