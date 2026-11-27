@@ -23,7 +23,7 @@ struct ScoreView: View {
       .font(.title2)
       .contentTransition(.numericText(value: Double(score)))
       .overlay(alignment: .trailing) {
-        if let delta, delta > 0 {
+        if let delta, delta >= 0 {
           Text("+\(delta)")
             .font(.headline.bold())
             .foregroundStyle(.yellow)
