@@ -100,6 +100,16 @@ struct Game {
     pegging = Pegging(turn: cribOwner.opponent())
   }
 
+  var winner: Player? {
+    if adaScore == 121 {
+      .ada
+    } else if bobScore == 121 {
+      .bob
+    } else {
+      nil
+    }
+  }
+
   var deck: [Card] {
     cards.filter { $0.owner == .deck }.map { $0.card }
   }

@@ -46,6 +46,10 @@ class GameViewModel: ObservableObject {
   }
 
   // MARK: - Indicators
+  
+  var winner: Game.Player? {
+    game.winner
+  }
 
   var playerOwnsCrib: Bool {
     game.cribOwner == Game.Player.bob
