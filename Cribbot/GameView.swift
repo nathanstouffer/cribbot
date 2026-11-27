@@ -19,7 +19,9 @@ struct GameView: View {
         ScoreView(score: game.adaScore).padding(20)
         ZStack {
           TrayView(game, animationNamespace: animationNamespace)
-          PeggingView(game, cards: game.peggingStack, animationNamespace: animationNamespace)
+          if game.isPegging {
+            PeggingView(cards: game.peggingStack, playerToLay: game.playerToLay, animationNamespace: animationNamespace)
+          }
         }
         buttons
         ScoreView(score: game.bobScore)
