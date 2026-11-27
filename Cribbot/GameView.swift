@@ -30,11 +30,14 @@ struct GameView: View {
   }
 
   private var adaHand: some View {
-    player(hand: game.adaHand, crib: game.showAdaCrib ? game.crib : [], isFaceUp: game.showAdaCards)
+    player(
+      hand: game.adaHand, crib: game.showAdaCrib ? game.crib : [], isFaceUp: game.showAdaCards,
+      allowStage: false)
   }
 
   private var bobHand: some View {
-    player(hand: game.bobHand, crib: game.showBobCrib ? game.crib : [], isFaceUp: true)
+    player(
+      hand: game.bobHand, crib: game.showBobCrib ? game.crib : [], isFaceUp: true, allowStage: true)
   }
 
   private var buttons: some View {
@@ -133,23 +136,24 @@ struct GameView: View {
   }
 
   // MARK: - hand view
-  private func player(hand: Game.Hand, crib: [Card], isFaceUp: Bool) -> some View {
+  private func player(hand: Game.Hand, crib: [Card], isFaceUp: Bool, allowStage: Bool) -> some View
+  {
     if game.isPegging {
       ZStack {
         HandView(
-          game: game, cards: hand.unlayed, isFaceUp: isFaceUp,
+          game: game, cards: hand.unlayed, isFaceUp: isFaceUp, allowStage: allowStage,
           animationNamespace: animationNamespace)
         HandView(
-          game: game, cards: crib, isFaceUp: isFaceUp,
+          game: game, cards: crib, isFaceUp: isFaceUp, allowStage: false,
           animationNamespace: animationNamespace)
       }
     } else {
       ZStack {
         HandView(
-          game: game, cards: hand.cards, isFaceUp: isFaceUp,
+          game: game, cards: hand.cards, isFaceUp: isFaceUp, allowStage: allowStage,
           animationNamespace: animationNamespace)
         HandView(
-          game: game, cards: crib, isFaceUp: isFaceUp,
+          game: game, cards: crib, isFaceUp: isFaceUp, allowStage: false,
           animationNamespace: animationNamespace)
       }
     }
