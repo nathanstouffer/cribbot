@@ -35,11 +35,42 @@ struct Game {
   }
 
   struct Pegging {
+
+    struct Stack {
+
+      struct Lay {
+        let card: Card
+        let by: Player
+      }
+
+      var lays = [Lay]()
+
+      var last: Lay? {
+        lays.last
+      }
+
+      var cards: [Card] {
+        lays.map { $0.card }
+      }
+
+      func sum() -> Int {
+        cards.sum()
+      }
+
+      func allows(card: Card) -> Bool {
+        sum() + card.peggingValue <= 31
+      }
+
+      mutating func push(card: Card, by: Player) {
+        lays.append(Lay(card: card, by: by))
+      }
+
+    }
+
     var turn: Player
-    var stack = [Card]()
+    var stack = Stack()
     var adaGo = false
     var bobGo = false
-    var firstGo: Player? = nil
 
     var someGo: Bool {
       adaGo || bobGo
@@ -51,6 +82,10 @@ struct Game {
 
     var bothGo: Bool {
       return adaGo && bobGo
+    }
+    
+    func allows(card: Card) -> Bool {
+      stack.allows(card: card)
     }
   }
 
@@ -159,15 +194,12 @@ struct Game {
   }
 
   func canLay(_ card: Card) -> Bool {
-    !find(card).layed && (pegging.stack + [card]).sum() <= 31
+    !find(card).layed && pegging.stack.allows(card: card)
   }
 
   mutating func go(by: Player) {
     precondition(flipped != nil, "Flipped card has not been selected")
     precondition(pegging.turn == by, "Player is out of order")
-    if pegging.noGo {
-      pegging.firstGo = by
-    }
     if by == .ada {
       pegging.adaGo = true
     } else if by == .bob {
@@ -179,31 +211,31 @@ struct Game {
   mutating func lay(_ card: Card, by: Player) {
     precondition(flipped != nil, "Flipped card has not been selected")
     precondition(pegging.turn == by, "Player is out of order")
-    precondition((pegging.stack + [card]).sum() <= 31, "Card would exceed 31")
+    precondition(pegging.stack.allows(card: card), "Card would exceed 31")
     precondition(find(card).owner == by, "Card is not owned by player")
     precondition(!find(card).layed, "Card has already been layed")
     let i = findIndex(card)
     cards[i].layed = true
-    let score = peg(played: pegging.stack, playing: card)
+    let score = peg(played: pegging.stack.cards, playing: card)
     if by == .ada {
       adaScore += score
     } else if by == .bob {
       bobScore += score
     }
-    pegging.stack.append(card)
+    pegging.stack.push(card: card, by: by)
     pegging.turn.toggle()
   }
 
   mutating func clearPeggingStack() {
     // check if there is a point for a go
-    if let firstGo = pegging.firstGo {
-      if firstGo == .ada {
-        bobScore += 1
-      } else if firstGo == .bob {
-        adaScore += 1
+    if pegging.stack.sum() != 31 {
+      if let last = pegging.stack.last {
+        if last.by == .ada {
+          adaScore += 1
+        } else if last.by == .bob {
+          bobScore += 1
+        }
       }
-    } else {
-      // TODO (stouff) we need to assign a point for last card here
     }
 
     // reset while preserving the turn order

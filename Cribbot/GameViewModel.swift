@@ -42,7 +42,7 @@ class GameViewModel: ObservableObject {
   }
 
   var peggingStack: [Card] {
-    game.pegging.stack
+    game.pegging.stack.cards
   }
 
   // MARK: - Indicators
@@ -77,7 +77,7 @@ class GameViewModel: ObservableObject {
 
   var canLay: Bool {
     isPegging && staged.count == 1 && game.pegging.turn == .bob
-      && (game.pegging.stack + [staged[0]]).sum() <= 31
+    && game.pegging.stack.allows(card: staged[0])
   }
 
   var stalledPegging: Bool {
@@ -86,7 +86,7 @@ class GameViewModel: ObservableObject {
 
   var canGo: Bool {
     isPegging && !stalledPegging && game.pegging.turn == .bob
-      && bobHand.unlayed.filter { $0.rank.peggingValue <= 31 - game.pegging.stack.sum() }.isEmpty
+    && bobHand.unlayed.filter { game.pegging.stack.allows(card: $0) }.isEmpty
   }
 
   var canScore: Bool {
@@ -193,7 +193,7 @@ class GameViewModel: ObservableObject {
           // check if we are still in pegging mode
           if isPegging {
             let selected = adaPegSelector.lay(
-              played: game.pegging.stack, available: adaHand.unlayed)
+              played: game.pegging.stack.cards, available: adaHand.unlayed)
             if let selected = selected {
               game.lay(selected, by: .ada)
             } else {
