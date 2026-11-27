@@ -1,15 +1,15 @@
 import SwiftUI
 
 struct GameView: View {
-  
+
   @ObservedObject private var game: GameViewModel
-  
+
   @Namespace private var animationNamespace
-  
+
   init(_ game: GameViewModel) {
     self.game = game
   }
-  
+
   var body: some View {
     ZStack {
       background
@@ -28,18 +28,20 @@ struct GameView: View {
       }
     }
   }
-  
+
   private var adaHand: some View {
-    player(
-      hand: game.adaHand, crib: game.showAdaCrib ? game.crib : [], isFaceUp: game.showAdaCards,
-      allowStage: false)
+    PlayerView(
+      game: game, hand: game.adaHand, crib: game.showAdaCrib ? game.crib : [],
+      isFaceUp: game.showAdaCards,
+      allowStage: false, animationNamespace: animationNamespace)
   }
-  
+
   private var bobHand: some View {
-    player(
-      hand: game.bobHand, crib: game.showBobCrib ? game.crib : [], isFaceUp: true, allowStage: true)
+    PlayerView(
+      game: game, hand: game.bobHand, crib: game.showBobCrib ? game.crib : [], isFaceUp: true,
+      allowStage: true, animationNamespace: animationNamespace)
   }
-  
+
   private var buttons: some View {
     HStack {
       Spacer()
@@ -56,7 +58,7 @@ struct GameView: View {
     }
     .padding(20)
   }
-  
+
   private var dealButton: some View {
     Button("Deal") {
       withAnimation {
@@ -66,7 +68,7 @@ struct GameView: View {
     .buttonStyle(.borderedProminent)
     .disabled(!game.canDeal)
   }
-  
+
   private var tossButton: some View {
     Button("Toss") {
       if game.canToss {
@@ -78,7 +80,7 @@ struct GameView: View {
     .buttonStyle(.borderedProminent)
     .disabled(!game.canToss)
   }
-  
+
   private var layButton: some View {
     Button("Lay") {
       if game.canLay {
@@ -90,7 +92,7 @@ struct GameView: View {
     .buttonStyle(.borderedProminent)
     .disabled(!game.canLay)
   }
-  
+
   private var goButton: some View {
     Button("Go") {
       if game.canGo {
@@ -102,7 +104,7 @@ struct GameView: View {
     .buttonStyle(.borderedProminent)
     .disabled(!game.canGo)
   }
-  
+
   private var scoreButton: some View {
     Button("Score") {
       if game.canScore {
@@ -114,7 +116,7 @@ struct GameView: View {
     .buttonStyle(.borderedProminent)
     .disabled(!game.canScore)
   }
-  
+
   private var nextButton: some View {
     Button("Next") {
       withAnimation {
@@ -128,41 +130,14 @@ struct GameView: View {
     .buttonStyle(.borderedProminent)
     .disabled(!(game.canScore || game.canEndHand))
   }
-  
+
   private var background: some View {
     Rectangle()
       .fill(.green)
       .ignoresSafeArea()
   }
-  
-  // MARK: - player view
-  private func player(hand: Game.Hand, crib: [Card], isFaceUp: Bool, allowStage: Bool) -> some View
-  {
-    ZStack {
-      if game.isPegging {
-        HStack {
-          ZStack {
-            ForEach(hand.layed.minus(game.peggingStack)) { card in
-              CardView.back(shadowRadius: 0)
-                .matchedGeometryEffect(id: card.id, in: animationNamespace)
-            }
-          }
-          HandView(
-            game: game, cards: hand.unlayed, isFaceUp: isFaceUp, allowStage: allowStage,
-            animationNamespace: animationNamespace)
-        }
-      } else {
-        HandView(
-          game: game, cards: hand.cards, isFaceUp: isFaceUp, allowStage: allowStage,
-          animationNamespace: animationNamespace)
-      }
-      HandView(
-        game: game, cards: crib, isFaceUp: isFaceUp, allowStage: false,
-        animationNamespace: animationNamespace)
-      }
-    }
-  }
 
+}
 
 #Preview {
   GameView(GameViewModel())
