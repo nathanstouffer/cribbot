@@ -31,7 +31,7 @@ struct PlayerView: View {
       cribDisplay
     }
   }
-  
+
   var peggingDisplay: some View {
     HStack {
       layed
@@ -40,7 +40,7 @@ struct PlayerView: View {
         animationNamespace: animationNamespace)
     }
   }
-  
+
   var layed: some View {
     ZStack {
       ForEach(hand.layed.minus(game.peggingStack)) { card in
@@ -49,13 +49,13 @@ struct PlayerView: View {
       }
     }
   }
-  
+
   var handDisplay: some View {
     HandView(
       game: game, cards: hand.cards, isFaceUp: isFaceUp, allowStage: allowStage,
       animationNamespace: animationNamespace)
   }
-  
+
   var cribDisplay: some View {
     HandView(
       game: game, cards: crib, isFaceUp: isFaceUp, allowStage: false,
