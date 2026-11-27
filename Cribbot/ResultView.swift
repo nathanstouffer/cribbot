@@ -15,7 +15,7 @@ struct ResultView: View {
     .padding(.vertical, 125)
     .background(Color.black.opacity(0.8))
   }
-  
+
   var text: some View {
     if winner == .ada {
       Text("You have lost")

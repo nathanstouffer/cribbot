@@ -46,7 +46,7 @@ class GameViewModel: ObservableObject {
   }
 
   // MARK: - Indicators
-  
+
   var winner: Game.Player? {
     game.winner
   }
