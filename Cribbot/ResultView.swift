@@ -5,10 +5,14 @@ struct ResultView: View {
   let winner: Game.Player
 
   var body: some View {
-    ZStack {
-      text.foregroundStyle(.white)
+    HStack {
+      Spacer()
+      text
+        .foregroundStyle(.white)
+        .font(.title)
+      Spacer()
     }
-    .padding()
+    .padding(100)
     .background(Color.black.opacity(0.8))
   }
   

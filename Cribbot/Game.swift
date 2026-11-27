@@ -86,7 +86,7 @@ struct Game {
 
   }
 
-  private(set) var adaScore = Score()
+  private(set) var adaScore = Score(value: 120)
   private(set) var bobScore = Score()
 
   private(set) var cribOwner = Player.allCases.randomElement()!
