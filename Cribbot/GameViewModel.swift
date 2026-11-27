@@ -25,20 +25,12 @@ class GameViewModel: ObservableObject {
     return game.deck
   }
 
-  var adaCards: [Card] {
-    game.adaCards
+  var adaHand: Game.Hand {
+    game.adaHand
   }
 
-  var bobCards: [Card] {
-    game.bobCards
-  }
-
-  var adaUnlayedCards: [Card] {
-    game.adaHand.filter { !$0.layed }.map { $0.card }
-  }
-
-  var bobUnlayedCards: [Card] {
-    game.bobHand.filter { !$0.layed }.map { $0.card }
+  var bobHand: Game.Hand {
+    game.bobHand
   }
 
   var flippedCard: Card? {
@@ -50,7 +42,7 @@ class GameViewModel: ObservableObject {
   }
 
   var peggingStack: [Card] {
-    game.pegging.stack
+    game.pegging.stack.cards
   }
 
   // MARK: - Indicators
@@ -85,12 +77,16 @@ class GameViewModel: ObservableObject {
 
   var canLay: Bool {
     isPegging && staged.count == 1 && game.pegging.turn == .bob
-      && (game.pegging.stack + [staged[0]]).sum() <= 31
+      && game.pegging.stack.allows(card: staged[0])
+  }
+
+  var stalledPegging: Bool {
+    isPegging && (game.pegging.stack.sum() == 31 || game.pegging.bothGo || game.allLayed)
   }
 
   var canGo: Bool {
-    isPegging && game.pegging.turn == .bob
-      && bobUnlayedCards.filter { $0.rank.peggingValue <= 31 - game.pegging.stack.sum() }.isEmpty
+    isPegging && !stalledPegging && game.pegging.turn == .bob
+      && bobHand.unlayed.filter { game.pegging.stack.allows(card: $0) }.isEmpty
   }
 
   var canScore: Bool {
@@ -145,7 +141,7 @@ class GameViewModel: ObservableObject {
     game.deal()
     Task {
       let adaToss = await adaHandSelector.toss(
-        cards: game.adaCards, ownsCrib: game.cribOwner == .ada)
+        cards: game.adaHand.cards, ownsCrib: game.cribOwner == .ada)
       guard adaToss.count == 2 else {
         fatalError("Ada tosses incorrect number of cards (2)")
       }
@@ -191,13 +187,13 @@ class GameViewModel: ObservableObject {
 
   func adaLay() {
     Task {
-      try await Task.sleep(for: .seconds(2))
+      try await Task.sleep(for: .seconds(1.5))
       await MainActor.run {
         withAnimation {
           // check if we are still in pegging mode
           if isPegging {
             let selected = adaPegSelector.lay(
-              played: game.pegging.stack, available: adaUnlayedCards)
+              played: game.pegging.stack.cards, available: adaHand.unlayed)
             if let selected = selected {
               game.lay(selected, by: .ada)
             } else {
@@ -218,7 +214,16 @@ class GameViewModel: ObservableObject {
   func lay(_ card: Card) {
     staged.removeAll()
     game.lay(card, by: .bob)
-    adaLay()
+    if game.pegging.stack.sum() != 31 {
+      adaLay()
+    }
+  }
+
+  func clearPeggingStack() {
+    game.clearPeggingStack()
+    if game.pegging.turn == .ada {
+      adaLay()
+    }
   }
 
   func scoreNextHand() {

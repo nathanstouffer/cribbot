@@ -35,11 +35,42 @@ struct Game {
   }
 
   struct Pegging {
+
+    struct Stack {
+
+      struct Lay {
+        let card: Card
+        let by: Player
+      }
+
+      var lays = [Lay]()
+
+      var last: Lay? {
+        lays.last
+      }
+
+      var cards: [Card] {
+        lays.map { $0.card }
+      }
+
+      func sum() -> Int {
+        cards.sum()
+      }
+
+      func allows(card: Card) -> Bool {
+        sum() + card.peggingValue <= 31
+      }
+
+      mutating func push(card: Card, by: Player) {
+        lays.append(Lay(card: card, by: by))
+      }
+
+    }
+
     var turn: Player
-    var stack = [Card]()
+    var stack = Stack()
     var adaGo = false
     var bobGo = false
-    var firstGo: Player? = nil
 
     var someGo: Bool {
       adaGo || bobGo
@@ -52,6 +83,36 @@ struct Game {
     var bothGo: Bool {
       return adaGo && bobGo
     }
+
+    func allows(card: Card) -> Bool {
+      stack.allows(card: card)
+    }
+  }
+
+  struct Hand {
+
+    let hand: [CribbageCard]
+
+    init(_ hand: [CribbageCard]) {
+      self.hand = hand
+    }
+
+    var cards: [Card] {
+      hand.map { $0.card }
+    }
+
+    var layed: [Card] {
+      hand.filter { $0.layed }.map { $0.card }
+    }
+
+    var unlayed: [Card] {
+      hand.filter { !$0.layed }.map { $0.card }
+    }
+
+    var allLayed: Bool {
+      hand.allSatisfy { $0.layed }
+    }
+
   }
 
   private(set) var adaScore = 0
@@ -72,20 +133,12 @@ struct Game {
     cards.filter { $0.owner == .deck }.map { $0.card }
   }
 
-  var adaHand: [CribbageCard] {
-    cards.filter { $0.owner == .ada }
+  var adaHand: Hand {
+    Hand(cards.filter { $0.owner == .ada })
   }
 
-  var bobHand: [CribbageCard] {
-    cards.filter { $0.owner == .bob }
-  }
-
-  var adaCards: [Card] {
-    adaHand.map { $0.card }
-  }
-
-  var bobCards: [Card] {
-    bobHand.map { $0.card }
+  var bobHand: Hand {
+    Hand(cards.filter { $0.owner == .bob })
   }
 
   var crib: [Card] {
@@ -94,6 +147,10 @@ struct Game {
 
   var flipped: Card? {
     cards.first(where: { $0.owner == .flip })?.card
+  }
+
+  var allLayed: Bool {
+    adaHand.allLayed && bobHand.allLayed
   }
 
   mutating func toggleCrib() {
@@ -137,68 +194,55 @@ struct Game {
   }
 
   func canLay(_ card: Card) -> Bool {
-    !find(card).layed && (pegging.stack + [card]).sum() <= 31
+    !find(card).layed && pegging.stack.allows(card: card)
   }
 
   mutating func go(by: Player) {
     precondition(flipped != nil, "Flipped card has not been selected")
     precondition(pegging.turn == by, "Player is out of order")
-    if pegging.noGo {
-      pegging.firstGo = by
-    }
     if by == .ada {
       pegging.adaGo = true
     } else if by == .bob {
       pegging.bobGo = true
     }
     pegging.turn.toggle()
-
-    // check if pegging must be reset
-    if pegging.bothGo {
-      if let firstGo = pegging.firstGo {
-        if firstGo == .ada {
-          bobScore += 1
-        } else if firstGo == .bob {
-          adaScore += 1
-        }
-      }
-      pegging = Pegging(turn: by.opponent())
-    }
   }
 
   mutating func lay(_ card: Card, by: Player) {
     precondition(flipped != nil, "Flipped card has not been selected")
     precondition(pegging.turn == by, "Player is out of order")
-    precondition((pegging.stack + [card]).sum() <= 31, "Card would exceed 31")
+    precondition(pegging.stack.allows(card: card), "Card would exceed 31")
     precondition(find(card).owner == by, "Card is not owned by player")
     precondition(!find(card).layed, "Card has already been layed")
     let i = findIndex(card)
     cards[i].layed = true
-    let score = peg(played: pegging.stack, playing: card)
+    let score = peg(played: pegging.stack.cards, playing: card)
     if by == .ada {
       adaScore += score
     } else if by == .bob {
       bobScore += score
     }
-    pegging.stack.append(card)
+    pegging.stack.push(card: card, by: by)
     pegging.turn.toggle()
+  }
 
-    // check if pegging must be reset
-    if pegging.stack.sum() == 31 {
-      pegging = Pegging(turn: pegging.turn)
-    }
-
-    // check if pegging is over
-    let adaDone = adaHand.allSatisfy { $0.layed }
-    let bobDone = bobHand.allSatisfy { $0.layed }
-    if adaDone && bobDone {
-      if pegging.stack.sum() != 0 {
-        if by == .ada {
+  mutating func clearPeggingStack() {
+    // check if there is a point for a go
+    if pegging.stack.sum() != 31 {
+      if let last = pegging.stack.last {
+        if last.by == .ada {
           adaScore += 1
-        } else if by == .bob {
+        } else if last.by == .bob {
           bobScore += 1
         }
       }
+    }
+
+    // reset while preserving the turn order
+    pegging = Pegging(turn: pegging.turn)
+
+    // check if pegging is over
+    if adaHand.allLayed && bobHand.allLayed {
       pegging = Pegging(turn: cribOwner.opponent())
       scoringProgress.pegging = true
     }
@@ -212,10 +256,10 @@ struct Game {
     precondition(
       !scoringProgress.crib && !scoringProgress.dealerHand, "Nondealer must be scored first")
     if cribOwner == .ada {
-      bobScore += score(hand: bobCards, flip: flipped!, isCrib: false)
+      bobScore += score(hand: bobHand.cards, flip: flipped!, isCrib: false)
     }
     if cribOwner == .bob {
-      adaScore += score(hand: adaCards, flip: flipped!, isCrib: false)
+      adaScore += score(hand: adaHand.cards, flip: flipped!, isCrib: false)
     }
     scoringProgress.nondealerHand = true
   }
@@ -224,10 +268,10 @@ struct Game {
     precondition(flipped != nil, "Flipped card has not been selected")
     precondition(scoringProgress.nondealerHand, "Nondealer hand must be scored before dealer")
     if cribOwner == .ada {
-      adaScore += score(hand: adaCards, flip: flipped!, isCrib: false)
+      adaScore += score(hand: adaHand.cards, flip: flipped!, isCrib: false)
     }
     if cribOwner == .bob {
-      bobScore += score(hand: bobCards, flip: flipped!, isCrib: false)
+      bobScore += score(hand: bobHand.cards, flip: flipped!, isCrib: false)
     }
     scoringProgress.dealerHand = true
   }

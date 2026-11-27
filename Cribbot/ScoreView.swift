@@ -7,7 +7,7 @@ struct ScoreView: View {
   @State private var delta: Int?
   @State private var animateDelta = false
 
-  private static let animationDuration = 2.0
+  private static let animationDuration = 4.0
 
   var body: some View {
     HStack {

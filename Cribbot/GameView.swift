@@ -19,7 +19,11 @@ struct GameView: View {
         ScoreView(score: game.adaScore).padding(20)
         ZStack {
           TrayView(game, animationNamespace: animationNamespace)
-          PeggingView(game, cards: game.peggingStack, animationNamespace: animationNamespace)
+          if game.isPegging {
+            PeggingView(
+              cards: game.peggingStack, playerToLay: game.playerToLay,
+              animationNamespace: animationNamespace)
+          }
         }
         buttons
         ScoreView(score: game.bobScore)
@@ -30,15 +34,16 @@ struct GameView: View {
   }
 
   private var adaHand: some View {
-    hand(
-      cards: game.isPegging ? game.adaUnlayedCards : game.adaCards,
-      crib: game.showAdaCrib ? game.crib : [], isFaceUp: game.showAdaCards)
+    PlayerView(
+      game: game, hand: game.adaHand, crib: game.showAdaCrib ? game.crib : [],
+      isFaceUp: game.showAdaCards,
+      allowStage: false, animationNamespace: animationNamespace)
   }
 
   private var bobHand: some View {
-    hand(
-      cards: game.isPegging ? game.bobUnlayedCards : game.bobCards,
-      crib: game.showBobCrib ? game.crib : [], isFaceUp: true)
+    PlayerView(
+      game: game, hand: game.bobHand, crib: game.showBobCrib ? game.crib : [], isFaceUp: true,
+      allowStage: true, animationNamespace: animationNamespace)
   }
 
   private var buttons: some View {
@@ -119,7 +124,9 @@ struct GameView: View {
   private var nextButton: some View {
     Button("Next") {
       withAnimation {
-        if game.canScore {
+        if game.stalledPegging {
+          game.clearPeggingStack()
+        } else if game.canScore {
           game.scoreNextHand()
         } else if game.canEndHand {
           game.endHand()
@@ -127,7 +134,7 @@ struct GameView: View {
       }
     }
     .buttonStyle(.borderedProminent)
-    .disabled(!(game.canScore || game.canEndHand))
+    .disabled(!(game.canScore || game.canEndHand || game.stalledPegging))
   }
 
   private var background: some View {
@@ -136,17 +143,6 @@ struct GameView: View {
       .ignoresSafeArea()
   }
 
-  // MARK: - hand view
-  private func hand(cards: [Card], crib: [Card], isFaceUp: Bool) -> some View {
-    ZStack {
-      HandView(
-        game: game, cards: cards, isFaceUp: isFaceUp,
-        animationNamespace: animationNamespace)
-      HandView(
-        game: game, cards: crib, isFaceUp: isFaceUp,
-        animationNamespace: animationNamespace)
-    }
-  }
 }
 
 #Preview {

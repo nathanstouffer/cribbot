@@ -5,12 +5,17 @@ struct HandView: View {
 
   let cards: [Card]
   let isFaceUp: Bool
+  let allowStage: Bool
   private let animationNamespace: Namespace.ID
 
-  init(game: GameViewModel, cards: [Card], isFaceUp: Bool, animationNamespace: Namespace.ID) {
+  init(
+    game: GameViewModel, cards: [Card], isFaceUp: Bool, allowStage: Bool,
+    animationNamespace: Namespace.ID
+  ) {
     self.game = game
     self.cards = cards
     self.isFaceUp = isFaceUp
+    self.allowStage = allowStage
     self.animationNamespace = animationNamespace
   }
 
@@ -30,7 +35,7 @@ struct HandView: View {
   }
 
   private func onTap(card: Card) {
-    if isFaceUp {
+    if allowStage {
       withAnimation {
         if !game.isStaged(card) {
           game.stage(card)
