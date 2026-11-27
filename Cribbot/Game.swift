@@ -60,8 +60,27 @@ struct Game {
 
   }
 
-  private(set) var adaScore = 0
-  private(set) var bobScore = 0
+  struct Score: Equatable {
+    private(set) var value = 0
+    private(set) var tracker = 0
+
+    mutating func add(_ delta: Int) {
+      value += delta
+      tracker += 1
+    }
+
+    static func += (lhs: inout Score, rhs: Int) {
+      lhs.add(rhs)
+    }
+
+    static func - (lhs: Score, rhs: Score) -> Int {
+      lhs.value - rhs.value
+    }
+
+  }
+  
+  private(set) var adaScore = Score()
+  private(set) var bobScore = Score()
 
   private(set) var cribOwner = Player.allCases.randomElement()!
   private(set) var pegging: Pegging
@@ -162,10 +181,12 @@ struct Game {
     let i = findIndex(card)
     cards[i].layed = true
     let score = peg(played: pegging.stack.cards, playing: card)
-    if by == .ada {
-      adaScore += score
-    } else if by == .bob {
-      bobScore += score
+    if score != 0 {
+      if by == .ada {
+        adaScore += score
+      } else if by == .bob {
+        bobScore += score
+      }
     }
     pegging.stack.push(card: card, by: by)
     pegging.turn.toggle()

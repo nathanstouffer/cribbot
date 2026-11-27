@@ -11,11 +11,11 @@ class GameViewModel: ObservableObject {
   private var adaPegSelector = HeuristicPegSelector()
   private var bobTossed = false
 
-  var adaScore: Int {
+  var adaScore: Game.Score {
     game.adaScore
   }
 
-  var bobScore: Int {
+  var bobScore: Game.Score {
     game.bobScore
   }
 
