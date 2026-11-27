@@ -66,7 +66,14 @@ struct Game {
 
     mutating func add(_ delta: Int) {
       value += delta
+      if value > 121 {
+        value = 121
+      }
       tracker += 1
+    }
+
+    static func == (lhs: Score, rhs: Int) -> Bool {
+      lhs.value == rhs
     }
 
     static func += (lhs: inout Score, rhs: Int) {
@@ -78,7 +85,7 @@ struct Game {
     }
 
   }
-  
+
   private(set) var adaScore = Score()
   private(set) var bobScore = Score()
 

@@ -136,6 +136,10 @@ class GameViewModel: ObservableObject {
 
   // MARK: - Intent functions
 
+  func shuffle() {
+    game.shuffle()
+  }
+
   func startNewHand() {
     game.shuffle()
     game.deal()
