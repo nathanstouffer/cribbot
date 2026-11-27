@@ -154,7 +154,8 @@ struct HandScoringTests {
     tests.append(
       ScoreTest(
         hand: [
-          Card(.four, .clubs), Card(.three, .diamonds), Card(.eight, .hearts), Card(.eight, .spades),
+          Card(.four, .clubs), Card(.three, .diamonds), Card(.eight, .hearts),
+          Card(.eight, .spades),
         ],
         flip: Card(.five, .hearts),
         isCrib: false, score: 9)

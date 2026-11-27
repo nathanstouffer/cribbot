@@ -20,7 +20,9 @@ struct GameView: View {
         ZStack {
           TrayView(game, animationNamespace: animationNamespace)
           if game.isPegging {
-            PeggingView(cards: game.peggingStack, playerToLay: game.playerToLay, animationNamespace: animationNamespace)
+            PeggingView(
+              cards: game.peggingStack, playerToLay: game.playerToLay,
+              animationNamespace: animationNamespace)
           }
         }
         buttons

@@ -23,6 +23,7 @@ struct PlayerView: View {
 
   var body: some View {
     ZStack {
+      placeholder
       if game.isPegging {
         peggingDisplay
       } else {
@@ -60,5 +61,10 @@ struct PlayerView: View {
     HandView(
       game: game, cards: crib, isFaceUp: isFaceUp, allowStage: false,
       animationNamespace: animationNamespace)
+  }
+
+  var placeholder: some View {
+    CardView(Card(.ace, .spades), isFaceUp: true)
+      .hidden()
   }
 }

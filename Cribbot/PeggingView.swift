@@ -63,7 +63,7 @@ struct PeggingView: View {
         }
       }
   }
-  
+
   var placeholder: some View {
     CardView(Card(.ace, .spades), isFaceUp: true)
       .hidden()
@@ -79,7 +79,8 @@ struct PeggingView: View {
         Spacer()
         PeggingView(
           cards: [
-            Card(.three, .spades), Card(.eight, .hearts), Card(.four, .spades), Card(.ten, .diamonds),
+            Card(.three, .spades), Card(.eight, .hearts), Card(.four, .spades),
+            Card(.ten, .diamonds),
           ],
           playerToLay: false,
           animationNamespace: namespace
@@ -98,7 +99,10 @@ struct PeggingView: View {
         )
         Spacer()
         PeggingView(
-          cards: [Card(.ace, .spades), Card(.two, .spades), Card(.ace, .hearts), Card(.two, .hearts), Card(.ace, .diamonds), Card(.two, .diamonds), Card(.ace, .clubs), Card(.two, .clubs)],
+          cards: [
+            Card(.ace, .spades), Card(.two, .spades), Card(.ace, .hearts), Card(.two, .hearts),
+            Card(.ace, .diamonds), Card(.two, .diamonds), Card(.ace, .clubs), Card(.two, .clubs),
+          ],
           playerToLay: false,
           animationNamespace: namespace
         )

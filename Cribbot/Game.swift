@@ -83,7 +83,7 @@ struct Game {
     var bothGo: Bool {
       return adaGo && bobGo
     }
-    
+
     func allows(card: Card) -> Bool {
       stack.allows(card: card)
     }

@@ -77,7 +77,7 @@ class GameViewModel: ObservableObject {
 
   var canLay: Bool {
     isPegging && staged.count == 1 && game.pegging.turn == .bob
-    && game.pegging.stack.allows(card: staged[0])
+      && game.pegging.stack.allows(card: staged[0])
   }
 
   var stalledPegging: Bool {
@@ -86,7 +86,7 @@ class GameViewModel: ObservableObject {
 
   var canGo: Bool {
     isPegging && !stalledPegging && game.pegging.turn == .bob
-    && bobHand.unlayed.filter { game.pegging.stack.allows(card: $0) }.isEmpty
+      && bobHand.unlayed.filter { game.pegging.stack.allows(card: $0) }.isEmpty
   }
 
   var canScore: Bool {
