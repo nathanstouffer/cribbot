@@ -66,6 +66,7 @@ struct PeggingView: View {
 
   var placeholder: some View {
     CardView(Card(.ace, .spades), isFaceUp: true)
+      .padding(20)
       .hidden()
   }
 }
