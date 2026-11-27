@@ -114,6 +114,10 @@ struct Game {
     cards.first(where: { $0.owner == .flip })?.card
   }
 
+  var allLayed: Bool {
+    adaHand.allLayed && bobHand.allLayed
+  }
+
   mutating func toggleCrib() {
     cribOwner.toggle()
     pegging = Pegging(turn: cribOwner.opponent())
@@ -170,18 +174,6 @@ struct Game {
       pegging.bobGo = true
     }
     pegging.turn.toggle()
-
-    // check if pegging must be reset
-    if pegging.bothGo {
-      if let firstGo = pegging.firstGo {
-        if firstGo == .ada {
-          bobScore += 1
-        } else if firstGo == .bob {
-          adaScore += 1
-        }
-      }
-      pegging = Pegging(turn: by.opponent())
-    }
   }
 
   mutating func lay(_ card: Card, by: Player) {
@@ -200,21 +192,25 @@ struct Game {
     }
     pegging.stack.append(card)
     pegging.turn.toggle()
+  }
 
-    // check if pegging must be reset
-    if pegging.stack.sum() == 31 {
-      pegging = Pegging(turn: pegging.turn)
+  mutating func clearPeggingStack() {
+    // check if there is a point for a go
+    if let firstGo = pegging.firstGo {
+      if firstGo == .ada {
+        bobScore += 1
+      } else if firstGo == .bob {
+        adaScore += 1
+      }
+    } else {
+      // TODO (stouff) we need to assign a point for last card here
     }
+
+    // reset while preserving the turn order
+    pegging = Pegging(turn: pegging.turn)
 
     // check if pegging is over
     if adaHand.allLayed && bobHand.allLayed {
-      if pegging.stack.sum() != 0 {
-        if by == .ada {
-          adaScore += 1
-        } else if by == .bob {
-          bobScore += 1
-        }
-      }
       pegging = Pegging(turn: cribOwner.opponent())
       scoringProgress.pegging = true
     }

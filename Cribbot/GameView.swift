@@ -120,7 +120,9 @@ struct GameView: View {
   private var nextButton: some View {
     Button("Next") {
       withAnimation {
-        if game.canScore {
+        if game.stalledPegging {
+          game.clearPeggingStack()
+        } else if game.canScore {
           game.scoreNextHand()
         } else if game.canEndHand {
           game.endHand()
@@ -128,7 +130,7 @@ struct GameView: View {
       }
     }
     .buttonStyle(.borderedProminent)
-    .disabled(!(game.canScore || game.canEndHand))
+    .disabled(!(game.canScore || game.canEndHand || game.stalledPegging))
   }
 
   private var background: some View {

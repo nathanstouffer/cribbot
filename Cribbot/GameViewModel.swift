@@ -80,8 +80,12 @@ class GameViewModel: ObservableObject {
       && (game.pegging.stack + [staged[0]]).sum() <= 31
   }
 
+  var stalledPegging: Bool {
+    isPegging && (game.pegging.stack.sum() == 31 || game.pegging.bothGo || game.allLayed)
+  }
+
   var canGo: Bool {
-    isPegging && game.pegging.turn == .bob
+    isPegging && !stalledPegging && game.pegging.turn == .bob
       && bobHand.unlayed.filter { $0.rank.peggingValue <= 31 - game.pegging.stack.sum() }.isEmpty
   }
 
@@ -183,7 +187,7 @@ class GameViewModel: ObservableObject {
 
   func adaLay() {
     Task {
-      try await Task.sleep(for: .seconds(2))
+      try await Task.sleep(for: .seconds(1.5))
       await MainActor.run {
         withAnimation {
           // check if we are still in pegging mode
@@ -210,7 +214,16 @@ class GameViewModel: ObservableObject {
   func lay(_ card: Card) {
     staged.removeAll()
     game.lay(card, by: .bob)
-    adaLay()
+    if game.pegging.stack.sum() != 31 {
+      adaLay()
+    }
+  }
+
+  func clearPeggingStack() {
+    game.clearPeggingStack()
+    if game.pegging.turn == .ada {
+      adaLay()
+    }
   }
 
   func scoreNextHand() {
