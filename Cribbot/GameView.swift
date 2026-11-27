@@ -135,14 +135,22 @@ struct GameView: View {
       .ignoresSafeArea()
   }
   
-  // MARK: - hand view
+  // MARK: - player view
   private func player(hand: Game.Hand, crib: [Card], isFaceUp: Bool, allowStage: Bool) -> some View
   {
     ZStack {
       if game.isPegging {
-        HandView(
-          game: game, cards: hand.unlayed, isFaceUp: isFaceUp, allowStage: allowStage,
-          animationNamespace: animationNamespace)
+        HStack {
+          ZStack {
+            ForEach(hand.layed.minus(game.peggingStack)) { card in
+              CardView.back(shadowRadius: 0)
+                .matchedGeometryEffect(id: card.id, in: animationNamespace)
+            }
+          }
+          HandView(
+            game: game, cards: hand.unlayed, isFaceUp: isFaceUp, allowStage: allowStage,
+            animationNamespace: animationNamespace)
+        }
       } else {
         HandView(
           game: game, cards: hand.cards, isFaceUp: isFaceUp, allowStage: allowStage,
