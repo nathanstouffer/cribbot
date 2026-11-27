@@ -151,6 +151,15 @@ struct HandScoringTests {
         isCrib: true, score: 10)
     )
 
+    tests.append(
+      ScoreTest(
+        hand: [
+          Card(.four, .clubs), Card(.three, .diamonds), Card(.eight, .hearts), Card(.eight, .spades),
+        ],
+        flip: Card(.five, .hearts),
+        isCrib: false, score: 9)
+    )
+
     for i in 0..<tests.count {
       let test = tests[i]
       let score = score(hand: test.hand, flip: test.flip, isCrib: test.isCrib)
