@@ -24,25 +24,41 @@ struct PlayerView: View {
   var body: some View {
     ZStack {
       if game.isPegging {
-        HStack {
-          ZStack {
-            ForEach(hand.layed.minus(game.peggingStack)) { card in
-              CardView.back(shadowRadius: 0)
-                .matchedGeometryEffect(id: card.id, in: animationNamespace)
-            }
-          }
-          HandView(
-            game: game, cards: hand.unlayed, isFaceUp: isFaceUp, allowStage: allowStage,
-            animationNamespace: animationNamespace)
-        }
+        peggingDisplay
       } else {
-        HandView(
-          game: game, cards: hand.cards, isFaceUp: isFaceUp, allowStage: allowStage,
-          animationNamespace: animationNamespace)
+        handDisplay
       }
+      cribDisplay
+    }
+  }
+  
+  var peggingDisplay: some View {
+    HStack {
+      layed
       HandView(
-        game: game, cards: crib, isFaceUp: isFaceUp, allowStage: false,
+        game: game, cards: hand.unlayed, isFaceUp: isFaceUp, allowStage: allowStage,
         animationNamespace: animationNamespace)
     }
+  }
+  
+  var layed: some View {
+    ZStack {
+      ForEach(hand.layed.minus(game.peggingStack)) { card in
+        CardView.back(shadowRadius: 0)
+          .matchedGeometryEffect(id: card.id, in: animationNamespace)
+      }
+    }
+  }
+  
+  var handDisplay: some View {
+    HandView(
+      game: game, cards: hand.cards, isFaceUp: isFaceUp, allowStage: allowStage,
+      animationNamespace: animationNamespace)
+  }
+  
+  var cribDisplay: some View {
+    HandView(
+      game: game, cards: crib, isFaceUp: isFaceUp, allowStage: false,
+      animationNamespace: animationNamespace)
   }
 }
