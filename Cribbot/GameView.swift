@@ -17,18 +17,18 @@ struct GameView: View {
         adaHand
         Spacer()
         ScoreView(score: game.adaScore).padding(20)
-        ZStack {
-          TrayView(game, animationNamespace: animationNamespace)
-        }
+        TrayView(game, animationNamespace: animationNamespace)
+          .overlay {
+            if game.isPegging {
+              PeggingView(
+                cards: game.peggingStack, playerToLay: game.playerToLay,
+                animationNamespace: animationNamespace)
+            }
+          }
         buttons
         ScoreView(score: game.bobScore)
         Spacer()
         bobHand
-      }
-      if game.isPegging {
-        PeggingView(
-          cards: game.peggingStack, playerToLay: game.playerToLay,
-          animationNamespace: animationNamespace)
       }
       if let winner = game.winner {
         ResultView(winner: winner)

@@ -12,7 +12,7 @@ struct ResultView: View {
         .font(.title)
       Spacer()
     }
-    .padding(100)
+    .padding(.vertical, 125)
     .background(Color.black.opacity(0.8))
   }
   
