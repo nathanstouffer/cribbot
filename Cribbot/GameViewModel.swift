@@ -11,11 +11,11 @@ class GameViewModel: ObservableObject {
   private var adaPegSelector = HeuristicPegSelector()
   private var bobTossed = false
 
-  var adaScore: Int {
+  var adaScore: Game.Score {
     game.adaScore
   }
 
-  var bobScore: Int {
+  var bobScore: Game.Score {
     game.bobScore
   }
 
@@ -46,6 +46,10 @@ class GameViewModel: ObservableObject {
   }
 
   // MARK: - Indicators
+
+  var winner: Game.Player? {
+    game.winner
+  }
 
   var playerOwnsCrib: Bool {
     game.cribOwner == Game.Player.bob
@@ -135,6 +139,10 @@ class GameViewModel: ObservableObject {
   }
 
   // MARK: - Intent functions
+
+  func shuffle() {
+    game.shuffle()
+  }
 
   func startNewHand() {
     game.shuffle()

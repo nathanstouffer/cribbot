@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ScoreView: View {
 
-  var score: Int
+  var score: Game.Score
 
   @State private var delta: Int?
   @State private var animateDelta = false
@@ -12,7 +12,7 @@ struct ScoreView: View {
   var body: some View {
     HStack {
       Spacer()
-      score(text: "Score: \(score)")
+      score(text: "Score: \(score.value)")
       Spacer()
     }
   }
@@ -21,9 +21,9 @@ struct ScoreView: View {
     Text(text)
       .foregroundStyle(.white)
       .font(.title2)
-      .contentTransition(.numericText(value: Double(score)))
+      .contentTransition(.numericText(value: Double(score.value)))
       .overlay(alignment: .trailing) {
-        if let delta, delta > 0 {
+        if let delta, delta >= 0 {
           Text("+\(delta)")
             .font(.headline.bold())
             .foregroundStyle(.yellow)

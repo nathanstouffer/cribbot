@@ -34,61 +34,6 @@ struct Game {
     }
   }
 
-  struct Pegging {
-
-    struct Stack {
-
-      struct Lay {
-        let card: Card
-        let by: Player
-      }
-
-      var lays = [Lay]()
-
-      var last: Lay? {
-        lays.last
-      }
-
-      var cards: [Card] {
-        lays.map { $0.card }
-      }
-
-      func sum() -> Int {
-        cards.sum()
-      }
-
-      func allows(card: Card) -> Bool {
-        sum() + card.peggingValue <= 31
-      }
-
-      mutating func push(card: Card, by: Player) {
-        lays.append(Lay(card: card, by: by))
-      }
-
-    }
-
-    var turn: Player
-    var stack = Stack()
-    var adaGo = false
-    var bobGo = false
-
-    var someGo: Bool {
-      adaGo || bobGo
-    }
-
-    var noGo: Bool {
-      !someGo
-    }
-
-    var bothGo: Bool {
-      return adaGo && bobGo
-    }
-
-    func allows(card: Card) -> Bool {
-      stack.allows(card: card)
-    }
-  }
-
   struct Hand {
 
     let hand: [CribbageCard]
@@ -115,8 +60,34 @@ struct Game {
 
   }
 
-  private(set) var adaScore = 0
-  private(set) var bobScore = 0
+  struct Score: Equatable {
+    private(set) var value = 0
+    private(set) var tracker = 0
+
+    mutating func add(_ delta: Int) {
+      value += delta
+      if value > 121 {
+        value = 121
+      }
+      tracker += 1
+    }
+
+    static func == (lhs: Score, rhs: Int) -> Bool {
+      lhs.value == rhs
+    }
+
+    static func += (lhs: inout Score, rhs: Int) {
+      lhs.add(rhs)
+    }
+
+    static func - (lhs: Score, rhs: Score) -> Int {
+      lhs.value - rhs.value
+    }
+
+  }
+
+  private(set) var adaScore = Score(value: 120)
+  private(set) var bobScore = Score()
 
   private(set) var cribOwner = Player.allCases.randomElement()!
   private(set) var pegging: Pegging
@@ -127,6 +98,16 @@ struct Game {
 
   init() {
     pegging = Pegging(turn: cribOwner.opponent())
+  }
+
+  var winner: Player? {
+    if adaScore == 121 {
+      .ada
+    } else if bobScore == 121 {
+      .bob
+    } else {
+      nil
+    }
   }
 
   var deck: [Card] {
@@ -217,10 +198,12 @@ struct Game {
     let i = findIndex(card)
     cards[i].layed = true
     let score = peg(played: pegging.stack.cards, playing: card)
-    if by == .ada {
-      adaScore += score
-    } else if by == .bob {
-      bobScore += score
+    if score != 0 {
+      if by == .ada {
+        adaScore += score
+      } else if by == .bob {
+        bobScore += score
+      }
     }
     pegging.stack.push(card: card, by: by)
     pegging.turn.toggle()
